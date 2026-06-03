@@ -55,9 +55,23 @@ class PermissionService
         ]);
     }
 
-    public function getRequestsForCurrentSchool()
+    public function getRequestsForCurrentSchool($requestedSchoolId = null)
     {
-        return $this->repo->getPaginatedBySchool(Auth::user()->school_id, 15);
+        $user = Auth::user();
+
+        if ($user->hasRole('Super Admin')) {
+            if (!$requestedSchoolId) {
+                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+            }
+            return $this->repo->getPaginatedBySchool($requestedSchoolId, 15);
+        }
+
+        $schoolId = $user->school_id;
+        if (!$schoolId) {
+            abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
+        }
+
+        return $this->repo->getPaginatedBySchool($schoolId, 15);
     }
 
     public function getRequestById(string $id)
@@ -72,10 +86,8 @@ class PermissionService
             $req = $this->repo->findById($id);
             if ($req->status !== 'Menunggu') throw new Exception('Permohonan ini sudah diproses sebelumnya.');
 
-            // 1. Ubah status izin menjadi Disetujui
             $this->repo->update($id, ['status' => 'Disetujui']);
 
-            // 2. Catat ke tabel absensi harian (Gate Attendance)
             $attendance = $this->attendanceRepo->findByStudentAndDate($req->student_id, $req->date);
             if ($attendance) {
                 $this->attendanceRepo->update($attendance->id, ['status' => $req->type]);
@@ -88,7 +100,6 @@ class PermissionService
                 ]);
             }
 
-            // 3. Kirim Notifikasi WA
             $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nPermohonan {$req->type} untuk Ananda *{$req->student->name}* pada tanggal " . date('d/m/Y', strtotime($req->date)) . " telah *DISETUJUI* oleh Wali Kelas.\n\n_Pesan otomatis oleh SCANATTEND_";
             SendWhatsAppNotification::dispatch($req->student->parent_phone, $msg);
 

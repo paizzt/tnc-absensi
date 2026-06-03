@@ -12,17 +12,32 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: #f0fdf4; border-color: #bbf7d0; color: #16A34A;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}</div>
     @endif
-    @if($errors->any())
-        <div class="alert alert-danger" role="alert">Pastikan Anda memilih level SP dan melampirkan berkas dengan benar.</div>
-    @endif
+
+    @role('Super Admin')
+    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
+        <div class="card-body p-3">
+            <form action="{{ route('bk.dashboard') }}" method="GET" class="d-flex align-items-center">
+                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">🏢 Filter Sekolah:</label>
+                <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
+                    <option value="">-- Pilih Sekolah --</option>
+                    @foreach($schools as $school)
+                        <option value="{{ $school->id }}" {{ ($selectedSchoolId == $school->id) ? 'selected' : '' }}>
+                            {{ $school->npsn }} - {{ $school->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
+    @endrole
 
     <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-0">
@@ -60,17 +75,18 @@
                             <td class="px-4 py-3 text-end">
                                 <button class="btn btn-sm btn-primary px-3" data-bs-toggle="modal" data-bs-target="#spModal{{ $student->id }}">Kirim SP</button>
                                 
-                                <!-- Modal Kirim SP -->
                                 <div class="modal fade text-start" id="spModal{{ $student->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 shadow">
                                             <div class="modal-header border-bottom-0 pb-0">
                                                 <h5 class="modal-title fw-bold text-dark">Kirim Surat Panggilan</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form action="{{ route('bk.send_sp') }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
+                                                <input type="hidden" name="school_id" value="{{ $selectedSchoolId }}">
                                                 <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                                
                                                 <div class="modal-body">
                                                     <p class="small text-neutral mb-4">Sistem akan mengirimkan pesan notifikasi dan tautan berkas SP langsung ke WhatsApp orang tua <strong>{{ $student->name }}</strong>.</p>
                                                     
@@ -101,7 +117,7 @@
                         @empty
                         <tr>
                             <td colspan="5" class="px-4 py-5 text-center text-success fw-medium">
-                                Luar biasa! Seluruh siswa di sekolah ini memiliki persentase kehadiran di atas 80%.
+                                Luar biasa! Seluruh siswa di sekolah yang dipilih memiliki kehadiran yang baik.
                             </td>
                         </tr>
                         @endforelse

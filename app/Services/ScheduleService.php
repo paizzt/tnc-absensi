@@ -16,11 +16,22 @@ class ScheduleService
         $this->scheduleRepo = $scheduleRepo;
     }
 
-    public function getSchedulesByCurrentSchool()
+    // Tambahkan parameter opsional $requestedSchoolId
+    public function getSchedulesByCurrentSchool($requestedSchoolId = null)
     {
-        $schoolId = Auth::user()->school_id;
+        $user = Auth::user();
         
-        // Pelindung jika akun belum dikaitkan ke sekolah
+        // Jika Super Admin, gunakan ID dari dropdown
+        if ($user->hasRole('Super Admin')) {
+            if (!$requestedSchoolId) {
+                // Return paginasi kosong jika belum memilih sekolah
+                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+            }
+            return $this->scheduleRepo->getPaginatedBySchool($requestedSchoolId);
+        }
+
+        // Jika Admin Sekolah/Guru, ambil dari akun mereka
+        $schoolId = $user->school_id;
         if (!$schoolId) {
             abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun. Hubungi Super Admin.');
         }
@@ -28,12 +39,17 @@ class ScheduleService
         return $this->scheduleRepo->getPaginatedBySchool($schoolId);
     }
 
-    public function createSchedule(array $data)
+    // Tambahkan parameter opsional untuk Create
+    public function createSchedule(array $data, $requestedSchoolId = null)
     {
-        $schoolId = Auth::user()->school_id;
-        
-        if (!$schoolId) {
-            throw new Exception('Akun Anda belum ditugaskan ke sekolah manapun.');
+        $user = Auth::user();
+        $schoolId = $user->school_id;
+
+        if ($user->hasRole('Super Admin')) {
+            $schoolId = $requestedSchoolId;
+            if (!$schoolId) throw new Exception('Super Admin wajib memilih sekolah terlebih dahulu.');
+        } else {
+            if (!$schoolId) throw new Exception('Akun Anda belum ditugaskan ke sekolah manapun.');
         }
         
         $data['school_id'] = $schoolId;
@@ -59,7 +75,7 @@ class ScheduleService
                 throw new Exception("BENTROK: Guru {$collision->teacher->name} sudah mengajar di kelas {$collision->classroom->name} pada jam tersebut.");
             }
             if ($collision->classroom_id == $data['classroom_id']) {
-                throw new Exception("BENTROK: Kelas {$collision->classroom->name} sudah memiliki jadwal pelajaran lain pada jam tersebut.");
+                throw new Exception("BENTROK: Kelas {$collision->classroom->name} sudah memiliki jadwal lain pada jam tersebut.");
             }
         }
 

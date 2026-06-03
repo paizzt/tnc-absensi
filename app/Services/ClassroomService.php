@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ClassroomRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class ClassroomService
 {
@@ -14,23 +15,44 @@ class ClassroomService
         $this->classroomRepo = $classroomRepo;
     }
 
-    public function getClassroomsByCurrentSchool()
+    public function getClassroomsByCurrentSchool($requestedSchoolId = null)
     {
-        return $this->classroomRepo->getPaginatedBySchool(Auth::user()->school_id, 15);
+        $user = Auth::user();
+
+        if ($user->hasRole('Super Admin')) {
+            if (!$requestedSchoolId) {
+                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+            }
+            return $this->classroomRepo->getPaginatedBySchool($requestedSchoolId, 15);
+        }
+
+        $schoolId = $user->school_id;
+        if (!$schoolId) {
+            abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
+        }
+
+        return $this->classroomRepo->getPaginatedBySchool($schoolId, 15);
     }
 
-    public function createClassroom(array $data)
+    public function createClassroom(array $data, $requestedSchoolId = null)
     {
-        // Kunci data ke sekolah Admin yang sedang login
-        $data['school_id'] = Auth::user()->school_id;
+        $user = Auth::user();
+        $schoolId = $user->hasRole('Super Admin') ? $requestedSchoolId : $user->school_id;
+
+        if (!$schoolId) {
+            throw new Exception('Sekolah belum dipilih atau akun tidak memiliki sekolah.');
+        }
+
+        $data['school_id'] = $schoolId;
         return $this->classroomRepo->create($data);
     }
 
     public function updateClassroom(string $id, array $data)
     {
-        // Pastikan kelas yang diedit benar-benar milik sekolahnya (Security)
         $classroom = $this->classroomRepo->findById($id);
-        if ($classroom->school_id !== Auth::user()->school_id) {
+        
+        // Pengecekan keamanan: Super admin bebas, admin sekolah hanya boleh edit kelasnya sendiri
+        if (!Auth::user()->hasRole('Super Admin') && $classroom->school_id !== Auth::user()->school_id) {
             abort(403, 'Akses Ditolak.');
         }
 
@@ -40,7 +62,8 @@ class ClassroomService
     public function deleteClassroom(string $id)
     {
         $classroom = $this->classroomRepo->findById($id);
-        if ($classroom->school_id !== Auth::user()->school_id) {
+        
+        if (!Auth::user()->hasRole('Super Admin') && $classroom->school_id !== Auth::user()->school_id) {
             abort(403, 'Akses Ditolak.');
         }
 

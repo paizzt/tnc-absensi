@@ -8,6 +8,7 @@ use App\Http\Requests\StoreScheduleRequest;
 use App\Models\Classroom;
 use App\Models\Subject;
 use App\Models\User;
+use App\Models\School;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 
@@ -20,31 +21,55 @@ class ScheduleController extends Controller
         $this->scheduleService = $scheduleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $schedules = $this->scheduleService->getSchedulesByCurrentSchool();
-        return view('admin.schedules.index', compact('schedules'));
+        $user = Auth::user();
+        $schools = [];
+        $selectedSchoolId = null;
+
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            // Pilih sekolah dari URL, atau default ke sekolah pertama di database
+            $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+            $schedules = $this->scheduleService->getSchedulesByCurrentSchool($selectedSchoolId);
+        } else {
+            $schedules = $this->scheduleService->getSchedulesByCurrentSchool();
+        }
+
+        return view('admin.schedules.index', compact('schedules', 'schools', 'selectedSchoolId'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $schoolId = Auth::user()->school_id;
+        $user = Auth::user();
+        $schoolId = $user->school_id;
+
+        if ($user->hasRole('Super Admin')) {
+            $schoolId = $request->query('school_id');
+            if (!$schoolId) {
+                return redirect()->route('admin.schedules.index')->with('error', 'Pilih sekolah dari Dropdown terlebih dahulu sebelum menambah jadwal.');
+            }
+        }
+
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
-        
-        // Ambil User yang memiliki Role "Guru Mata Pelajaran" atau "Wali Kelas" di sekolah ini
         $teachers = User::role(['Guru Mata Pelajaran', 'Wali Kelas'])
             ->where('school_id', $schoolId)
             ->orderBy('name')->get();
 
-        return view('admin.schedules.create', compact('classrooms', 'subjects', 'teachers'));
+        return view('admin.schedules.create', compact('classrooms', 'subjects', 'teachers', 'schoolId'));
     }
 
     public function store(StoreScheduleRequest $request)
     {
         try {
-            $this->scheduleService->createSchedule($request->validated());
-            return redirect()->route('admin.schedules.index')->with('success', 'Jadwal pelajaran berhasil ditambahkan.');
+            // Ambil school_id tersembunyi dari form untuk Super Admin
+            $schoolId = $request->input('school_id'); 
+            $this->scheduleService->createSchedule($request->validated(), $schoolId);
+            
+            // Arahkan kembali ke URL dengan parameter school_id agar filter tetap aktif
+            return redirect()->route('admin.schedules.index', ['school_id' => $schoolId])
+                ->with('success', 'Jadwal pelajaran berhasil ditambahkan.');
         } catch (Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
@@ -53,6 +78,6 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         $this->scheduleService->deleteSchedule($id);
-        return redirect()->route('admin.schedules.index')->with('success', 'Jadwal pelajaran berhasil dihapus.');
+        return back()->with('success', 'Jadwal pelajaran berhasil dihapus.');
     }
 }

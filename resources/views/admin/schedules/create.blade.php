@@ -7,9 +7,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-1" style="color: #111827;">Penyusunan Jadwal</h4>
-            <p class="text-neutral small mb-0">Sistem akan menolak otomatis jika terdeteksi jadwal bentrok (Collision Detection).</p>
+            <p class="text-neutral small mb-0">Sistem akan menolak otomatis jika terdeteksi jadwal bentrok.</p>
         </div>
-        <a href="{{ route('admin.schedules.index') }}" class="btn btn-light btn-sm px-3 border">Kembali</a>
+        <a href="{{ route('admin.schedules.index', ['school_id' => $schoolId]) }}" class="btn btn-light btn-sm px-3 border">Kembali</a>
     </div>
 
     @if(session('error'))
@@ -22,6 +22,7 @@
         <div class="card-body p-4 p-md-5">
             <form action="{{ route('admin.schedules.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="school_id" value="{{ $schoolId }}">
                 
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3 mb-md-0">
@@ -53,7 +54,7 @@
                         @endforeach
                     </select>
                     @if($teachers->isEmpty())
-                        <div class="form-text text-danger small mt-1">Belum ada akun pengguna dengan Role "Guru Mata Pelajaran". Hubungi Super Admin.</div>
+                        <div class="form-text text-danger small mt-1">Belum ada akun pengguna dengan Role "Guru Mata Pelajaran" di sekolah ini.</div>
                     @endif
                 </div>
 

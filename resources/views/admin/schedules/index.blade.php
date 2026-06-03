@@ -6,15 +6,40 @@
 <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold mb-0" style="color: #111827;">Roster Jadwal Pelajaran</h4>
-        <a href="{{ route('admin.schedules.create') }}" class="btn btn-primary btn-sm px-3">+ Buat Jadwal Baru</a>
+        <a href="{{ route('admin.schedules.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3">+ Buat Jadwal Baru</a>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: #f0fdf4; border-color: #bbf7d0; color: #16A34A;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @role('Super Admin')
+    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
+        <div class="card-body p-3">
+            <form action="{{ route('admin.schedules.index') }}" method="GET" class="d-flex align-items-center">
+                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">🏢 Filter Sekolah:</label>
+                <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
+                    <option value="">-- Pilih Sekolah --</option>
+                    @foreach($schools as $school)
+                        <option value="{{ $school->id }}" {{ ($selectedSchoolId == $school->id) ? 'selected' : '' }}>
+                            {{ $school->npsn }} - {{ $school->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
+    @endrole
 
     <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-0">

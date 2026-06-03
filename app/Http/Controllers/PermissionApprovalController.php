@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\PermissionService;
+use App\Models\School;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class PermissionApprovalController extends Controller
@@ -15,10 +17,22 @@ class PermissionApprovalController extends Controller
         $this->permissionService = $permissionService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $requests = $this->permissionService->getRequestsForCurrentSchool();
-        return view('teacher.permissions.index', compact('requests'));
+        $user = Auth::user();
+        $schools = [];
+        $selectedSchoolId = null;
+
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+            $requests = $this->permissionService->getRequestsForCurrentSchool($selectedSchoolId);
+        } else {
+            $requests = $this->permissionService->getRequestsForCurrentSchool();
+            $selectedSchoolId = $user->school_id;
+        }
+
+        return view('teacher.permissions.index', compact('requests', 'schools', 'selectedSchoolId'));
     }
 
     public function show($id)
@@ -31,7 +45,7 @@ class PermissionApprovalController extends Controller
     {
         try {
             $this->permissionService->approveRequest($id);
-            return redirect()->route('teacher.permissions.index')->with('success', 'Permohonan berhasil disetujui dan absensi otomatis diperbarui.');
+            return back()->with('success', 'Permohonan berhasil disetujui dan absensi otomatis diperbarui.');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -41,7 +55,7 @@ class PermissionApprovalController extends Controller
     {
         try {
             $this->permissionService->rejectRequest($id);
-            return redirect()->route('teacher.permissions.index')->with('success', 'Permohonan ditolak.');
+            return back()->with('success', 'Permohonan ditolak.');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }

@@ -18,9 +18,24 @@ class CounselingService
         $this->repo = $repo;
     }
 
-    public function getDashboardData()
+    public function getDashboardData($requestedSchoolId = null)
     {
-        return $this->repo->getStudentsWithBadAttendance(Auth::user()->school_id);
+        $user = Auth::user();
+
+        if ($user->hasRole('Super Admin')) {
+            if (!$requestedSchoolId) {
+                // Return collection kosong jika belum pilih sekolah
+                return collect([]);
+            }
+            return $this->repo->getStudentsWithBadAttendance($requestedSchoolId);
+        }
+
+        $schoolId = $user->school_id;
+        if (!$schoolId) {
+            abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
+        }
+
+        return $this->repo->getStudentsWithBadAttendance($schoolId);
     }
 
     public function sendWarningLetter(array $data, $file)
@@ -28,15 +43,15 @@ class CounselingService
         DB::beginTransaction();
         try {
             $student = Student::findOrFail($data['student_id']);
+            $user = Auth::user();
             
-            if ($student->school_id !== Auth::user()->school_id) {
-                throw new Exception("Akses ditolak.");
+            // Validasi kepemilikan sekolah (Kecuali Super Admin)
+            if (!$user->hasRole('Super Admin') && $student->school_id !== $user->school_id) {
+                throw new Exception("Akses ditolak. Anda tidak bisa mengirim SP ke siswa sekolah lain.");
             }
 
-            // Upload Surat Panggilan
             $path = $file->store('warning_letters', 'public');
             
-            // Simpan Data SP
             $this->repo->createWarningLetter([
                 'school_id' => $student->school_id,
                 'student_id' => $student->id,
@@ -45,10 +60,8 @@ class CounselingService
                 'notes' => $data['notes'] ?? 'Pemanggilan orang tua terkait tingkat absensi yang buruk.'
             ]);
 
-            // Dapatkan URL absolut untuk lampiran PDF/Gambar agar bisa diklik di WA
             $documentUrl = asset('storage/' . $path);
 
-            // Kirim WA
             $msg = "*SURAT PANGGILAN (SP-{$data['sp_level']})*\n\nYth. Orang Tua/Wali dari Ananda *{$student->name}*,\n\nKami menginformasikan bahwa tingkat kehadiran ananda saat ini berada di bawah batas standar sekolah. Oleh karena itu, kami mengundang Bapak/Ibu untuk hadir ke ruang BK.\n\nUnduh/Lihat Surat Panggilan resmi pada tautan berikut:\n{$documentUrl}\n\nHarap segera menindaklanjuti pesan ini.\n_Bimbingan Konseling - SCANATTEND_";
             
             SendWhatsAppNotification::dispatch($student->parent_phone, $msg);

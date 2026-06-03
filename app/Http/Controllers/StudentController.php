@@ -4,38 +4,119 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\StudentService;
-use App\Services\ClassroomService;
 use App\Http\Requests\StoreStudentRequest;
+use App\Models\School;
+use App\Models\Classroom;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
     protected $studentService;
-    protected $classroomService;
 
-    public function __construct(StudentService $studentService, ClassroomService $classroomService)
+    public function __construct(StudentService $studentService)
     {
         $this->studentService = $studentService;
-        $this->classroomService = $classroomService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $students = $this->studentService->getStudentsByCurrentSchool();
-        return view('admin.students.index', compact('students'));
+        $user = Auth::user();
+        $schools = [];
+        $selectedSchoolId = null;
+
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+            $students = $this->studentService->getStudentsByCurrentSchool($selectedSchoolId);
+        } else {
+            $students = $this->studentService->getStudentsByCurrentSchool();
+            $selectedSchoolId = $user->school_id;
+        }
+
+        return view('admin.students.index', compact('students', 'schools', 'selectedSchoolId'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        // Tarik data kelas untuk form dropdown
-        $classrooms = \App\Models\Classroom::where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)
-            ->orderBy('level')->orderBy('name')->get();
-            
-        return view('admin.students.create', compact('classrooms'));
+        $user = Auth::user();
+        $schoolId = $user->school_id;
+        $schools = [];
+
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            $schoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+            if (!$schoolId) return redirect()->route('admin.students.index')->with('error', 'Pilih sekolah terlebih dahulu.');
+        }
+
+        $classrooms = Classroom::where('school_id', $schoolId)->orderBy('level')->orderBy('name')->get();
+        return view('admin.students.create', compact('classrooms', 'schoolId', 'schools'));
     }
 
     public function store(StoreStudentRequest $request)
     {
-        $this->studentService->createStudent($request->validated());
-        return redirect()->route('admin.students.index')->with('success', 'Data siswa berhasil ditambahkan dan QR Code otomatis dibuat.');
+        $schoolId = $request->input('school_id');
+        $this->studentService->createStudent($request->validated(), $schoolId);
+        return redirect()->route('admin.students.index', ['school_id' => $schoolId])->with('success', 'Data siswa berhasil ditambahkan.');
+    }
+
+    // FUNGSI BARU: DOWNLOAD TEMPLATE CSV
+    public function downloadTemplate()
+    {
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=Template_Import_Siswa.csv",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['NIS', 'Nama Lengkap', 'Nama Kelas', 'Jenis Kelamin (L/P)', 'No WA Orang Tua'];
+
+        $callback = function() use($columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            // Memberikan contoh pengisian di baris ke-2
+            fputcsv($file, ['10123', 'Ahmad Budi Santoso', 'X MIPA 1', 'L', '081234567890']);
+            fputcsv($file, ['10124', 'Siti Aminah', 'X MIPA 2', 'P', '081987654321']);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    // FUNGSI BARU: PROSES IMPORT CSV
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048'
+        ]);
+
+        $user = Auth::user();
+        $schoolId = $request->input('school_id') ?? $user->school_id;
+
+        if ($user->hasRole('Super Admin') && !$schoolId) {
+            return back()->with('error', 'Pilih sekolah dari dropdown terlebih dahulu.');
+        }
+
+        try {
+            $result = $this->studentService->importStudentsCsv($request->file('csv_file'), $schoolId);
+            
+            $msg = "<b>" . $result['success_count'] . " data siswa berhasil diimpor dan QR Code dibuat.</b>";
+            if (count($result['errors']) > 0) {
+                $msg .= "<br>Namun ada beberapa error (dilewati): <ul class='mb-0 mt-1'>";
+                $displayErrors = array_slice($result['errors'], 0, 5); // Tampilkan maks 5 error
+                foreach ($displayErrors as $err) {
+                    $msg .= "<li>$err</li>";
+                }
+                if(count($result['errors']) > 5) {
+                    $msg .= "<li><i>...dan " . (count($result['errors']) - 5) . " error lainnya.</i></li>";
+                }
+                $msg .= "</ul>";
+            }
+
+            return redirect()->route('admin.students.index', ['school_id' => $schoolId])->with('success', $msg);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan sistem saat memproses CSV: ' . $e->getMessage());
+        }
     }
 }

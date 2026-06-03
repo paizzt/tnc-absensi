@@ -11,7 +11,6 @@
         </div>
     </div>
 
-    <!-- Banner Welcome -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);">
@@ -25,7 +24,6 @@
                             @endif
                         </p>
                     </div>
-                    <!-- Dekorasi Lingkaran -->
                     <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 1;"></div>
                     <div style="position: absolute; bottom: -80px; right: 50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 1;"></div>
                 </div>
@@ -33,7 +31,6 @@
         </div>
     </div>
 
-    <!-- Akses Cepat Berdasarkan Role -->
     <h5 class="fw-bold mb-3 text-dark">Akses Cepat</h5>
     <div class="row g-4">
         
@@ -62,7 +59,7 @@
         </div>
         @endrole
 
-        @role('Admin Sekolah|Petugas Piket')
+        @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('admin.attendances.gate') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--primary) !important;">
@@ -85,9 +82,9 @@
                 </div>
             </a>
         </div>
-        @endrole
+        @endhasanyrole
 
-        @role('Guru Mata Pelajaran|Wali Kelas')
+        @hasanyrole('Super Admin|Guru Mata Pelajaran|Wali Kelas')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('teacher.attendances.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--success) !important;">
@@ -110,9 +107,9 @@
                 </div>
             </a>
         </div>
-        @endrole
+        @endhasanyrole
 
-        @role('Guru BK|Kepala Sekolah')
+        @hasanyrole('Super Admin|Guru BK|Kepala Sekolah')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('bk.dashboard') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--danger) !important;">
@@ -124,7 +121,7 @@
                 </div>
             </a>
         </div>
-        @endrole
+        @endhasanyrole
 
     </div>
 </div>

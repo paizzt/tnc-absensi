@@ -15,12 +15,15 @@ class StoreStudentRequest extends FormRequest
 
     public function rules(): array
     {
+        // Ambil school_id dari input hidden, atau fallback ke milik Auth (jika bukan Super Admin)
+        $schoolId = $this->input('school_id') ?? Auth::user()->school_id;
+
         return [
+            'school_id' => ['nullable', 'string'],
             'nis' => [
                 'required', 'string', 'max:20',
-                // Pastikan NIS unik di dalam sekolah ini saja
-                Rule::unique('students')->where(function ($query) {
-                    return $query->where('school_id', Auth::user()->school_id);
+                Rule::unique('students')->where(function ($query) use ($schoolId) {
+                    return $query->where('school_id', $schoolId);
                 })
             ],
             'name' => ['required', 'string', 'max:255'],

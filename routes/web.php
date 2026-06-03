@@ -40,20 +40,26 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
     });
 
-    // AREA ADMIN SEKOLAH / PETUGAS PIKET
-    Route::middleware(['role:Admin Sekolah|Petugas Piket'])->prefix('admin')->name('admin.')->group(function () {
+    // AREA ADMIN SEKOLAH 
+    Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SchoolSettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SchoolSettingController::class, 'update'])->name('settings.update');
+        
         Route::resource('classrooms', ClassroomController::class)->except(['show', 'create', 'edit']);
         Route::resource('subjects', SubjectController::class)->except(['show', 'create', 'edit']);
+        
+        // Rute Khusus Import CSV Siswa (Harus diletakkan SEBELUM Route::resource students)
+        Route::get('/students/template', [StudentController::class, 'downloadTemplate'])->name('students.template');
+        Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
         Route::resource('students', StudentController::class)->except(['show', 'edit', 'update', 'destroy']);
+        
         Route::resource('schedules', ScheduleController::class)->except(['show', 'edit', 'update']);
         Route::get('/scan', [GateAttendanceController::class, 'index'])->name('attendances.gate');
         Route::post('/scan/process', [GateAttendanceController::class, 'scan'])->name('attendances.scan_process');
     });
 
-    // AREA GURU (PORTAL GURU)
-    Route::middleware(['role:Guru Mata Pelajaran|Wali Kelas'])->prefix('teacher')->name('teacher.')->group(function () {
+    // AREA GURU 
+    Route::middleware(['role:Super Admin|Guru Mata Pelajaran|Wali Kelas'])->prefix('teacher')->name('teacher.')->group(function () {
         Route::get('/attendances', [TeacherAttendanceController::class, 'index'])->name('attendances.index');
         Route::get('/attendances/{schedule}', [TeacherAttendanceController::class, 'show'])->name('attendances.show');
         Route::post('/attendances/{schedule}', [TeacherAttendanceController::class, 'store'])->name('attendances.store');
@@ -63,8 +69,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/permissions/{id}/reject', [PermissionApprovalController::class, 'reject'])->name('permissions.reject');
     });
 
-    // AREA GURU BK & KEPALA SEKOLAH
-    Route::middleware(['role:Guru BK|Kepala Sekolah'])->prefix('bk')->name('bk.')->group(function () {
+    // AREA BK
+    Route::middleware(['role:Super Admin|Guru BK|Kepala Sekolah'])->prefix('bk')->name('bk.')->group(function () {
         Route::get('/dashboard', [CounselingController::class, 'index'])->name('dashboard');
         Route::post('/send-sp', [CounselingController::class, 'sendSp'])->name('send_sp');
     });
