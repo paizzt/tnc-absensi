@@ -20,14 +20,11 @@ class SchoolSettingController extends Controller
             $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
         } else {
             $selectedSchoolId = $user->school_id;
-            if (!$selectedSchoolId) {
-                abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
-            }
+            if (!$selectedSchoolId) abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
         }
 
         $setting = null;
         if ($selectedSchoolId) {
-            // firstOrCreate: Cari datanya, jika tidak ada, buatkan otomatis dengan nilai default
             $setting = SchoolSetting::firstOrCreate(
                 ['school_id' => $selectedSchoolId],
                 [
@@ -35,7 +32,10 @@ class SchoolSettingController extends Controller
                     'time_late' => '07:15:00',
                     'time_out' => '15:00:00',
                     'notify_in' => true,
-                    'notify_out' => true
+                    'notify_out' => true,
+                    'lesson_duration' => 45,
+                    'break_duration' => 30,
+                    'break_after_lesson' => 4,
                 ]
             );
         }
@@ -50,6 +50,9 @@ class SchoolSettingController extends Controller
             'time_in' => 'required',
             'time_late' => 'required',
             'time_out' => 'required',
+            'lesson_duration' => 'required|integer|min:15|max:120',
+            'break_duration' => 'required|integer|min:5|max:60',
+            'break_after_lesson' => 'required|integer|min:1|max:8',
         ]);
 
         $setting = SchoolSetting::where('school_id', $request->school_id)->first();
@@ -61,6 +64,9 @@ class SchoolSettingController extends Controller
                 'time_out' => $request->time_out,
                 'notify_in' => $request->has('notify_in'),
                 'notify_out' => $request->has('notify_out'),
+                'lesson_duration' => $request->lesson_duration,
+                'break_duration' => $request->break_duration,
+                'break_after_lesson' => $request->break_after_lesson,
             ]);
         }
 

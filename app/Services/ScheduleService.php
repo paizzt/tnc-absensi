@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Contracts\ScheduleRepositoryInterface;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class ScheduleService
@@ -16,70 +17,87 @@ class ScheduleService
         $this->scheduleRepo = $scheduleRepo;
     }
 
-    // Tambahkan parameter opsional $requestedSchoolId
     public function getSchedulesByCurrentSchool($requestedSchoolId = null)
     {
         $user = Auth::user();
-        
-        // Jika Super Admin, gunakan ID dari dropdown
         if ($user->hasRole('Super Admin')) {
-            if (!$requestedSchoolId) {
-                // Return paginasi kosong jika belum memilih sekolah
-                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
-            }
+            if (!$requestedSchoolId) return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
             return $this->scheduleRepo->getPaginatedBySchool($requestedSchoolId);
         }
 
-        // Jika Admin Sekolah/Guru, ambil dari akun mereka
         $schoolId = $user->school_id;
-        if (!$schoolId) {
-            abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun. Hubungi Super Admin.');
-        }
-
+        if (!$schoolId) abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
         return $this->scheduleRepo->getPaginatedBySchool($schoolId);
     }
 
-    // Tambahkan parameter opsional untuk Create
     public function createSchedule(array $data, $requestedSchoolId = null)
     {
+        // Fungsi lama (Single Insert) tetap dipertahankan jika dibutuhkan
         $user = Auth::user();
-        $schoolId = $user->school_id;
-
-        if ($user->hasRole('Super Admin')) {
-            $schoolId = $requestedSchoolId;
-            if (!$schoolId) throw new Exception('Super Admin wajib memilih sekolah terlebih dahulu.');
-        } else {
-            if (!$schoolId) throw new Exception('Akun Anda belum ditugaskan ke sekolah manapun.');
-        }
+        $schoolId = $user->hasRole('Super Admin') ? $requestedSchoolId : $user->school_id;
+        if (!$schoolId) throw new Exception('Sekolah tidak valid.');
         
         $data['school_id'] = $schoolId;
-
-        if ($data['start_time'] >= $data['end_time']) {
-            throw new Exception('Jam mulai harus lebih awal dari jam selesai.');
-        }
-
-        // COLLISION DETECTION LOGIC
-        $collision = Schedule::where('school_id', $schoolId)
-            ->where('day_of_week', $data['day_of_week'])
-            ->where('start_time', '<', $data['end_time'])
-            ->where('end_time', '>', $data['start_time'])
-            ->where(function($query) use ($data) {
-                $query->where('teacher_id', $data['teacher_id'])
-                      ->orWhere('classroom_id', $data['classroom_id']);
-            })
-            ->with(['teacher', 'classroom'])
-            ->first();
-
-        if ($collision) {
-            if ($collision->teacher_id == $data['teacher_id']) {
-                throw new Exception("BENTROK: Guru {$collision->teacher->name} sudah mengajar di kelas {$collision->classroom->name} pada jam tersebut.");
-            }
-            if ($collision->classroom_id == $data['classroom_id']) {
-                throw new Exception("BENTROK: Kelas {$collision->classroom->name} sudah memiliki jadwal lain pada jam tersebut.");
-            }
-        }
-
         return $this->scheduleRepo->create($data);
+    }
+
+    // FUNGSI BARU: SIMPAN MATRIKS JADWAL (BULK INSERT)
+    public function createBulkSchedule(array $data, $requestedSchoolId = null)
+    {
+        $user = Auth::user();
+        $schoolId = $user->hasRole('Super Admin') ? $requestedSchoolId : $user->school_id;
+
+        if (!$schoolId) throw new Exception('Sekolah tidak valid.');
+
+        $classroomId = $data['classroom_id'];
+        $rosterData = $data['roster'] ?? [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($rosterData as $day => $slots) {
+                foreach ($slots as $slot) {
+                    // Hanya proses jika Mapel dan Guru diisi (tidak kosong)
+                    if (!empty($slot['subject_id']) && !empty($slot['teacher_id'])) {
+                        
+                        // Cek Bentrok
+                        $collision = Schedule::where('school_id', $schoolId)
+                            ->where('day_of_week', $day)
+                            ->where('start_time', '<', $slot['end_time'])
+                            ->where('end_time', '>', $slot['start_time'])
+                            ->where(function($query) use ($slot, $classroomId) {
+                                $query->where('teacher_id', $slot['teacher_id'])
+                                      ->orWhere('classroom_id', $classroomId);
+                            })
+                            ->with(['teacher', 'classroom'])
+                            ->first();
+
+                        if ($collision) {
+                            if ($collision->teacher_id == $slot['teacher_id']) {
+                                throw new Exception("BENTROK: Guru {$collision->teacher->name} sudah mengajar di kelas {$collision->classroom->name} pada hari {$day} jam {$slot['start_time']}.");
+                            }
+                            if ($collision->classroom_id == $classroomId) {
+                                throw new Exception("BENTROK: Kelas ini sudah memiliki jadwal lain pada hari {$day} jam {$slot['start_time']}.");
+                            }
+                        }
+
+                        // Simpan ke database
+                        $this->scheduleRepo->create([
+                            'school_id' => $schoolId,
+                            'classroom_id' => $classroomId,
+                            'subject_id' => $slot['subject_id'],
+                            'teacher_id' => $slot['teacher_id'],
+                            'day_of_week' => $day,
+                            'start_time' => $slot['start_time'],
+                            'end_time' => $slot['end_time'],
+                        ]);
+                    }
+                }
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e; // Lempar kembali pesan bentrok ke controller
+        }
     }
 
     public function deleteSchedule(string $id)

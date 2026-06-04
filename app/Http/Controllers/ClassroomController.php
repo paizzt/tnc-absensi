@@ -3,20 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\ClassroomService;
-use App\Http\Requests\SaveClassroomRequest;
+use App\Models\Classroom;
 use App\Models\School;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ClassroomController extends Controller
 {
-    protected $classroomService;
-
-    public function __construct(ClassroomService $classroomService)
-    {
-        $this->classroomService = $classroomService;
-    }
-
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -26,40 +19,59 @@ class ClassroomController extends Controller
         if ($user->hasRole('Super Admin')) {
             $schools = School::orderBy('name')->get();
             $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
-            $classrooms = $this->classroomService->getClassroomsByCurrentSchool($selectedSchoolId);
         } else {
-            $classrooms = $this->classroomService->getClassroomsByCurrentSchool();
-            $selectedSchoolId = $user->school_id; // Agar form tetap ingat ID jika bukan Super Admin
+            $selectedSchoolId = $user->school_id;
         }
 
-        return view('admin.classrooms.index', compact('classrooms', 'schools', 'selectedSchoolId'));
+        // Ambil data kelas beserta wali kelasnya
+        $classrooms = Classroom::with('homeroomTeacher')
+            ->where('school_id', $selectedSchoolId)
+            ->orderBy('level')
+            ->orderBy('name')
+            ->get();
+
+        // Ambil data guru untuk dimasukkan ke dalam dropdown pilihan wali kelas
+        $teachers = User::role(['Wali Kelas', 'Guru Mata Pelajaran'])
+            ->where('school_id', $selectedSchoolId)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.classrooms.index', compact('classrooms', 'schools', 'selectedSchoolId', 'teachers'));
     }
 
-    public function store(SaveClassroomRequest $request)
+    public function store(Request $request)
     {
-        try {
-            $schoolId = $request->input('school_id');
-            $this->classroomService->createClassroom($request->validated(), $schoolId);
-            
-            return redirect()->route('admin.classrooms.index', ['school_id' => $schoolId])
-                ->with('success', 'Data kelas berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        $request->validate([
+            'school_id' => 'required|exists:schools,id',
+            'level' => 'required|integer|min:1|max:12',
+            'name' => 'required|string|max:50',
+            'teacher_id' => 'nullable|exists:users,id'
+        ]);
+
+        Classroom::create($request->all());
+
+        return back()->with('success', 'Data kelas berhasil ditambahkan.');
     }
 
-    public function update(SaveClassroomRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $schoolId = $request->input('school_id');
-        $this->classroomService->updateClassroom($id, $request->validated());
-        
-        return redirect()->route('admin.classrooms.index', ['school_id' => $schoolId])
-            ->with('success', 'Data kelas berhasil diperbarui.');
+        $request->validate([
+            'level' => 'required|integer|min:1|max:12',
+            'name' => 'required|string|max:50',
+            'teacher_id' => 'nullable|exists:users,id'
+        ]);
+
+        $classroom = Classroom::findOrFail($id);
+        $classroom->update($request->only(['level', 'name', 'teacher_id']));
+
+        return back()->with('success', 'Data kelas berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->classroomService->deleteClassroom($id);
+        $classroom = Classroom::findOrFail($id);
+        $classroom->delete();
+
         return back()->with('success', 'Data kelas berhasil dihapus.');
     }
 }

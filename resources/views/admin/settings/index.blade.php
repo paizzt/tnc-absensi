@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-1" style="color: #111827;">Pengaturan Sistem Sekolah</h4>
-            <p class="text-neutral small mb-0">Atur jam operasional gerbang dan notifikasi WhatsApp.</p>
+            <p class="text-neutral small mb-0">Atur jam operasional gerbang, roster, dan notifikasi WhatsApp.</p>
         </div>
     </div>
 
@@ -44,13 +44,12 @@
                 @method('PUT')
                 <input type="hidden" name="school_id" value="{{ $selectedSchoolId }}">
 
-                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">⏰ Jam Operasional Absensi</h6>
-                
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">⏰ Jam Operasional Absensi Gerbang</h6>
                 <div class="row mb-4">
                     <div class="col-md-4 mb-3 mb-md-0">
-                        <label class="form-label text-neutral small fw-semibold">Jam Masuk</label>
+                        <label class="form-label text-neutral small fw-semibold">Jam Masuk (Buka Gerbang)</label>
                         <input type="time" class="form-control" name="time_in" value="{{ $setting->time_in }}" required>
-                        <div class="form-text small">Batas awal gerbang dibuka.</div>
+                        <div class="form-text small">Waktu pertama kali bel masuk.</div>
                     </div>
                     <div class="col-md-4 mb-3 mb-md-0">
                         <label class="form-label text-neutral small fw-semibold">Batas Terlambat</label>
@@ -60,26 +59,51 @@
                     <div class="col-md-4">
                         <label class="form-label text-neutral small fw-semibold">Jam Pulang</label>
                         <input type="time" class="form-control" name="time_out" value="{{ $setting->time_out }}" required>
-                        <div class="form-text small">Waktu pemindaian pulang dimulai.</div>
+                        <div class="form-text small">Waktu pemindaian pulang.</div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5">📅 Konfigurasi Roster / Jadwal Pelajaran</h6>
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="form-label text-neutral small fw-semibold">Durasi 1 Jam Mapel</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="lesson_duration" value="{{ $setting->lesson_duration }}" min="15" max="120" required>
+                            <span class="input-group-text bg-light">Menit</span>
+                        </div>
+                        <div class="form-text small">Contoh: 45 Menit.</div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="form-label text-neutral small fw-semibold">Waktu Istirahat Setelah Jam Ke-</label>
+                        <select class="form-select" name="break_after_lesson" required>
+                            @for($i = 1; $i <= 8; $i++)
+                                <option value="{{ $i }}" {{ $setting->break_after_lesson == $i ? 'selected' : '' }}>Jam Ke-{{ $i }}</option>
+                            @endfor
+                        </select>
+                        <div class="form-text small">Contoh: Setelah jam ke-4.</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-neutral small fw-semibold">Durasi Istirahat</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="break_duration" value="{{ $setting->break_duration }}" min="5" max="60" required>
+                            <span class="input-group-text bg-light">Menit</span>
+                        </div>
+                        <div class="form-text small">Contoh: 30 Menit.</div>
                     </div>
                 </div>
 
                 <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5">📱 Notifikasi WhatsApp (Fonnte)</h6>
-                
                 <div class="mb-3">
                     <div class="form-check form-switch fs-5">
                         <input class="form-check-input" type="checkbox" role="switch" id="notify_in" name="notify_in" value="1" {{ $setting->notify_in ? 'checked' : '' }}>
                         <label class="form-check-label fs-6 ms-2 text-dark" for="notify_in">Kirim Notifikasi Absen Masuk</label>
                     </div>
-                    <p class="text-neutral small ms-5 mb-0">Pesan WA akan dikirim ke orang tua saat siswa memindai QR Code di pagi hari.</p>
                 </div>
-
                 <div class="mb-4">
                     <div class="form-check form-switch fs-5">
                         <input class="form-check-input" type="checkbox" role="switch" id="notify_out" name="notify_out" value="1" {{ $setting->notify_out ? 'checked' : '' }}>
                         <label class="form-check-label fs-6 ms-2 text-dark" for="notify_out">Kirim Notifikasi Absen Pulang</label>
                     </div>
-                    <p class="text-neutral small ms-5 mb-0">Pesan WA akan dikirim ke orang tua saat siswa memindai QR Code untuk pulang.</p>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">
@@ -89,9 +113,7 @@
         </div>
     </div>
     @else
-    <div class="alert alert-info border-0 shadow-sm">
-        Silakan buat atau pilih sekolah terlebih dahulu untuk mengatur jam operasional.
-    </div>
+    <div class="alert alert-info border-0 shadow-sm">Silakan pilih sekolah terlebih dahulu.</div>
     @endif
 </div>
 @endsection

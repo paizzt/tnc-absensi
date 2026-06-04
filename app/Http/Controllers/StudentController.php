@@ -7,6 +7,7 @@ use App\Services\StudentService;
 use App\Http\Requests\StoreStudentRequest;
 use App\Models\School;
 use App\Models\Classroom;
+use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
@@ -59,7 +60,6 @@ class StudentController extends Controller
         return redirect()->route('admin.students.index', ['school_id' => $schoolId])->with('success', 'Data siswa berhasil ditambahkan.');
     }
 
-    // FUNGSI BARU: DOWNLOAD TEMPLATE CSV
     public function downloadTemplate()
     {
         $headers = [
@@ -75,7 +75,6 @@ class StudentController extends Controller
         $callback = function() use($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-            // Memberikan contoh pengisian di baris ke-2
             fputcsv($file, ['10123', 'Ahmad Budi Santoso', 'X MIPA 1', 'L', '081234567890']);
             fputcsv($file, ['10124', 'Siti Aminah', 'X MIPA 2', 'P', '081987654321']);
             fclose($file);
@@ -84,7 +83,6 @@ class StudentController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    // FUNGSI BARU: PROSES IMPORT CSV
     public function import(Request $request)
     {
         $request->validate([
@@ -104,7 +102,7 @@ class StudentController extends Controller
             $msg = "<b>" . $result['success_count'] . " data siswa berhasil diimpor dan QR Code dibuat.</b>";
             if (count($result['errors']) > 0) {
                 $msg .= "<br>Namun ada beberapa error (dilewati): <ul class='mb-0 mt-1'>";
-                $displayErrors = array_slice($result['errors'], 0, 5); // Tampilkan maks 5 error
+                $displayErrors = array_slice($result['errors'], 0, 5); 
                 foreach ($displayErrors as $err) {
                     $msg .= "<li>$err</li>";
                 }
@@ -118,5 +116,35 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan sistem saat memproses CSV: ' . $e->getMessage());
         }
+    }
+
+    public function printCard($id)
+    {
+        $student = Student::with('classroom')->findOrFail($id);
+        $user = Auth::user();
+        
+        if (!$user->hasRole('Super Admin') && $student->school_id !== $user->school_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        return view('admin.students.print', compact('student'));
+    }
+
+    public function bulkPrint(Request $request)
+    {
+        $user = Auth::user();
+        $schoolId = $request->query('school_id') ?? $user->school_id;
+
+        if (!$schoolId) {
+            return back()->with('error', 'Pilih sekolah dari dropdown terlebih dahulu.');
+        }
+
+        $students = Student::with('classroom')->where('school_id', $schoolId)->get();
+        
+        if ($students->isEmpty()) {
+            return back()->with('error', 'Belum ada data siswa di sekolah ini untuk dicetak.');
+        }
+
+        return view('admin.students.bulk_print', compact('students'));
     }
 }

@@ -3,151 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Izin - SCANATTEND</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Formulir Izin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding-bottom: 3rem; }
-        .camera-container { width: 100%; max-width: 320px; margin: 0 auto; border-radius: 12px; overflow: hidden; position: relative; background: #000; }
-        #videoElement { width: 100%; height: auto; transform: scaleX(-1); /* Efek Cermin untuk Kamera Depan */ }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 20px 0; }
+        .form-container { max-width: 500px; margin: auto; background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        #video-container { background: #000; border-radius: 8px; overflow: hidden; position: relative; margin-bottom: 10px; }
+        #video, #photo-preview { width: 100%; display: block; }
     </style>
 </head>
 <body>
-
-    <div class="container mt-4 mt-md-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                
-                <div class="card border-0 shadow-sm rounded-4 mb-3">
-                    <div class="card-body p-4 d-flex align-items-center">
-                        <div class="me-3">
-                            <div style="width: 50px; height: 50px; background-color: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563EB; font-weight: bold; font-size: 1.2rem;">
-                                {{ substr($student->name, 0, 1) }}
-                            </div>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-0 text-dark">{{ $student->name }}</h6>
-                            <p class="text-muted small mb-0">{{ $student->nis }} • {{ $student->classroom->name }} • {{ $student->school->name }}</p>
-                        </div>
-                    </div>
+    <div class="container">
+        <div class="form-container">
+            <div class="d-flex align-items-center border-bottom pb-3 mb-4">
+                <a href="{{ route('portal.izin.index') }}" class="btn btn-sm btn-light border me-3"><i class="bi bi-arrow-left"></i></a>
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Formulir Kehadiran</h5>
+                    <span class="text-muted small">Siswa: {{ $student->name }} ({{ $student->classroom->name }})</span>
                 </div>
-
-                @if(session('error'))
-                    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
-                @endif
-
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4 p-md-5">
-                        <form id="permissionForm" action="{{ route('portal.izin.submit', $student->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            
-                            <input type="hidden" name="selfie_image" id="selfie_image" required>
-
-                            <div class="mb-4">
-                                <label class="form-label text-dark fw-semibold">Pilih Jenis Halangan <span class="text-danger">*</span></label>
-                                <select name="type" id="type" class="form-select form-select-lg" required>
-                                    <option value="Sakit">Sakit</option>
-                                    <option value="Izin">Izin / Kepentingan Keluarga</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4" id="document_container">
-                                <label class="form-label text-dark fw-semibold">Lampiran (Surat Dokter / Bukti) <span class="text-danger">*</span></label>
-                                <input type="file" name="document" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
-                                <small class="text-muted">Wajib jika memilih Sakit.</small>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label text-dark fw-semibold">Keterangan Detail <span class="text-danger">*</span></label>
-                                <textarea name="reason" class="form-control" rows="3" required placeholder="Jelaskan alasan secara singkat..."></textarea>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="text-center mb-4">
-                                <h6 class="fw-bold text-dark mb-2">Verifikasi Keamanan Wajah</h6>
-                                <p class="text-muted small mb-3">Sesuai SOP, mohon posisikan wajah siswa dan orang tua di depan kamera. Sistem akan otomatis menangkap gambar saat Anda menekan tombol kirim.</p>
-                                
-                                <div class="camera-container border border-2 border-primary border-opacity-25 shadow-sm">
-                                    <video id="videoElement" autoplay playsinline></video>
-                                    <canvas id="canvas" class="d-none"></canvas>
-                                </div>
-                                <div id="cameraStatus" class="mt-2 small text-warning fw-semibold">Meminta akses kamera...</div>
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button type="button" id="btnSubmit" class="btn btn-primary btn-lg fw-medium" style="background-color: #2563EB;" disabled>Kirim Permohonan Izin</button>
-                                <a href="{{ route('portal.izin.index') }}" class="btn btn-light btn-lg text-muted fw-medium">Batal</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
             </div>
+
+            <form action="{{ route('portal.izin.submit', $student->id) }}" method="POST" enctype="multipart/form-data" id="izinForm">
+                @csrf
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Keterangan Kehadiran</label>
+                    <select class="form-select" name="type" required>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Izin">Izin (Kepentingan Keluarga)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Alasan / Pesan Singkat</label>
+                    <textarea class="form-control" name="reason" rows="2" required placeholder="Contoh: Demam sejak tadi malam..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Foto Bukti Keadaan Saat Ini (Wajib)</label>
+                    
+                    <div id="video-container">
+                        <video id="video" autoplay playsinline></video>
+                        <img id="photo-preview" class="d-none" />
+                    </div>
+                    
+                    <button type="button" id="snap-btn" class="btn btn-secondary w-100 mb-2"><i class="bi bi-camera"></i> Ambil Foto</button>
+                    <button type="button" id="retake-btn" class="btn btn-outline-secondary w-100 mb-2 d-none"><i class="bi bi-arrow-clockwise"></i> Ulangi Foto</button>
+                    
+                    <canvas id="canvas" class="d-none"></canvas>
+                    <input type="hidden" name="selfie_image" id="selfie_image">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small">Surat Dokter / Lampiran (Opsional)</label>
+                    <input class="form-control form-control-sm" type="file" name="document" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="submit-btn"><i class="bi bi-send-fill me-1"></i> Kirim Permohonan</button>
+            </form>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Togle kewajiban dokumen berdasarkan tipe
-            $('#type').change(function() {
-                if ($(this).val() === 'Izin') {
-                    $('#document_container label span').hide();
-                } else {
-                    $('#document_container label span').show();
-                }
-            });
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const photoPreview = document.getElementById('photo-preview');
+        const snapBtn = document.getElementById('snap-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const selfieInput = document.getElementById('selfie_image');
+        const form = document.getElementById('izinForm');
+        let stream = null;
 
-            // Inisialisasi Kamera Depan
-            const video = document.getElementById('videoElement');
-            const canvas = document.getElementById('canvas');
-            const btnSubmit = document.getElementById('btnSubmit');
-            const cameraStatus = document.getElementById('cameraStatus');
-            const form = document.getElementById('permissionForm');
-            const selfieInput = document.getElementById('selfie_image');
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                .then(function (stream) {
-                    video.srcObject = stream;
-                    cameraStatus.textContent = "Kamera aktif. Wajah siap di-scan.";
-                    cameraStatus.className = "mt-2 small text-success fw-semibold";
-                    btnSubmit.disabled = false; // Buka tombol jika kamera sudah jalan
-                })
-                .catch(function (error) {
-                    cameraStatus.textContent = "Akses kamera ditolak. Izin tidak dapat dilanjutkan.";
-                    cameraStatus.className = "mt-2 small text-danger fw-semibold";
-                });
-            } else {
-                cameraStatus.textContent = "Browser tidak mendukung fitur kamera.";
-                cameraStatus.className = "mt-2 small text-danger fw-semibold";
+        // Buka Kamera HP/Webcam
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = stream;
+            } catch (err) {
+                alert("Kamera tidak dapat diakses. Pastikan Anda memberikan izin akses kamera pada browser.");
             }
+        }
 
-            // Aksi saat tombol Kirim ditekan
-            btnSubmit.addEventListener('click', function() {
-                // Pastikan kamera nyala
-                if(video.srcObject) {
-                    // Set ukuran canvas sesuai resolusi video
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    
-                    // Ambil frame/gambar dari video
-                    const context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    // Konversi ke format DataURL (Base64)
-                    const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    // Masukkan ke input tersembunyi
-                    selfieInput.value = dataURL;
+        startCamera();
 
-                    // Ubah teks tombol dan submit form
-                    btnSubmit.innerHTML = "Memproses Pengiriman...";
-                    btnSubmit.disabled = true;
-                    form.submit();
-                }
-            });
+        // Ambil Foto
+        snapBtn.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            selfieInput.value = dataUrl;
+            
+            photoPreview.src = dataUrl;
+            video.classList.add('d-none');
+            photoPreview.classList.remove('d-none');
+            
+            snapBtn.classList.add('d-none');
+            retakeBtn.classList.remove('d-none');
+        });
+
+        // Ulangi Foto
+        retakeBtn.addEventListener('click', () => {
+            selfieInput.value = '';
+            video.classList.remove('d-none');
+            photoPreview.classList.add('d-none');
+            
+            snapBtn.classList.remove('d-none');
+            retakeBtn.classList.add('d-none');
+        });
+
+        // Validasi sebelum submit
+        form.addEventListener('submit', (e) => {
+            if (!selfieInput.value) {
+                e.preventDefault();
+                alert("Anda wajib mengambil foto bukti keadaan saat ini sebelum mengirim.");
+            }
         });
     </script>
 </body>
