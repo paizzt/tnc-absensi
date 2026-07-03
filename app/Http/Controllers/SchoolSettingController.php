@@ -67,6 +67,7 @@ class SchoolSettingController extends Controller
                 'lesson_duration' => $request->lesson_duration,
                 'break_duration' => $request->break_duration,
                 'break_after_lesson' => $request->break_after_lesson,
+                'fonnte_token' => $request->fonnte_token,
             ]);
         }
 

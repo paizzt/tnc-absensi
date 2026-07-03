@@ -88,7 +88,7 @@ class ScheduleController extends Controller
 
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
-        $teachers = User::role(['Guru Mata Pelajaran', 'Wali Kelas'])->where('school_id', $schoolId)->orderBy('name')->get();
+        $teachers = User::role('Guru')->where('school_id', $schoolId)->orderBy('name')->get();
 
         $setting = SchoolSetting::where('school_id', $schoolId)->first();
         $timeIn = $setting ? $setting->time_in : '07:00:00';
@@ -139,7 +139,7 @@ class ScheduleController extends Controller
         $schoolId = $classroom->school_id;
         
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
-        $teachers = User::role(['Guru Mata Pelajaran', 'Wali Kelas'])->where('school_id', $schoolId)->orderBy('name')->get();
+        $teachers = User::role('Guru')->where('school_id', $schoolId)->orderBy('name')->get();
         $existingSchedules = Schedule::where('classroom_id', $id)->get();
 
         // Regenerate Time Slots

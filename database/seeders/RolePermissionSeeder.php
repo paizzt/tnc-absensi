@@ -11,14 +11,13 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Buat Daftar Role sesuai SOP
+        // 1. Daftar Role Baru yang Sudah Disederhanakan
         $roles = [
             'Super Admin',
             'Admin Sekolah',
             'Kepala Sekolah',
             'Guru BK',
-            'Wali Kelas',
-            'Guru Mata Pelajaran',
+            'Guru', // <- Disatukan menjadi satu peran
             'Petugas Piket'
         ];
 
@@ -28,11 +27,11 @@ class RolePermissionSeeder extends Seeder
 
         // 2. Buat Akun Super Admin Pertama
         $superAdmin = User::firstOrCreate(
-            ['email' => 'superadmin@scanattend.com'], // Patokan pengecekan agar tidak duplikat
+            ['email' => 'superadmin@scanattend.com'],
             [
                 'name' => 'Super Administrator',
-                'password' => Hash::make('password123'), // Password default
-                'school_id' => null, // Super admin tidak terikat 1 sekolah
+                'password' => Hash::make('password123'),
+                'school_id' => null,
                 'is_active' => true,
             ]
         );

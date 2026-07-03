@@ -44,4 +44,15 @@ class User extends Authenticatable
     {
         return $this->belongsTo(School::class);
     }
+    // Relasi ke Mata Pelajaran (Banyak ke Banyak)
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
+
+    // Relasi ke Kelas sebagai Wali Kelas (Satu ke Satu)
+    public function homeroomClass()
+    {
+        return $this->hasOne(Classroom::class, 'teacher_id');
+    }
 }

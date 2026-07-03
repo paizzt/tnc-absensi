@@ -10,6 +10,11 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 20px 0; }
         .form-container { max-width: 500px; margin: auto; background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-primary { background-color: #2563EB; border-color: #2563EB; }
+        .btn-primary:hover { background-color: #1d4ed8; border-color: #1d4ed8; }
+        .btn-outline-secondary { color: #6b7280; border-color: #d1d5db; }
+        .btn-outline-secondary:hover { background-color: #f3f4f6; color: #374151; }
+        .form-control:focus, .form-select:focus { border-color: #2563EB; box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25); }
         #video-container { background: #000; border-radius: 8px; overflow: hidden; position: relative; margin-bottom: 10px; }
         #video, #photo-preview { width: 100%; display: block; }
     </style>

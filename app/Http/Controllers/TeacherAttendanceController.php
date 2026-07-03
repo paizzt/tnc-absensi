@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Schedule;
-use App\Models\Attendance;
+use App\Models\ClassAttendance;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -54,14 +54,38 @@ class TeacherAttendanceController extends Controller
             ->get();
 
         // Cek apakah guru sudah melakukan absensi untuk sesi ini (opsional untuk pengembangan selanjutnya)
+        $records = ClassAttendance::where('schedule_id', $schedule->id)
+            ->where('date', Carbon::today()->toDateString())
+            ->get()
+            ->keyBy('student_id');
         
-        return view('teacher.attendances.show', compact('schedule', 'students'));
+        return view('teacher.attendances.show', compact('schedule', 'students', 'records'));
     }
 
     public function store(Request $request, Schedule $schedule)
     {
-        // Logika untuk menyimpan absensi manual di dalam kelas (Sakit/Izin/Alpa)
-        // Akan kita kembangkan di tahap selanjutnya.
-        return back()->with('success', 'Absensi kelas berhasil disimpan.');
+        $request->validate([
+            'attendance' => 'required|array',
+            'attendance.*' => 'in:Hadir,Sakit,Izin,Alpha,Dispensasi'
+        ]);
+
+        $date = Carbon::today()->toDateString();
+        $schoolId = Auth::user()->school_id;
+
+        foreach ($request->attendance as $studentId => $status) {
+            ClassAttendance::updateOrCreate(
+                [
+                    'schedule_id' => $schedule->id,
+                    'student_id' => $studentId,
+                    'date' => $date
+                ],
+                [
+                    'school_id' => $schoolId,
+                    'status' => $status
+                ]
+            );
+        }
+
+        return redirect()->route('teacher.attendances.index')->with('success', 'Absensi kelas berhasil disimpan.');
     }
 }

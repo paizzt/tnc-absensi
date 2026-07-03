@@ -18,7 +18,8 @@ class SchoolSetting extends Model
         'notify_out',
         'lesson_duration',
         'break_duration',
-        'break_after_lesson'
+        'break_after_lesson',
+        'fonnte_token'
     ];
 
     public function school()

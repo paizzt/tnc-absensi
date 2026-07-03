@@ -31,7 +31,7 @@ class ClassroomController extends Controller
             ->get();
 
         // Ambil data guru untuk dimasukkan ke dalam dropdown pilihan wali kelas
-        $teachers = User::role(['Wali Kelas', 'Guru Mata Pelajaran'])
+        $teachers = User::role('Guru')
             ->where('school_id', $selectedSchoolId)
             ->orderBy('name')
             ->get();

@@ -53,7 +53,7 @@ class AttendanceService
                 // Trigger Queue WhatsApp
                 if ($settings->notify_out) {
                     $msg = "*NOTIFIKASI KEPULANGAN*\nYth. Orang Tua/Wali,\nAnanda *{$student->name}* telah melakukan absensi pulang dari sekolah pada pukul *{$time} WITA*.\n\n_Pesan otomatis oleh SCANATTEND_";
-                    SendWhatsAppNotification::dispatch($student->parent_phone, $msg);
+                    SendWhatsAppNotification::dispatch($student->parent_phone, $msg, $student->school_id);
                 }
 
                 return ['student' => $student, 'message' => 'Absen Pulang berhasil dicatat.', 'type' => 'out'];
@@ -71,7 +71,7 @@ class AttendanceService
                 // Trigger Queue WhatsApp
                 if ($settings->notify_in) {
                     $msg = "*NOTIFIKASI KEHADIRAN*\nYth. Orang Tua/Wali,\nAnanda *{$student->name}* telah hadir di sekolah pada pukul *{$time} WITA* dengan status: *{$status}*.\n\n_Pesan otomatis oleh SCANATTEND_";
-                    SendWhatsAppNotification::dispatch($student->parent_phone, $msg);
+                    SendWhatsAppNotification::dispatch($student->parent_phone, $msg, $student->school_id);
                 }
 
                 return ['student' => $student, 'message' => 'Absen Masuk berhasil: ' . $status, 'type' => 'in'];
@@ -89,7 +89,7 @@ class AttendanceService
             // Trigger Queue WhatsApp
             if ($settings->notify_out) {
                 $msg = "*NOTIFIKASI KEPULANGAN*\nYth. Orang Tua/Wali,\nAnanda *{$student->name}* telah melakukan absensi pulang dari sekolah pada pukul *{$time} WITA*.\n\n_Pesan otomatis oleh SCANATTEND_";
-                SendWhatsAppNotification::dispatch($student->parent_phone, $msg);
+                SendWhatsAppNotification::dispatch($student->parent_phone, $msg, $student->school_id);
             }
 
             return ['student' => $student, 'message' => 'Absen Pulang berhasil dicatat.', 'type' => 'out'];

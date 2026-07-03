@@ -13,7 +13,7 @@
     <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
         <div class="card-body p-3">
             <form action="{{ route('admin.reports.index') }}" method="GET" class="d-flex align-items-center">
-                <label class="fw-semibold text-primary me-3 mb-0">🏢 Filter Sekolah:</label>
+                <label class="fw-semibold text-primary me-3 mb-0"><i class="bi bi-buildings"></i> Filter Sekolah:</label>
                 <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
                     <option value="">-- Pilih Sekolah --</option>
                     @foreach($schools as $school)
@@ -59,13 +59,13 @@
                         <div class="form-check border rounded p-3 flex-fill bg-light">
                             <input class="form-check-input ms-1" type="radio" name="format" id="f_pdf" value="pdf" checked>
                             <label class="form-check-label ms-2 fw-medium" for="f_pdf">
-                                📄 Dokumen PDF (Cetak)
+                                <i class="bi bi-file-earmark-text"></i> Dokumen PDF (Cetak)
                             </label>
                         </div>
                         <div class="form-check border rounded p-3 flex-fill bg-light">
                             <input class="form-check-input ms-1" type="radio" name="format" id="f_csv" value="csv">
                             <label class="form-check-label ms-2 fw-medium" for="f_csv">
-                                📊 File Excel (CSV)
+                                <i class="bi bi-bar-chart"></i> File Excel (CSV)
                             </label>
                         </div>
                     </div>

@@ -39,7 +39,7 @@
             <a href="{{ route('schools.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">🏢</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-buildings"></i></div>
                         <h6 class="fw-bold text-dark mb-1">Master Sekolah</h6>
                         <p class="text-neutral small mb-0">Kelola pendaftaran sekolah baru.</p>
                     </div>
@@ -50,7 +50,7 @@
             <a href="{{ route('users.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">👥</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-people"></i></div>
                         <h6 class="fw-bold text-dark mb-1">Data Pengguna</h6>
                         <p class="text-neutral small mb-0">Manajemen akun & hak akses.</p>
                     </div>
@@ -64,7 +64,7 @@
             <a href="{{ route('admin.attendances.gate') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--primary) !important;">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">📷</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-camera"></i></div>
                         <h6 class="fw-bold text-primary mb-1">Scanner Gerbang</h6>
                         <p class="text-neutral small mb-0">Buka pemindai absensi hari ini.</p>
                     </div>
@@ -75,7 +75,7 @@
             <a href="{{ route('admin.students.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">🎓</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-mortarboard"></i></div>
                         <h6 class="fw-bold text-dark mb-1">Data Siswa</h6>
                         <p class="text-neutral small mb-0">Kelola siswa & cetak barcode.</p>
                     </div>
@@ -84,12 +84,12 @@
         </div>
         @endhasanyrole
 
-        @hasanyrole('Super Admin|Guru Mata Pelajaran|Wali Kelas')
+        @hasanyrole('Super Admin|Guru')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('teacher.attendances.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--success) !important;">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">📝</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-pencil-square"></i></div>
                         <h6 class="fw-bold text-success mb-1">Absensi Kelas</h6>
                         <p class="text-neutral small mb-0">Isi absensi jam pelajaran Anda.</p>
                     </div>
@@ -100,7 +100,7 @@
             <a href="{{ route('teacher.permissions.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">📩</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-envelope"></i></div>
                         <h6 class="fw-bold text-dark mb-1">Validasi Izin</h6>
                         <p class="text-neutral small mb-0">Periksa pengajuan izin siswa.</p>
                     </div>
@@ -114,7 +114,7 @@
             <a href="{{ route('bk.dashboard') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition" style="border-bottom: 4px solid var(--danger) !important;">
                     <div class="card-body p-4 text-center">
-                        <div class="fs-1 mb-2">⚠️</div>
+                        <div class="fs-1 mb-2"><i class="bi bi-exclamation-triangle"></i></div>
                         <h6 class="fw-bold text-danger mb-1">Evaluasi Kehadiran</h6>
                         <p class="text-neutral small mb-0">Deteksi siswa bermasalah & SP.</p>
                     </div>

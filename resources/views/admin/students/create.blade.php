@@ -20,7 +20,7 @@
                 <!-- BLOK KHUSUS SUPER ADMIN -->
                 @role('Super Admin')
                     <div class="mb-4 p-3 bg-light border rounded-3 border-primary border-opacity-25">
-                        <label class="form-label text-primary small fw-semibold">🏢 Penempatan Sekolah (Mode Super Admin) <span class="text-danger">*</span></label>
+                        <label class="form-label text-primary small fw-semibold"><i class="bi bi-buildings"></i> Penempatan Sekolah (Mode Super Admin) <span class="text-danger">*</span></label>
                         <select class="form-select border-primary fw-medium" name="school_id" onchange="window.location.href='{{ route('admin.students.create') }}?school_id=' + this.value" required>
                             @foreach($schools as $school)
                                 <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>

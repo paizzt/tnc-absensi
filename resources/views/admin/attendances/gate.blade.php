@@ -18,7 +18,7 @@
             
             <div class="mt-auto pt-3 border-top text-center">
                 <p class="text-muted small mb-2">Gunakan kamera belakang untuk HP, atau Webcam untuk Laptop.</p>
-                <button id="swapCamera" class="btn btn-sm btn-light border text-primary px-4">🔄 Tukar Kamera</button>
+                <button id="swapCamera" class="btn btn-sm btn-light border text-primary px-4"><i class="bi bi-arrow-repeat"></i> Tukar Kamera</button>
             </div>
         </div>
 
@@ -28,7 +28,7 @@
                     <img src="https://ui-avatars.com/api/?name=Siswa&background=f3f4f6&color=6B7280&size=150" id="student_photo" class="rounded-circle border shadow-sm" alt="Foto Siswa" style="width: 150px; height: 150px; object-fit: cover;">
                     
                     <div id="success_badge" class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-white border-4 d-none" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <span class="text-white fw-bold fs-5">✓</span>
+                        <span class="text-white fw-bold fs-5"><i class="bi bi-check"></i></span>
                     </div>
                 </div>
                 
@@ -53,6 +53,35 @@
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
+
+        function playBeep(type = 'success') {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                if (type === 'success') {
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 800; // Nada tinggi
+                    gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                } else {
+                    oscillator.type = 'square';
+                    oscillator.frequency.value = 300; // Nada rendah
+                    gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
 
         let html5QrCode = new Html5Qrcode("reader");
         let isProcessing = false; // Mencegah double-scan
@@ -90,6 +119,7 @@
                     
                     $('#scan_status').text('Berhasil dipindai').addClass('alert-success').removeClass('d-none');
                     
+                    playBeep('success');
                     resumeScanner();
                 },
                 error: function(xhr) {
@@ -104,6 +134,7 @@
 
                     $('#scan_status').text(errMsg).addClass('alert-danger').removeClass('d-none');
                     
+                    playBeep('error');
                     resumeScanner();
                 }
             });

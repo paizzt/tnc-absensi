@@ -108,7 +108,7 @@
                     
                     @role('Super Admin')
                     <div class="col-md-5 mb-3 mb-md-0">
-                        <label class="form-label text-primary small fw-semibold">🏢 Penempatan Sekolah (Mode Super Admin)</label>
+                        <label class="form-label text-primary small fw-semibold"><i class="bi bi-buildings"></i> Penempatan Sekolah (Mode Super Admin)</label>
                         <select class="form-select border-primary fw-medium" name="school_id" onchange="window.location.href='{{ route('admin.schedules.create') }}?school_id=' + this.value" required>
                             @foreach($schools as $school)
                                 <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
@@ -120,7 +120,7 @@
                     @endrole
                     
                     <div class="col-md-5">
-                        <label class="form-label text-dark small fw-bold">🎓 Pilih Kelas yang Akan Disusun <span class="text-danger">*</span></label>
+                        <label class="form-label text-dark small fw-bold"><i class="bi bi-mortarboard"></i> Pilih Kelas yang Akan Disusun <span class="text-danger">*</span></label>
                         <select class="form-select border-dark" name="classroom_id" required>
                             <option value="">-- Pilih Kelas --</option>
                             @foreach($classrooms as $class)
@@ -130,7 +130,7 @@
                     </div>
                     
                     <div class="col-md-2 text-end mt-3 mt-md-0">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">💾 Simpan Roster</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-save"></i> Simpan Roster</button>
                     </div>
                 </div>
                 @if($classrooms->isEmpty())

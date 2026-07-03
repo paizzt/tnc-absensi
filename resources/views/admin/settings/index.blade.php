@@ -22,7 +22,7 @@
     <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
         <div class="card-body p-3">
             <form action="{{ route('admin.settings.index') }}" method="GET" class="d-flex align-items-center">
-                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">🏢 Filter Sekolah:</label>
+                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;"><i class="bi bi-buildings"></i> Filter Sekolah:</label>
                 <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
                     <option value="">-- Pilih Sekolah --</option>
                     @foreach($schools as $school)
@@ -44,7 +44,7 @@
                 @method('PUT')
                 <input type="hidden" name="school_id" value="{{ $selectedSchoolId }}">
 
-                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">⏰ Jam Operasional Absensi Gerbang</h6>
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2"><i class="bi bi-clock"></i> Jam Operasional Absensi Gerbang</h6>
                 <div class="row mb-4">
                     <div class="col-md-4 mb-3 mb-md-0">
                         <label class="form-label text-neutral small fw-semibold">Jam Masuk (Buka Gerbang)</label>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5">📅 Konfigurasi Roster / Jadwal Pelajaran</h6>
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5"><i class="bi bi-calendar"></i> Konfigurasi Roster / Jadwal Pelajaran</h6>
                 <div class="row mb-4">
                     <div class="col-md-4 mb-3 mb-md-0">
                         <label class="form-label text-neutral small fw-semibold">Durasi 1 Jam Mapel</label>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5">📱 Notifikasi WhatsApp (Fonnte)</h6>
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5"><i class="bi bi-phone"></i> Notifikasi WhatsApp (Fonnte)</h6>
                 <div class="mb-3">
                     <div class="form-check form-switch fs-5">
                         <input class="form-check-input" type="checkbox" role="switch" id="notify_in" name="notify_in" value="1" {{ $setting->notify_in ? 'checked' : '' }}>
@@ -104,6 +104,11 @@
                         <input class="form-check-input" type="checkbox" role="switch" id="notify_out" name="notify_out" value="1" {{ $setting->notify_out ? 'checked' : '' }}>
                         <label class="form-check-label fs-6 ms-2 text-dark" for="notify_out">Kirim Notifikasi Absen Pulang</label>
                     </div>
+                </div>
+                <div class="mb-4 mt-3">
+                    <label class="form-label text-neutral small fw-semibold">Token API Fonnte</label>
+                    <input type="text" class="form-control" name="fonnte_token" value="{{ $setting->fonnte_token }}" placeholder="Masukkan token Fonnte di sini...">
+                    <div class="form-text small">Dapatkan token dari <a href="https://fonnte.com/" target="_blank">fonnte.com</a>. Jika kosong, sistem tidak bisa mengirim WA.</div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">

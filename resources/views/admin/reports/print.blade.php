@@ -24,7 +24,7 @@
 <body onload="window.print()">
     
     <div class="no-print" style="margin-bottom: 20px; text-align: right;">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #2563EB; color: #fff; border: none; cursor: pointer;">🖨️ Cetak / Simpan PDF</button>
+        <button onclick="window.print()" style="padding: 10px 20px; background: #2563EB; color: #fff; border: none; cursor: pointer;"><i class="bi bi-printer"></i> Cetak / Simpan PDF</button>
     </div>
 
     <div class="header">

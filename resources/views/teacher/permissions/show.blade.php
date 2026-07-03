@@ -53,7 +53,7 @@
                     <h6 class="fw-bold text-dark mb-3">Lampiran Bukti (Opsional)</h6>
                     @if($permission->document_path)
                         <a href="{{ asset('storage/' . $permission->document_path) }}" target="_blank" class="btn btn-outline-primary w-100">
-                            📄 Lihat Dokumen Terlampir
+                            <i class="bi bi-file-earmark-text"></i> Lihat Dokumen Terlampir
                         </a>
                     @else
                         <div class="p-4 text-center bg-light border border-dashed rounded text-neutral small">
@@ -72,12 +72,12 @@
                     <div class="d-grid gap-2">
                         <form action="{{ route('teacher.permissions.approve', $permission->id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-success w-100 fw-medium">✅ Setujui & Rekam Absen</button>
+                            <button type="submit" class="btn btn-success w-100 fw-medium"><i class="bi bi-check-circle"></i> Setujui & Rekam Absen</button>
                         </form>
                         
                         <form action="{{ route('teacher.permissions.reject', $permission->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menolak permohonan ini?');">
                             @csrf
-                            <button type="submit" class="btn btn-danger text-white bg-opacity-75 w-100 fw-medium border-0">❌ Tolak Permohonan</button>
+                            <button type="submit" class="btn btn-danger text-white bg-opacity-75 w-100 fw-medium border-0"><i class="bi bi-x-circle"></i> Tolak Permohonan</button>
                         </form>
                     </div>
                 </div>

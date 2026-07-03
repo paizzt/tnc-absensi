@@ -16,14 +16,16 @@ class SendWhatsAppNotification implements ShouldQueue
 
     protected $target;
     protected $message;
+    protected $schoolId;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(string $target, string $message)
+    public function __construct(string $target, string $message, ?string $schoolId = null)
     {
         $this->target = $target;
         $this->message = $message;
+        $this->schoolId = $schoolId;
     }
 
     /**
@@ -32,6 +34,12 @@ class SendWhatsAppNotification implements ShouldQueue
     public function handle(): void
     {
         $token = env('FONNTE_TOKEN');
+        if ($this->schoolId) {
+            $setting = \App\Models\SchoolSetting::where('school_id', $this->schoolId)->first();
+            if ($setting && !empty($setting->fonnte_token)) {
+                $token = $setting->fonnte_token;
+            }
+        }
 
         if (empty($token) || $token === 'masukkan_token_fonnte_anda_di_sini') {
             Log::warning('Fonnte Token belum dikonfigurasi. Pesan ke ' . $this->target . ' dibatalkan.');

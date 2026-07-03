@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Attendance;
+use App\Models\GateAttendance;
 use App\Models\School;
 use App\Models\Classroom;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +39,7 @@ class ReportController extends Controller
         $schoolId = $request->input('school_id');
         $classroomId = $request->input('classroom_id');
 
-        $query = Attendance::with(['student.classroom'])
+        $query = GateAttendance::with(['student.classroom'])
             ->where('school_id', $schoolId)
             ->whereBetween('date', [$request->start_date, $request->end_date]);
 

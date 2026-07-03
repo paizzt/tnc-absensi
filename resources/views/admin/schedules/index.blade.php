@@ -138,7 +138,7 @@
                 <div class="accordion-item border-0 shadow-sm mb-3 rounded-4 overflow-hidden">
                     <h2 class="accordion-header" id="heading{{ $class->id }}">
                         <button class="accordion-button collapsed fw-bold fs-6 border-bottom" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $class->id }}" aria-expanded="false" aria-controls="collapse{{ $class->id }}">
-                            🎓 Roster Kelas: {{ $class->level }} - {{ $class->name }}
+                            <i class="bi bi-mortarboard"></i> Roster Kelas: {{ $class->level }} - {{ $class->name }}
                         </button>
                     </h2>
                     <div id="collapse{{ $class->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $class->id }}" data-bs-parent="#accordionSchedules">

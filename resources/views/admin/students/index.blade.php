@@ -10,9 +10,11 @@
             <p class="text-neutral small mb-0">Kelola data, cetak ID Card (QR), atau impor dari Excel.</p>
         </div>
         <div>
+            @role('Super Admin')
             <a href="{{ route('admin.students.bulk_print', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-warning btn-sm px-3 me-2 fw-medium text-dark shadow-sm">
                 <i class="bi bi-file-earmark-zip-fill me-1"></i> Cetak Massal (ZIP)
             </a>
+            @endrole
             <button class="btn btn-success btn-sm px-3 me-2 fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#importModal">
                 <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Import CSV
             </button>
@@ -67,7 +69,7 @@
                             <th class="border-0 px-4 py-3 text-neutral fw-semibold text-sm">NAMA SISWA</th>
                             <th class="border-0 px-4 py-3 text-neutral fw-semibold text-sm">KELAS</th>
                             <th class="border-0 px-4 py-3 text-neutral fw-semibold text-sm">WA ORTU</th>
-                            <th class="border-0 px-4 py-3 text-neutral fw-semibold text-sm text-center">AKSI & CETAK</th>
+                            <th class="border-0 px-4 py-3 text-neutral fw-semibold text-sm text-center">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,10 +89,12 @@
                                         <i class="bi bi-qr-code"></i> Lihat
                                     </button>
                                     
+                                    @role('Super Admin')
                                     <!-- Tombol Cetak ID Card Satuan -->
                                     <a href="{{ route('admin.students.print_card', $student->id) }}" target="_blank" class="btn btn-sm btn-outline-dark" title="Cetak ID Card Barcode">
                                         <i class="bi bi-printer"></i>
                                     </a>
+                                    @endrole
                                 </div>
                                 
                                 <!-- Modal QR Code (Preview) -->

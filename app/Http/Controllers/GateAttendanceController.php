@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
-use App\Models\Attendance;
+use App\Models\GateAttendance;
 use App\Models\StudentExit;
 use App\Models\SchoolSetting;
 use Illuminate\Support\Facades\Http;
@@ -50,7 +50,7 @@ class GateAttendanceController extends Controller
                 ]);
                 
                 $pesan = "*PEMBERITAHUAN IZIN KELUAR*\n\nAnanda *{$student->name}* telah keluar area sekolah pada pukul *" . $now->format('H:i') . "*.\n\nAlasan: {$activeExit->reason}\nBatas Izin: " . $activeExit->valid_until->format('H:i') . "\n\nMohon pantau aktivitas ananda.";
-                $this->sendWhatsApp($student->parent_phone, $pesan);
+                $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
 
                 return response()->json([
                     'success' => true, 
@@ -67,7 +67,7 @@ class GateAttendanceController extends Controller
                 ]);
                 
                 $pesan = "*PEMBERITAHUAN KEMBALI*\n\nAnanda *{$student->name}* telah kembali memasuki area sekolah pada pukul *" . $now->format('H:i') . "*.\n\nTerima kasih.";
-                $this->sendWhatsApp($student->parent_phone, $pesan);
+                $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
 
                 return response()->json([
                     'success' => true, 
@@ -80,7 +80,7 @@ class GateAttendanceController extends Controller
         // ==========================================
         // 2. ABSENSI REGULER (MASUK & PULANG)
         // ==========================================
-        $attendance = Attendance::where('student_id', $student->id)
+        $attendance = GateAttendance::where('student_id', $student->id)
             ->where('date', $today)
             ->first();
 
@@ -88,7 +88,7 @@ class GateAttendanceController extends Controller
             // Proses Absen Masuk
             $status = $now->greaterThan($limitTimeIn) ? 'Terlambat' : 'Hadir';
             
-            Attendance::create([
+            GateAttendance::create([
                 'student_id' => $student->id,
                 'school_id' => $student->school_id,
                 'date' => $today,
@@ -99,7 +99,7 @@ class GateAttendanceController extends Controller
             // Kirim Notifikasi WA jika fitur aktif
             if ($schoolSetting && $schoolSetting->notify_in) {
                 $pesan = "*LAPORAN ABSENSI MASUK*\n\nAnanda *{$student->name}* telah melakukan absen masuk pada pukul *" . $now->format('H:i') . "*.\nStatus: {$status}\n\nTerima kasih.";
-                $this->sendWhatsApp($student->parent_phone, $pesan);
+                $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
             }
 
             return response()->json(['success' => true, 'message' => "Absen Masuk Berhasil ({$status})", 'student' => $student]);
@@ -122,22 +122,21 @@ class GateAttendanceController extends Controller
             // Kirim Notifikasi WA jika fitur aktif
             if ($schoolSetting && $schoolSetting->notify_out) {
                 $pesan = "*LAPORAN ABSENSI PULANG*\n\nAnanda *{$student->name}* telah melakukan absen pulang pada pukul *" . $now->format('H:i') . "*.\n\nSemoga selamat sampai tujuan.";
-                $this->sendWhatsApp($student->parent_phone, $pesan);
+                $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
             }
 
             return response()->json(['success' => true, 'message' => 'Absen Pulang Berhasil', 'student' => $student]);
         }
     }
 
-    private function sendWhatsApp($phone, $message)
+    private function sendWhatsApp($phone, $message, $customToken = null)
     {
         // Pastikan Anda mengisi Token Fonnte yang aktif di pengaturan server Anda
-        $token = env('FONNTE_TOKEN', ''); 
+        $token = $customToken ?: env('FONNTE_TOKEN', ''); 
         
         if (empty($token) || empty($phone)) {
             return false;
         }
-
         try {
             Http::withHeaders([
                 'Authorization' => $token

@@ -94,12 +94,35 @@
             const scanForm = document.getElementById('scan-form');
             const scanIdentifier = document.getElementById('scan-identifier');
 
+            function playBeep() {
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
+            }
+
             function onScanSuccess(decodedText, decodedResult) {
+                playBeep();
                 // Hentikan pemindaian jika berhasil
                 html5QrCode.stop().then((ignore) => {
                     // Masukkan kode QR ke dalam form tersembunyi dan otomatis kirim
                     scanIdentifier.value = decodedText;
-                    scanForm.submit();
+                    setTimeout(() => {
+                        scanForm.submit();
+                    }, 200); // Jeda agar bunyi selesai
                 }).catch((err) => {
                     console.log(err);
                 });

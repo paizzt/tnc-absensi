@@ -73,7 +73,7 @@
 <body onload="window.print()">
 
     <div class="no-print">
-        <button class="btn-print" onclick="window.print()">🖨️ Cetak Kartu Ini</button>
+        <button class="btn-print" onclick="window.print()"><i class="bi bi-printer"></i> Cetak Kartu Ini</button>
     </div>
 
     <div class="id-card">

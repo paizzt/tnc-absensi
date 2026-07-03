@@ -22,7 +22,7 @@
     <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
         <div class="card-body p-3">
             <form action="{{ route('teacher.permissions.index') }}" method="GET" class="d-flex align-items-center">
-                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">🏢 Filter Sekolah:</label>
+                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;"><i class="bi bi-buildings"></i> Filter Sekolah:</label>
                 <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
                     <option value="">-- Pilih Sekolah --</option>
                     @foreach($schools as $school)

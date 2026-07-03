@@ -18,7 +18,6 @@
             --sidebar-color: #6B7280;
             --sidebar-active-bg: #eff6ff;
             --sidebar-active-color: #2563EB;
-            /* Sidebar diatur ringkas dan responsif terhadap lebar konten */
             --sidebar-width: 250px; 
             --sidebar-collapsed-width: 80px; 
         }
@@ -76,25 +75,25 @@
                 </a>
             </li>
             
-            @role('Super Admin')
-                <li class="nav-label">Mode Super Admin</li>
+            @hasanyrole('Super Admin|Admin Sekolah')
+                <li class="nav-label">Manajemen Utama</li>
                 <li>
-                    <a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'active' : '' }}" title="Master Sekolah">
-                        <i class="bi bi-buildings"></i> <span class="nav-text">Master Sekolah</span>
+                    <a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'active' : '' }}" title="Profil Sekolah">
+                        <i class="bi bi-buildings"></i> <span class="nav-text">Profil Sekolah</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}" title="Data Pengguna">
-                        <i class="bi bi-people-fill"></i> <span class="nav-text">Data Pengguna</span>
+                        <i class="bi bi-people-fill text-primary"></i> <span class="nav-text">Data Pengguna</span>
                     </a>
                 </li>
-            @endrole
+            @endhasanyrole
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket')
                 <li class="nav-label">Operasional Gerbang</li>
                 <li>
                     <a href="{{ route('admin.attendances.gate') }}" class="{{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}" title="Scan Gerbang">
-                        <i class="bi bi-qr-code-scan text-primary"></i> <span class="nav-text">Scan Gerbang (Live)</span>
+                        <i class="bi bi-qr-code-scan"></i> <span class="nav-text">Scan Gerbang (Live)</span>
                     </a>
                 </li>
                 <li>
@@ -128,7 +127,7 @@
                 </li>
             @endhasanyrole
 
-            @hasanyrole('Super Admin|Guru Mata Pelajaran|Wali Kelas|Guru')
+            @hasanyrole('Super Admin|Guru')
                 <li class="nav-label">Portal Guru</li>
                 <li>
                     <a href="{{ route('teacher.attendances.index') }}" class="{{ request()->routeIs('teacher.attendances.*') ? 'active' : '' }}" title="Absensi Kelas">
