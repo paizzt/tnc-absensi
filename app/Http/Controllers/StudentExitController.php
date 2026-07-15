@@ -15,6 +15,18 @@ class StudentExitController extends Controller
     {
         $teacher = Auth::user();
         
+        if ($teacher->hasRole('Super Admin')) {
+            $students = Student::orderBy('name')->get();
+            $exits = StudentExit::with('student')
+                ->whereDate('created_at', Carbon::today())
+                ->orderBy('created_at', 'desc')
+                ->get();
+                
+            $classroom = (object) ['name' => 'Semua Kelas (Super Admin)'];
+            
+            return view('teacher.exits.index', compact('classroom', 'students', 'exits'));
+        }
+        
         // Cari kelas di mana guru ini menjadi Wali Kelas
         $classroom = Classroom::where('teacher_id', $teacher->id)->first();
         

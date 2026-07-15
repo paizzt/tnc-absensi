@@ -6,6 +6,7 @@
     <title>Login - SCANATTEND Enterprise</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .login-card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 400px; padding: 2rem; background: #fff; }
@@ -36,10 +37,34 @@
             </div>
             <div class="mb-4">
                 <label for="password" class="form-label text-neutral small fw-semibold">Kata Sandi</label>
-                <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 py-2">Masuk ke Sistem</button>
         </form>
     </div>
+    
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        const icon = togglePassword.querySelector('i');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            if (type === 'text') {
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
 </body>
 </html>
