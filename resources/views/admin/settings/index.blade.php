@@ -105,6 +105,20 @@
                         <label class="form-check-label fs-6 ms-2 text-dark" for="notify_out">Kirim Notifikasi Absen Pulang</label>
                     </div>
                 </div>
+
+                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5"><i class="bi bi-envelope"></i> Notifikasi Email</h6>
+                <div class="mb-3">
+                    <div class="form-check form-switch fs-5">
+                        <input class="form-check-input" type="checkbox" role="switch" id="notify_in_email" name="notify_in_email" value="1" {{ $setting->notify_in_email ? 'checked' : '' }}>
+                        <label class="form-check-label fs-6 ms-2 text-dark" for="notify_in_email">Kirim Notifikasi Absen Masuk (Email)</label>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="form-check form-switch fs-5">
+                        <input class="form-check-input" type="checkbox" role="switch" id="notify_out_email" name="notify_out_email" value="1" {{ $setting->notify_out_email ? 'checked' : '' }}>
+                        <label class="form-check-label fs-6 ms-2 text-dark" for="notify_out_email">Kirim Notifikasi Absen Pulang (Email)</label>
+                    </div>
+                </div>
                 <div class="mb-4 mt-3">
                     <label class="form-label text-neutral small fw-semibold">Token API Fonnte</label>
                     <input type="text" class="form-control" name="fonnte_token" value="{{ $setting->fonnte_token }}" placeholder="Masukkan token Fonnte di sini...">

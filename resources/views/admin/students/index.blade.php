@@ -95,6 +95,20 @@
                                         <i class="bi bi-printer"></i>
                                     </a>
                                     @endrole
+
+                                    <!-- Tombol Edit -->
+                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-sm btn-outline-primary" title="Edit Data Siswa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus siswa ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Siswa">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                                 
                                 <!-- Modal QR Code (Preview) -->

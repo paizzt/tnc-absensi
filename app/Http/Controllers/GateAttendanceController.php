@@ -8,6 +8,8 @@ use App\Models\GateAttendance;
 use App\Models\StudentExit;
 use App\Models\SchoolSetting;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AttendanceNotificationMail;
 use Carbon\Carbon;
 
 class GateAttendanceController extends Controller
@@ -102,6 +104,20 @@ class GateAttendanceController extends Controller
                 $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
             }
 
+            // Kirim Notifikasi Email jika fitur aktif & email ada
+            if ($schoolSetting && $schoolSetting->notify_in_email && $student->parent_email) {
+                try {
+                    Mail::to($student->parent_email)->send(new AttendanceNotificationMail(
+                        $student->name,
+                        $now->format('H:i'),
+                        $status,
+                        'Masuk'
+                    ));
+                } catch (\Exception $e) {
+                    // Abaikan jika gagal
+                }
+            }
+
             return response()->json(['success' => true, 'message' => "Absen Masuk Berhasil ({$status})", 'student' => $student]);
 
         } else {
@@ -123,6 +139,21 @@ class GateAttendanceController extends Controller
             if ($schoolSetting && $schoolSetting->notify_out) {
                 $pesan = "*LAPORAN ABSENSI PULANG*\n\nAnanda *{$student->name}* telah melakukan absen pulang pada pukul *" . $now->format('H:i') . "*.\n\nSemoga selamat sampai tujuan.";
                 $this->sendWhatsApp($student->parent_phone, $pesan, $schoolSetting->fonnte_token ?? null);
+            }
+
+            // Kirim Notifikasi Email jika fitur aktif & email ada
+            if ($schoolSetting && $schoolSetting->notify_out_email && $student->parent_email) {
+                try {
+                    Mail::to($student->parent_email)->send(new AttendanceNotificationMail(
+                        $student->name,
+                        $now->format('H:i'),
+                        'Pulang',
+                        'Pulang',
+                        'Semoga selamat sampai tujuan.'
+                    ));
+                } catch (\Exception $e) {
+                    // Abaikan jika gagal
+                }
             }
 
             return response()->json(['success' => true, 'message' => 'Absen Pulang Berhasil', 'student' => $student]);

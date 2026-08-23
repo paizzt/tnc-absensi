@@ -16,6 +16,8 @@ class SchoolSetting extends Model
         'time_out',
         'notify_in',
         'notify_out',
+        'notify_in_email',
+        'notify_out_email',
         'lesson_duration',
         'break_duration',
         'break_after_lesson',

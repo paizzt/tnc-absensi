@@ -147,4 +147,62 @@ class StudentController extends Controller
 
         return view('admin.students.bulk_print', compact('students'));
     }
+
+    public function edit($id)
+    {
+        $user = Auth::user();
+        $student = Student::findOrFail($id);
+        
+        if (!$user->hasRole('Super Admin') && $student->school_id !== $user->school_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $classrooms = Classroom::where('school_id', $student->school_id)->orderBy('level')->orderBy('name')->get();
+        return view('admin.students.edit', compact('student', 'classrooms'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $student = Student::findOrFail($id);
+        
+        if (!$user->hasRole('Super Admin') && $student->school_id !== $user->school_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'nis' => 'required|string|max:50|unique:students,nis,' . $student->id . ',id,school_id,' . $student->school_id,
+            'name' => 'required|string|max:255',
+            'classroom_id' => 'required|exists:classrooms,id',
+            'gender' => 'required|in:L,P',
+            'parent_phone' => 'required|string|max:20',
+            'parent_email' => 'nullable|email|max:255',
+        ]);
+
+        $student->update([
+            'nis' => $request->nis,
+            'name' => $request->name,
+            'classroom_id' => $request->classroom_id,
+            'gender' => $request->gender,
+            'parent_phone' => $request->parent_phone,
+            'parent_email' => $request->parent_email,
+        ]);
+
+        return redirect()->route('admin.students.index', ['school_id' => $student->school_id])->with('success', 'Data siswa berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        $student = Student::findOrFail($id);
+        
+        if (!$user->hasRole('Super Admin') && $student->school_id !== $user->school_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $schoolId = $student->school_id;
+        $student->delete();
+
+        return redirect()->route('admin.students.index', ['school_id' => $schoolId])->with('success', 'Data siswa berhasil dihapus.');
+    }
 }

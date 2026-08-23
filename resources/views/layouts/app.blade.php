@@ -84,10 +84,19 @@
                 </li>
                 <li>
                     <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}" title="Data Pengguna">
-                        <i class="bi bi-people-fill text-primary"></i> <span class="nav-text">Data Pengguna</span>
+                        <i class="bi bi-people-fill"></i> <span class="nav-text">Data Pengguna</span>
                     </a>
                 </li>
             @endhasanyrole
+
+            @role('Super Admin')
+                <li class="nav-label">Manajemen Superadmin</li>
+                <li>
+                    <a href="{{ route('banners.index') }}" class="{{ request()->routeIs('banners.*') ? 'active' : '' }}" title="Manajemen Iklan">
+                        <i class="bi bi-image"></i> <span class="nav-text">Manajemen Iklan</span>
+                    </a>
+                </li>
+            @endrole
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket')
                 <li class="nav-label">Operasional Gerbang</li>
@@ -122,7 +131,7 @@
                 <li class="nav-label">Laporan & Rekap</li>
                 <li>
                     <a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" title="Export Laporan">
-                        <i class="bi bi-printer text-warning"></i> <span class="nav-text">Export Laporan</span>
+                        <i class="bi bi-printer"></i> <span class="nav-text">Export Laporan</span>
                     </a>
                 </li>
             @endhasanyrole
@@ -131,7 +140,7 @@
                 <li class="nav-label">Portal Guru</li>
                 <li>
                     <a href="{{ route('teacher.attendances.index') }}" class="{{ request()->routeIs('teacher.attendances.*') ? 'active' : '' }}" title="Absensi Kelas">
-                        <i class="bi bi-clipboard-check text-success"></i> <span class="nav-text">Jadwal Mengajar Saya</span>
+                        <i class="bi bi-clipboard-check"></i> <span class="nav-text">Jadwal Mengajar Saya</span>
                     </a>
                 </li>
                 
@@ -142,12 +151,12 @@
                 @if(Auth::user()->hasRole('Super Admin') || $isWaliKelas)
                     <li>
                         <a href="{{ route('teacher.permissions.index') }}" class="{{ request()->routeIs('teacher.permissions.*') ? 'active' : '' }}" title="Validasi Izin Siswa">
-                            <i class="bi bi-envelope-paper text-primary"></i> <span class="nav-text">Validasi Izin Siswa</span>
+                            <i class="bi bi-envelope-paper"></i> <span class="nav-text">Validasi Izin Siswa</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('teacher.exits.index') }}" class="{{ request()->routeIs('teacher.exits.*') ? 'active' : '' }}" title="Izin Keluar Sementara">
-                            <i class="bi bi-door-open-fill text-warning"></i> <span class="nav-text">Izin Keluar (Gate Pass)</span>
+                            <i class="bi bi-door-open-fill"></i> <span class="nav-text">Izin Keluar (Gate Pass)</span>
                         </a>
                     </li>
                 @endif
@@ -157,7 +166,7 @@
                 <li class="nav-label">Bimbingan Konseling</li>
                 <li>
                     <a href="{{ route('bk.dashboard') }}" class="{{ request()->routeIs('bk.*') ? 'active' : '' }}" title="Evaluasi & Surat SP">
-                        <i class="bi bi-shield-exclamation text-danger"></i> <span class="nav-text">Evaluasi & Surat SP</span>
+                        <i class="bi bi-shield-exclamation"></i> <span class="nav-text">Evaluasi & Surat SP</span>
                     </a>
                 </li>
             @endhasanyrole

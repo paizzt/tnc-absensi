@@ -51,6 +51,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
     });
 
+    // 1.5. MANAJEMEN IKLAN (Hanya Super Admin)
+    Route::middleware(['role:Super Admin'])->group(function () {
+        Route::resource('banners', \App\Http\Controllers\BannerController::class)->except(['show']);
+    });
+
     // 2. PENGATURAN SEKOLAH 
     Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket|Guru BK|Kepala Sekolah'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SchoolSettingController::class, 'index'])->name('settings.index');
@@ -69,7 +74,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
         Route::get('/students/bulk-print', [StudentController::class, 'bulkPrint'])->name('students.bulk_print')->middleware('role:Super Admin');
         Route::get('/students/{id}/print', [StudentController::class, 'printCard'])->name('students.print_card')->middleware('role:Super Admin');
-        Route::resource('students', StudentController::class)->except(['show', 'edit', 'update', 'destroy']);
+        Route::resource('students', StudentController::class)->except(['show']);
         
         Route::delete('/schedules/class/{classroom}', [ScheduleController::class, 'destroyClass'])->name('schedules.destroy_class');
         Route::resource('schedules', ScheduleController::class)->except(['show']);

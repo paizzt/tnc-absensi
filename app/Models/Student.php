@@ -13,7 +13,7 @@ class Student extends Model
 
     protected $fillable = [
         'school_id', 'classroom_id', 'nis', 'name', 
-        'gender', 'parent_phone', 'qr_code_string', 'is_active'
+        'gender', 'parent_phone', 'parent_email', 'qr_code_string', 'is_active'
     ];
 
     public function school()

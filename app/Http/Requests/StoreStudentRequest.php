@@ -30,6 +30,7 @@ class StoreStudentRequest extends FormRequest
             'classroom_id' => ['required', 'exists:classrooms,id'],
             'gender' => ['required', 'in:L,P'],
             'parent_phone' => ['required', 'string', 'max:20'],
+            'parent_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 }

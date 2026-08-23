@@ -8,8 +8,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .login-card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 400px; padding: 2rem; background: #fff; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f3f4f6; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            margin: 0;
+        }
+        .top-banner-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 24px;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .login-card { 
+            border: none; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 2.5rem 2rem; 
+            background: #fff; 
+        }
         .btn-primary { background-color: #2563EB; border-color: #2563EB; font-weight: 500; }
         .btn-primary:hover { background-color: #1d4ed8; border-color: #1d4ed8; }
         .form-control:focus { border-color: #2563EB; box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25); }
@@ -17,6 +48,34 @@
     </style>
 </head>
 <body>
+    
+    <!-- Banner Section -->
+    <div class="top-banner-container">
+        @if(isset($banners) && $banners->count() > 0)
+            <div id="loginBannerCarousel" class="carousel slide carousel-fade shadow-sm" data-bs-ride="carousel" data-bs-interval="5000" style="border-radius: 12px; overflow: hidden;">
+                <div class="carousel-indicators">
+                    @foreach($banners as $index => $banner)
+                        <button type="button" data-bs-target="#loginBannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}"></button>
+                    @endforeach
+                </div>
+                <div class="carousel-inner">
+                    @foreach($banners as $index => $banner)
+                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                            @if($banner->link)
+                                <a href="{{ $banner->link }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title ?? 'Banner Iklan' }}">
+                                </a>
+                            @else
+                                <img src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title ?? 'Banner Iklan' }}">
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- Login Card -->
     <div class="login-card">
         <div class="text-center mb-4">
             <h3 class="fw-bold" style="color: #2563EB;">SCANATTEND</h3>
@@ -48,6 +107,7 @@
         </form>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');

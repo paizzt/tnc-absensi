@@ -3,6 +3,11 @@
 @section('title', 'Scan Gerbang (Kamera)')
 
 @section('content')
+<style>
+    #reader video {
+        transform: scaleX(-1);
+    }
+</style>
 <div class="container-fluid p-0 d-flex flex-column" style="min-height: 80vh;">
     <div class="row flex-grow-1 g-4">
         

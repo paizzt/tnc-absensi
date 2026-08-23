@@ -73,13 +73,20 @@
                     </div>
                 </div>
 
-                <div class="mb-5">
-                    <label class="form-label text-neutral small fw-semibold">Nomor WhatsApp Orang Tua <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0">ID (+62/0)</span>
-                        <input type="text" class="form-control border-start-0 @error('parent_phone') is-invalid @enderror" name="parent_phone" value="{{ old('parent_phone') }}" required placeholder="Contoh: 08123456789">
+                <div class="row mb-5">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label text-neutral small fw-semibold">Nomor WhatsApp Orang Tua <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">ID (+62/0)</span>
+                            <input type="text" class="form-control border-start-0 @error('parent_phone') is-invalid @enderror" name="parent_phone" value="{{ old('parent_phone') }}" required placeholder="Contoh: 08123456789">
+                        </div>
+                        @error('parent_phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
-                    @error('parent_phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    <div class="col-md-6">
+                        <label class="form-label text-neutral small fw-semibold">Email Orang Tua (Opsional)</label>
+                        <input type="email" class="form-control @error('parent_email') is-invalid @enderror" name="parent_email" value="{{ old('parent_email') }}" placeholder="Contoh: email@domain.com">
+                        @error('parent_email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end border-top pt-4">

@@ -64,6 +64,8 @@ class SchoolSettingController extends Controller
                 'time_out' => $request->time_out,
                 'notify_in' => $request->has('notify_in'),
                 'notify_out' => $request->has('notify_out'),
+                'notify_in_email' => $request->has('notify_in_email'),
+                'notify_out_email' => $request->has('notify_out_email'),
                 'lesson_duration' => $request->lesson_duration,
                 'break_duration' => $request->break_duration,
                 'break_after_lesson' => $request->break_after_lesson,

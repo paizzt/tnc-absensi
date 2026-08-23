@@ -13,7 +13,7 @@
         .nav-pills .nav-link { color: #6b7280; font-weight: 600; border-radius: 8px; }
         .nav-pills .nav-link.active { background-color: #2563EB; color: #fff; }
         #reader { width: 100%; border-radius: 8px; overflow: hidden; border: none !important; }
-        #reader video { border-radius: 8px; object-fit: cover; }
+        #reader video { border-radius: 8px; object-fit: cover; transform: scaleX(-1); }
     </style>
 </head>
 <body>
