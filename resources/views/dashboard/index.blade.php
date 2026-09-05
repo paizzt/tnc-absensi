@@ -57,6 +57,17 @@
                 </div>
             </a>
         </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ route('banners.index') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
+                    <div class="card-body p-4 text-center">
+                        <div class="fs-1 mb-2"><i class="bi bi-image"></i></div>
+                        <h6 class="fw-bold text-dark mb-1">Manajemen Iklan</h6>
+                        <p class="text-neutral small mb-0">Atur banner iklan untuk halaman login.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
         @endrole
 
         @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket')
