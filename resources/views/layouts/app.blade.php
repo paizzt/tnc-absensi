@@ -68,7 +68,12 @@
 
     <nav id="sidebar">
         <div class="sidebar-brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="max-height: 45px; width: auto; object-fit: contain;">
+            @php
+                $schoolLogo = Auth::user()->school && Auth::user()->school->logo 
+                                ? asset('storage/' . Auth::user()->school->logo) 
+                                : asset('images/logo.png');
+            @endphp
+            <img src="{{ $schoolLogo }}" alt="Logo" style="max-height: 45px; width: auto; object-fit: contain;">
         </div>
         
         <ul class="sidebar-nav">

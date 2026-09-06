@@ -8,6 +8,7 @@ use App\Http\Requests\StoreSchoolRequest;
 use App\Http\Requests\UpdateSchoolRequest;
 use App\Models\School;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SchoolController extends Controller
 {
@@ -49,7 +50,12 @@ class SchoolController extends Controller
     {
         if (!Auth::user()->hasRole('Super Admin')) abort(403);
         
-        $this->schoolService->createSchoolWithDefaultSettings($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
+        $this->schoolService->createSchoolWithDefaultSettings($data);
         return redirect()->route('schools.index')->with('success', 'Sekolah berhasil didaftarkan.');
     }
 
@@ -72,7 +78,17 @@ class SchoolController extends Controller
             abort(403, 'Akses Ditolak. Anda tidak berhak mengubah data sekolah lain.');
         }
 
-        $this->schoolService->updateSchool($id, $request->validated());
+        $data = $request->validated();
+        $school = $this->schoolService->getSchoolById($id);
+
+        if ($request->hasFile('logo')) {
+            if ($school->logo) {
+                Storage::disk('public')->delete($school->logo);
+            }
+            $data['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
+        $this->schoolService->updateSchool($id, $data);
         return redirect()->route('schools.index')->with('success', 'Profil sekolah berhasil diperbarui.');
     }
 
@@ -80,6 +96,11 @@ class SchoolController extends Controller
     {
         if (!Auth::user()->hasRole('Super Admin')) {
             abort(403, 'Akses Ditolak. Hanya Super Admin yang dapat menghapus sekolah.');
+        }
+
+        $school = $this->schoolService->getSchoolById($id);
+        if ($school->logo) {
+            Storage::disk('public')->delete($school->logo);
         }
 
         $this->schoolService->deleteSchool($id);

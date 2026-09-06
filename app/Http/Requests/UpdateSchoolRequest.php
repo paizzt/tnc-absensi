@@ -24,6 +24,7 @@ class UpdateSchoolRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
         ];
     }
 
@@ -34,6 +35,9 @@ class UpdateSchoolRequest extends FormRequest
             'npsn.unique' => 'NPSN ini sudah digunakan oleh sekolah lain.',
             'name.required' => 'Nama Sekolah wajib diisi.',
             'email.email' => 'Format alamat email tidak valid.',
+            'logo.image' => 'File logo harus berupa gambar.',
+            'logo.mimes' => 'Format logo harus jpeg, png, jpg, atau svg.',
+            'logo.max' => 'Ukuran logo maksimal 2MB.',
         ];
     }
 }

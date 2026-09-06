@@ -16,7 +16,7 @@
 
     <div class="card border-0 shadow-sm rounded-3 max-w-3xl">
         <div class="card-body p-4 p-md-5">
-            <form action="{{ route('schools.store') }}" method="POST">
+            <form action="{{ route('schools.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="row mb-4">
@@ -57,6 +57,15 @@
                     <label class="form-label text-neutral small fw-semibold">Alamat Lengkap</label>
                     <textarea class="form-control @error('address') is-invalid @enderror" name="address" rows="3" placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
                     @error('address')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="form-label text-neutral small fw-semibold">Logo Sekolah</label>
+                    <input type="file" class="form-control @error('logo') is-invalid @enderror" name="logo" accept="image/*">
+                    <div class="form-text">Format: JPG, JPEG, PNG. Maksimal 2MB.</div>
+                    @error('logo')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
