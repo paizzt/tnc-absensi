@@ -6,7 +6,7 @@
 <div class="container-fluid p-0">
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h4 class="fw-bold mb-1 text-dark">Izin Keluar (Gate Pass)</h4>
+            <h4 class="fw-bold mb-1 text-dark">Izin Keluar</h4>
             <p class="text-neutral small mb-0">Kelola izin keluar area sekolah untuk siswa kelas <strong>{{ $classroom->name }}</strong>.</p>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0">

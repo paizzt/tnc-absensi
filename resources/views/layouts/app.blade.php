@@ -159,7 +159,7 @@
                     </li>
                     <li>
                         <a href="{{ route('teacher.exits.index') }}" class="{{ request()->routeIs('teacher.exits.*') ? 'active' : '' }}" title="Izin Keluar Sementara">
-                            <i class="bi bi-door-open-fill"></i> <span class="nav-text">Izin Keluar (Gate Pass)</span>
+                            <i class="bi bi-door-open-fill"></i> <span class="nav-text">Izin Keluar</span>
                         </a>
                     </li>
                 @endif
