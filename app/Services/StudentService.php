@@ -48,7 +48,7 @@ class StudentService
 
         $data['school_id'] = $schoolId;
         // Generate UUID Rahasia untuk QR Code Siswa
-        $data['qr_code_string'] = 'SCANATTEND-' . Str::uuid()->toString();
+        $data['qr_code_string'] = 'ABSENSI-' . Str::uuid()->toString();
 
         return $this->studentRepo->create($data);
     }
@@ -112,7 +112,7 @@ class StudentService
                 'name' => $name,
                 'gender' => $gender,
                 'parent_phone' => $phone,
-                'qr_code_string' => 'SCANATTEND-' . Str::uuid()->toString()
+                'qr_code_string' => 'ABSENSI-' . Str::uuid()->toString()
             ]);
 
             $successCount++;

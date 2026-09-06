@@ -100,7 +100,7 @@ class PermissionService
                 ]);
             }
 
-            $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nPermohonan {$req->type} untuk Ananda *{$req->student->name}* pada tanggal " . date('d/m/Y', strtotime($req->date)) . " telah *DISETUJUI* oleh Wali Kelas.\n\n_Pesan otomatis oleh SCANATTEND_";
+            $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nPermohonan {$req->type} untuk Ananda *{$req->student->name}* pada tanggal " . date('d/m/Y', strtotime($req->date)) . " telah *DISETUJUI* oleh Wali Kelas.\n\n_Pesan otomatis oleh ABSENSI_";
             SendWhatsAppNotification::dispatch($req->student->parent_phone, $msg, $req->student->school_id);
 
             DB::commit();
@@ -117,7 +117,7 @@ class PermissionService
 
         $this->repo->update($id, ['status' => 'Ditolak']);
 
-        $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nMohon maaf, permohonan {$req->type} untuk Ananda *{$req->student->name}* *DITOLAK* dikarenakan tidak memenuhi syarat verifikasi keamanan. Harap segera menghubungi Wali Kelas/Guru BK.\n\n_Pesan otomatis oleh SCANATTEND_";
+        $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nMohon maaf, permohonan {$req->type} untuk Ananda *{$req->student->name}* *DITOLAK* dikarenakan tidak memenuhi syarat verifikasi keamanan. Harap segera menghubungi Wali Kelas/Guru BK.\n\n_Pesan otomatis oleh ABSENSI_";
         SendWhatsAppNotification::dispatch($req->student->parent_phone, $msg, $req->student->school_id);
     }
 }

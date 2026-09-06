@@ -27,7 +27,7 @@ class RolePermissionSeeder extends Seeder
 
         // 2. Buat Akun Super Admin Pertama
         $superAdmin = User::firstOrCreate(
-            ['email' => 'superadmin@scanattend.com'],
+            ['email' => 'superadmin@absensi.com'],
             [
                 'name' => 'Super Administrator',
                 'password' => Hash::make('password123'),

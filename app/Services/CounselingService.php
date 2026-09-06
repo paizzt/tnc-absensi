@@ -62,7 +62,7 @@ class CounselingService
 
             $documentUrl = asset('storage/' . $path);
 
-            $msg = "*SURAT PANGGILAN (SP-{$data['sp_level']})*\n\nYth. Orang Tua/Wali dari Ananda *{$student->name}*,\n\nKami menginformasikan bahwa tingkat kehadiran ananda saat ini berada di bawah batas standar sekolah. Oleh karena itu, kami mengundang Bapak/Ibu untuk hadir ke ruang BK.\n\nUnduh/Lihat Surat Panggilan resmi pada tautan berikut:\n{$documentUrl}\n\nHarap segera menindaklanjuti pesan ini.\n_Bimbingan Konseling - SCANATTEND_";
+            $msg = "*SURAT PANGGILAN (SP-{$data['sp_level']})*\n\nYth. Orang Tua/Wali dari Ananda *{$student->name}*,\n\nKami menginformasikan bahwa tingkat kehadiran ananda saat ini berada di bawah batas standar sekolah. Oleh karena itu, kami mengundang Bapak/Ibu untuk hadir ke ruang BK.\n\nUnduh/Lihat Surat Panggilan resmi pada tautan berikut:\n{$documentUrl}\n\nHarap segera menindaklanjuti pesan ini.\n_Bimbingan Konseling - ABSENSI_";
             
             SendWhatsAppNotification::dispatch($student->parent_phone, $msg, $student->school_id);
 

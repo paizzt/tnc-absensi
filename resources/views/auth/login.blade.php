@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SCANATTEND Enterprise</title>
+    <title>Login - ABSENSI Enterprise</title>
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@
     <!-- Login Card -->
     <div class="login-card">
         <div class="text-center mb-4">
-            <h3 class="fw-bold" style="color: #2563EB;">SCANATTEND</h3>
+            <h3 class="fw-bold" style="color: #2563EB;">ABSENSI</h3>
             <p class="text-neutral small">Sistem Absensi Digital Terintegrasi</p>
         </div>
 
@@ -94,7 +94,7 @@
             @csrf
             <div class="mb-3">
                 <label for="email" class="form-label text-neutral small fw-semibold">Alamat Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="superadmin@scanattend.com">
+                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="superadmin@absensi.com">
             </div>
             <div class="mb-4">
                 <label for="password" class="form-label text-neutral small fw-semibold">Kata Sandi</label>
