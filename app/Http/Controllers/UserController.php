@@ -41,7 +41,11 @@ class UserController extends Controller
     {
         $schoolId = Auth::user()->hasRole('Super Admin') ? ($request->query('school_id') ?? School::first()->id) : Auth::user()->school_id;
         
-        $roles = Role::whereNotIn('name', ['Super Admin'])->get();
+        if (Auth::user()->hasRole('Super Admin')) {
+            $roles = Role::all();
+        } else {
+            $roles = Role::whereNotIn('name', ['Super Admin'])->get();
+        }
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
         
@@ -98,7 +102,11 @@ class UserController extends Controller
         }
 
         $schoolId = $user->school_id;
-        $roles = Role::whereNotIn('name', ['Super Admin'])->get();
+        if (Auth::user()->hasRole('Super Admin')) {
+            $roles = Role::all();
+        } else {
+            $roles = Role::whereNotIn('name', ['Super Admin'])->get();
+        }
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
         
