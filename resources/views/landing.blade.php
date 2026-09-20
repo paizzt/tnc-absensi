@@ -219,6 +219,7 @@
             <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
             <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
             <a href="#" target="_blank"><i class="bi bi-youtube"></i></a>
+            <a href="https://share.google/Kg3ENq9M9Ej9RHVdb" target="_blank" title="Lokasi Kami"><i class="bi bi-geo-alt-fill"></i></a>
         </div>
         &copy; {{ date('Y') }} Arjuna Production Group. All rights reserved.
     </footer>
