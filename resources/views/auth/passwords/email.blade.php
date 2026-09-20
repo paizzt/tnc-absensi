@@ -62,10 +62,9 @@
                 <label for="email" class="form-label text-neutral small fw-semibold">Alamat Email</label>
                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="superadmin@absensi.com">
             </div>
-            
-            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Kirim Tautan Pemulihan</button>
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Kirim</button>
             <a href="{{ route('login') }}" class="btn btn-outline-secondary w-100 py-2">
-                <i class="bi bi-arrow-left"></i> Kembali ke Login
+                Kembali
             </a>
         </form>
     </div>

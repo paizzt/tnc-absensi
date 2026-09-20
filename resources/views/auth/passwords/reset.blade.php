@@ -75,8 +75,7 @@
                     <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm"><i class="bi bi-eye"></i></button>
                 </div>
             </div>
-            
-            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Simpan Kata Sandi</button>
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Simpan</button>
         </form>
     </div>
     
