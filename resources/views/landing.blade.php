@@ -187,7 +187,7 @@
             <!-- Menu 2 -->
             <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
                 <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card menu-card-maroon">
-                    <i class="bi bi-briefcase menu-icon"></i>
+                    <i class="bi bi-printer menu-icon"></i>
                     <h3 class="menu-title">Ragi Ragi ID</h3>
                     <span class="menu-desc">Arjuna Productions Grup</span>
                 </a>
