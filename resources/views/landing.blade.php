@@ -10,12 +10,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            background-image: url('{{ asset('images/bg-landing.jpg') }}');
-            background-size: cover;
-            background-position: top center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-color: #f8fafc;
             color: #1e293b;
             min-height: 100vh;
             display: flex;
@@ -23,9 +18,51 @@
             position: relative;
         }
 
-        /* Hero Spacer to push content below the background text */
-        .hero-spacer {
-            height: 280px; /* Adjust if needed to push buttons below the image text */
+        /* Polka dot pattern */
+        .bg-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 30px 30px;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 3rem 1rem 2rem;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-container img {
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .hero-title {
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+            color: #0f172a;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 2.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         /* Card Menu Styling (1 Warna) */
@@ -103,16 +140,27 @@
         }
         
         @media (max-width: 768px) {
-            .hero-spacer { height: 180px; }
+            .hero-title { font-size: 1.8rem; }
+            .hero-subtitle { font-size: 0.9rem; }
+            .logo-container img { max-height: 60px; }
             .menu-card { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-pattern"></div>
+
     <div class="container flex-grow-1 d-flex flex-column">
         
-        <div class="hero-spacer"></div>
+        <div class="hero-section">
+            <div class="logo-container">
+                <img src="{{ asset('images/logo-ajr.png') }}" alt="AJR Logo">
+                <img src="{{ asset('images/logo-arjuna-one.png') }}" alt="Arjuna One Logo">
+            </div>
+            <h1 class="hero-title">Arjuna Production Group</h1>
+            <p class="hero-subtitle">Inovasi - Kreatifitas - Kreadibilitas</p>
+        </div>
 
         <div class="row justify-content-center g-4 max-w-4xl mx-auto mb-5" style="max-width: 900px; width: 100%;">
             
