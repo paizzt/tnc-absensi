@@ -10,8 +10,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #ffffff;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -22,7 +22,7 @@
         .bg-pattern {
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(#334155 1px, transparent 1px);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px); /* Lighter dots for white bg */
             background-size: 24px 24px;
             opacity: 0.5;
             z-index: -1;
@@ -38,14 +38,14 @@
             font-size: 2.5rem;
             letter-spacing: 1px;
             margin-bottom: 0.5rem;
-            color: #f8fafc;
+            color: #0f172a; /* Dark text */
             text-transform: uppercase;
         }
 
         .hero-subtitle {
             font-weight: 400;
             font-size: 1.1rem;
-            color: #94a3b8;
+            color: #64748b; /* Medium slate */
             margin-bottom: 3rem;
             letter-spacing: 2px;
         }
@@ -63,8 +63,8 @@
             color: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             height: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
         }
 
         .menu-card:hover {
