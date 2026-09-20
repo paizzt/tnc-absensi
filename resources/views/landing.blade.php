@@ -88,6 +88,16 @@
             color: white;
         }
 
+        .menu-card-maroon {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+            border: 1px solid rgba(153, 27, 27, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(153, 27, 27, 0.2);
+        }
+
+        .menu-card.menu-card-maroon:hover {
+            box-shadow: 0 20px 25px -5px rgba(153, 27, 27, 0.4);
+        }
+
         .menu-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -176,7 +186,7 @@
 
             <!-- Menu 2 -->
             <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
-                <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card">
+                <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card menu-card-maroon">
                     <i class="bi bi-briefcase menu-icon"></i>
                     <h3 class="menu-title">Ragi Ragi ID</h3>
                     <span class="menu-desc">Arjuna Productions Grup</span>
