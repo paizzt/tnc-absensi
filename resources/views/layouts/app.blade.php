@@ -83,7 +83,7 @@
                 </a>
             </li>
             
-            @hasanyrole('Super Admin|Admin Sekolah')
+            @hasanyrole('Super Admin|Admin Sekolah|Kepala Sekolah|Guru BK')
                 <li class="nav-label">Manajemen Utama</li>
                 <li>
                     <a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'active' : '' }}" title="Profil Sekolah">
@@ -106,7 +106,7 @@
                 </li>
             @endrole
 
-            @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket')
+            @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK')
                 <li class="nav-label">Operasional Gerbang</li>
                 <li>
                     <a href="{{ route('admin.attendances.gate') }}" class="{{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}" title="Scan Gerbang">

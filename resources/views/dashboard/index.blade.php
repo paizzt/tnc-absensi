@@ -34,14 +34,14 @@
     <h5 class="fw-bold mb-3 text-dark">Akses Cepat</h5>
     <div class="row g-4">
         
-        @role('Super Admin')
+        @hasanyrole('Super Admin|Admin Sekolah|Kepala Sekolah|Guru BK')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('schools.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
                     <div class="card-body p-4 text-center">
                         <div class="fs-1 mb-2"><i class="bi bi-buildings"></i></div>
-                        <h6 class="fw-bold text-dark mb-1">Master Sekolah</h6>
-                        <p class="text-neutral small mb-0">Kelola pendaftaran sekolah baru.</p>
+                        <h6 class="fw-bold text-dark mb-1">Profil Sekolah</h6>
+                        <p class="text-neutral small mb-0">Kelola informasi sekolah.</p>
                     </div>
                 </div>
             </a>
@@ -57,6 +57,9 @@
                 </div>
             </a>
         </div>
+        @endhasanyrole
+
+        @role('Super Admin')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('banners.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">

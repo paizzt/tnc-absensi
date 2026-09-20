@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // 1. MANAJEMEN UTAMA (Super Admin & Admin Sekolah)
-    Route::middleware(['role:Super Admin|Admin Sekolah'])->group(function () {
+    Route::middleware(['role:Super Admin|Admin Sekolah|Kepala Sekolah|Guru BK'])->group(function () {
         Route::resource('schools', SchoolController::class)->except(['show']);
         Route::resource('users', UserController::class)->except(['show']);
     });
@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 3. AREA ADMIN SEKOLAH & PETUGAS PIKET
-    Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK'])->prefix('admin')->name('admin.')->group(function () {
         Route::resource('classrooms', ClassroomController::class)->except(['show', 'create', 'edit']);
         Route::resource('subjects', SubjectController::class)->except(['show', 'create', 'edit']);
         
