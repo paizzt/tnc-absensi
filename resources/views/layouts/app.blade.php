@@ -71,7 +71,7 @@
             @php
                 $schoolLogo = Auth::user()->school && Auth::user()->school->logo 
                                 ? asset('storage/' . Auth::user()->school->logo) 
-                                : asset('images/logo.png');
+                                : asset('images/logo-arjuna-one.png');
             @endphp
             <img src="{{ $schoolLogo }}" alt="Logo" style="max-height: 45px; width: auto; object-fit: contain;">
         </div>
