@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\GateAttendance;
+use App\Models\ClassAttendance;
 use App\Models\School;
 use App\Models\Classroom;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
@@ -24,8 +26,9 @@ class ReportController extends Controller
         }
 
         $classrooms = Classroom::where('school_id', $selectedSchoolId)->orderBy('name')->get();
+        $subjects = Subject::where('school_id', $selectedSchoolId)->orderBy('name')->get();
 
-        return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms'));
+        return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms', 'subjects'));
     }
 
     public function export(Request $request)
@@ -38,14 +41,21 @@ class ReportController extends Controller
 
         $schoolId = $request->input('school_id');
         $classroomId = $request->input('classroom_id');
+        $subjectId = $request->input('subject_id');
 
-        $query = GateAttendance::with(['student.classroom'])
+        $query = ClassAttendance::with(['student.classroom', 'schedule.subject'])
             ->where('school_id', $schoolId)
             ->whereBetween('date', [$request->start_date, $request->end_date]);
 
         if ($classroomId) {
             $query->whereHas('student', function($q) use ($classroomId) {
                 $q->where('classroom_id', $classroomId);
+            });
+        }
+
+        if ($subjectId) {
+            $query->whereHas('schedule', function($q) use ($subjectId) {
+                $q->where('subject_id', $subjectId);
             });
         }
 
@@ -72,17 +82,15 @@ class ReportController extends Controller
 
         $callback = function() use($attendances) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Tanggal', 'NIS', 'Nama Siswa', 'Kelas', 'Status', 'Jam Masuk', 'Jam Pulang']);
+            fputcsv($file, ['NIS', 'Nama Siswa', 'Kelas', 'Status', 'Tanggal']);
 
             foreach ($attendances as $row) {
                 fputcsv($file, [
-                    $row->date,
                     $row->student->nis ?? '-',
                     $row->student->name ?? '-',
                     $row->student->classroom->name ?? '-',
                     $row->status,
-                    $row->scan_in ?? '-',
-                    $row->scan_out ?? '-'
+                    $row->date
                 ]);
             }
             fclose($file);

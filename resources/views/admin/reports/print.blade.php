@@ -37,28 +37,26 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="15%">Tanggal</th>
-                <th width="20%">Nama Siswa</th>
+                <th width="15%">NIS</th>
+                <th width="25%">Nama Siswa</th>
                 <th width="15%">Kelas</th>
-                <th width="15%">Status</th>
-                <th width="15%">Jam Masuk</th>
-                <th width="15%">Jam Pulang</th>
+                <th width="20%">Status</th>
+                <th width="20%">Tanggal</th>
             </tr>
         </thead>
         <tbody>
             @forelse($attendances as $index => $row)
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
-                <td class="text-center">{{ date('d/m/Y', strtotime($row->date)) }}</td>
+                <td class="text-center">{{ $row->student->nis ?? '-' }}</td>
                 <td>{{ $row->student->name ?? '-' }}</td>
                 <td class="text-center">{{ $row->student->classroom->name ?? '-' }}</td>
                 <td class="text-center">{{ strtoupper($row->status) }}</td>
-                <td class="text-center">{{ $row->scan_in ?? '-' }}</td>
-                <td class="text-center">{{ $row->scan_out ?? '-' }}</td>
+                <td class="text-center">{{ date('d/m/Y', strtotime($row->date)) }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="text-center" style="padding: 20px;">Tidak ada data absensi pada periode ini.</td>
+                <td colspan="6" class="text-center" style="padding: 20px;">Tidak ada data absensi pada periode ini.</td>
             </tr>
             @endforelse
         </tbody>

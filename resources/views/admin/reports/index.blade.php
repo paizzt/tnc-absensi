@@ -42,15 +42,27 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label text-dark fw-semibold small">Filter Kelas (Opsional)</label>
-                    <select class="form-select" name="classroom_id">
-                        <option value="">-- Semua Kelas --</option>
-                        @foreach($classrooms as $class)
-                            <option value="{{ $class->id }}">{{ $class->name }}</option>
-                        @endforeach
-                    </select>
-                    <div class="form-text small">Kosongkan jika ingin menarik data seluruh sekolah.</div>
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label text-dark fw-semibold small">Filter Kelas (Opsional)</label>
+                        <select class="form-select" name="classroom_id">
+                            <option value="">-- Semua Kelas --</option>
+                            @foreach($classrooms as $class)
+                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="form-text small">Kosongkan jika ingin menarik data seluruh sekolah.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-dark fw-semibold small">Filter Mata Pelajaran (Opsional)</label>
+                        <select class="form-select" name="subject_id">
+                            <option value="">-- Semua Mapel --</option>
+                            @foreach($subjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="form-text small">Pilih mapel tertentu jika ingin melihat absensi per mapel.</div>
+                    </div>
                 </div>
 
                 <div class="mb-5">
