@@ -156,6 +156,7 @@
         <div class="hero-section">
             <div class="logo-container">
                 <img src="{{ asset('images/logo-ajr.png') }}" alt="AJR Logo">
+                <img src="{{ asset('images/logo-ragiragi.png') }}" alt="Ragi Ragi Logo">
                 <img src="{{ asset('images/logo-arjuna-one.png') }}" alt="Arjuna One Logo">
             </div>
             <h1 class="hero-title">Arjuna Production Group</h1>
