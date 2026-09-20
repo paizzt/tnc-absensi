@@ -78,7 +78,7 @@
                                         @endforeach
                                     </select>
                                     
-                                    <select class="cell-select {{ $hasDataClass }}" name="roster[{{ $day }}][{{ $slotIndex }}][teacher_id]">
+                                    <select class="cell-select select-guru {{ $hasDataClass }}" name="roster[{{ $day }}][{{ $slotIndex }}][teacher_id]">
                                         <option value="">- Kosong -</option>
                                         @foreach($teachers as $teacher)
                                             <option value="{{ $teacher->id }}" {{ ($oldSched && $oldSched->teacher_id == $teacher->id) ? 'selected' : '' }}>{{ $teacher->name }}</option>
@@ -94,4 +94,55 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Menyimpan pemetaan Guru untuk setiap Mapel berdasarkan pivot table (subject_user)
+    const subjectTeacherMap = {
+        @foreach($subjects as $subject)
+            "{{ $subject->id }}": [
+                @foreach($subject->teachers as $teacher)
+                    "{{ $teacher->id }}"{{ !$loop->last ? ',' : '' }}
+                @endforeach
+            ]{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    };
+
+    $(document).ready(function() {
+        function updateTeacherOptions(mapelSelect) {
+            let subjectId = $(mapelSelect).val();
+            let teacherSelect = $(mapelSelect).siblings('.select-guru');
+            let currentValue = teacherSelect.val();
+            
+            teacherSelect.find('option').each(function() {
+                if ($(this).val() === "") {
+                    $(this).show();
+                } else if (subjectId && subjectTeacherMap[subjectId] && subjectTeacherMap[subjectId].includes($(this).val())) {
+                    $(this).show();
+                } else if (!subjectId) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            
+            if (subjectId && subjectTeacherMap[subjectId] && currentValue) {
+                if (!subjectTeacherMap[subjectId].includes(currentValue)) {
+                    teacherSelect.val("");
+                }
+            }
+        }
+
+        $('.select-mapel').on('change', function() {
+            updateTeacherOptions(this);
+        });
+        
+        $('.select-mapel').each(function() {
+            if($(this).val()) {
+                updateTeacherOptions(this);
+            }
+        });
+    });
+</script>
 @endsection

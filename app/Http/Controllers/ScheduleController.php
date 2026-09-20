@@ -93,7 +93,7 @@ class ScheduleController extends Controller
         }
 
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
-        $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
+        $subjects = Subject::with('teachers')->where('school_id', $schoolId)->orderBy('name')->get();
         $teachers = User::role('Guru')->where('school_id', $schoolId)->orderBy('name')->get();
 
         $setting = SchoolSetting::where('school_id', $schoolId)->first();
@@ -144,7 +144,7 @@ class ScheduleController extends Controller
         $classroom = Classroom::findOrFail($id);
         $schoolId = $classroom->school_id;
         
-        $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
+        $subjects = Subject::with('teachers')->where('school_id', $schoolId)->orderBy('name')->get();
         $teachers = User::role('Guru')->where('school_id', $schoolId)->orderBy('name')->get();
         $existingSchedules = Schedule::where('classroom_id', $id)->get();
 

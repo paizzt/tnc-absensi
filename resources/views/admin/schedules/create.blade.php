@@ -192,3 +192,59 @@
     </form>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+    // Menyimpan pemetaan Guru untuk setiap Mapel berdasarkan pivot table (subject_user)
+    const subjectTeacherMap = {
+        @foreach($subjects as $subject)
+            "{{ $subject->id }}": [
+                @foreach($subject->teachers as $teacher)
+                    "{{ $teacher->id }}"{{ !$loop->last ? ',' : '' }}
+                @endforeach
+            ]{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    };
+
+    $(document).ready(function() {
+        // Fungsi untuk memperbarui dropdown guru
+        function updateTeacherOptions(mapelSelect) {
+            let subjectId = $(mapelSelect).val();
+            let teacherSelect = $(mapelSelect).siblings('.select-guru');
+            let currentValue = teacherSelect.val();
+            
+            // Tampilkan/sembunyikan opsi guru
+            teacherSelect.find('option').each(function() {
+                if ($(this).val() === "") {
+                    $(this).show(); // Selalu tampilkan opsi default '- Guru -'
+                } else if (subjectId && subjectTeacherMap[subjectId] && subjectTeacherMap[subjectId].includes($(this).val())) {
+                    $(this).show(); // Tampilkan guru yang terhubung dengan mapel
+                } else if (!subjectId) {
+                    $(this).show(); // Jika tidak ada mapel terpilih, tampilkan semua guru
+                } else {
+                    $(this).hide(); // Sembunyikan guru yang tidak terkait
+                }
+            });
+            
+            // Jika guru yang dipilih sebelumnya tidak ada dalam mapel yang baru dipilih, reset ke kosong
+            if (subjectId && subjectTeacherMap[subjectId] && currentValue) {
+                if (!subjectTeacherMap[subjectId].includes(currentValue)) {
+                    teacherSelect.val("");
+                }
+            }
+        }
+
+        // Listener saat mapel berubah
+        $('.select-mapel').on('change', function() {
+            updateTeacherOptions(this);
+        });
+        
+        // Trigger saat halaman dimuat (untuk mem-filter jika ada old data/validasi error)
+        $('.select-mapel').each(function() {
+            if($(this).val()) {
+                updateTeacherOptions(this);
+            }
+        });
+    });
+</script>
+@endsection
