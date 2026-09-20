@@ -180,7 +180,7 @@
                 <a href="https://arjunaproductionsgruphome1.odoo.com/" target="_blank" class="menu-card">
                     <i class="bi bi-globe menu-icon"></i>
                     <h3 class="menu-title">Arjuna Group</h3>
-                    <span class="menu-desc">Arjuna Productions Grup Home 1</span>
+                    <span class="menu-desc">Arjuna Productions Grup</span>
                 </a>
             </div>
 
