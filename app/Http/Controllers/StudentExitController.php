@@ -51,14 +51,18 @@ class StudentExitController extends Controller
         $request->validate([
             'student_id' => 'required|exists:students,id',
             'reason' => 'required|string|max:255',
-            'duration_minutes' => 'required|integer|min:5|max:180' // Misal izin max 3 jam
+            'duration_minutes' => 'required|integer|min:5|max:999'
         ]);
+
+        $validUntil = $request->duration_minutes == 999 
+            ? Carbon::today()->endOfDay() 
+            : Carbon::now()->addMinutes((int) $request->duration_minutes);
 
         StudentExit::create([
             'student_id' => $request->student_id,
             'approved_by' => Auth::id(),
             'reason' => $request->reason,
-            'valid_until' => Carbon::now()->addMinutes((int) $request->duration_minutes),
+            'valid_until' => $validUntil,
             'status' => 'Disetujui'
         ]);
 

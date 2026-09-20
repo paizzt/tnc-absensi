@@ -123,6 +123,7 @@
                             <option value="45">45 Menit</option>
                             <option value="60">1 Jam</option>
                             <option value="120">2 Jam</option>
+                            <option value="999">Sampai Pulang Sekolah</option>
                         </select>
                         <div class="form-text small">Sistem akan menandai terlambat jika siswa kembali melewati durasi ini.</div>
                     </div>
