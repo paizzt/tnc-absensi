@@ -64,9 +64,9 @@
             </div>
             
             <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Kirim Tautan Pemulihan</button>
-            <div class="text-center">
-                <a href="{{ route('login') }}" class="text-decoration-none small fw-medium" style="color: #6B7280;"><i class="bi bi-arrow-left"></i> Kembali ke Login</a>
-            </div>
+            <a href="{{ route('login') }}" class="btn btn-outline-secondary w-100 py-2">
+                <i class="bi bi-arrow-left"></i> Kembali ke Login
+            </a>
         </form>
     </div>
     
