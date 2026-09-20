@@ -58,7 +58,7 @@ class StudentExitController extends Controller
             'student_id' => $request->student_id,
             'approved_by' => Auth::id(),
             'reason' => $request->reason,
-            'valid_until' => Carbon::now()->addMinutes($request->duration_minutes),
+            'valid_until' => Carbon::now()->addMinutes((int) $request->duration_minutes),
             'status' => 'Disetujui'
         ]);
 
