@@ -218,7 +218,7 @@
 
     <footer class="footer">
         <div class="social-icons mb-2">
-            <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.instagram.com/ragiragi.id?igsh=bTg2aTByM2N3OHUy&utm_source=qr" target="_blank"><i class="bi bi-instagram"></i></a>
             <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
             <a href="#" target="_blank"><i class="bi bi-youtube"></i></a>
             <a href="https://share.google/Kg3ENq9M9Ej9RHVdb" target="_blank" title="Lokasi Kami"><i class="bi bi-geo-alt-fill"></i></a>
