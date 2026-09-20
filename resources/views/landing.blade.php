@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arjuna Production Group</title>
+    <meta name="google-site-verification" content="KN0Iue_9chxUOviNG26SFY_KV8IMQwD8I_odqnz32JY" />
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/logo-arjuna-one.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
