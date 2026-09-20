@@ -25,8 +25,19 @@ class ReportController extends Controller
             $selectedSchoolId = $user->school_id;
         }
 
-        $classrooms = Classroom::where('school_id', $selectedSchoolId)->orderBy('name')->get();
-        $subjects = Subject::where('school_id', $selectedSchoolId)->orderBy('name')->get();
+        if ($user->hasRole('Guru')) {
+            $homeroomClassIds = \App\Models\Classroom::where('teacher_id', $user->id)->pluck('id');
+            $teachingClassIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('classroom_id');
+            $allowedClassIds = $homeroomClassIds->concat($teachingClassIds)->unique();
+            
+            $classrooms = Classroom::whereIn('id', $allowedClassIds)->orderBy('name')->get();
+
+            $subjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id')->unique();
+            $subjects = Subject::whereIn('id', $subjectIds)->orderBy('name')->get();
+        } else {
+            $classrooms = Classroom::where('school_id', $selectedSchoolId)->orderBy('name')->get();
+            $subjects = Subject::where('school_id', $selectedSchoolId)->orderBy('name')->get();
+        }
 
         return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms', 'subjects'));
     }
@@ -42,21 +53,53 @@ class ReportController extends Controller
         $schoolId = $request->input('school_id');
         $classroomId = $request->input('classroom_id');
         $subjectId = $request->input('subject_id');
+        
+        $user = Auth::user();
 
         $query = ClassAttendance::with(['student.classroom', 'schedule.subject'])
             ->where('school_id', $schoolId)
             ->whereBetween('date', [$request->start_date, $request->end_date]);
 
-        if ($classroomId) {
-            $query->whereHas('student', function($q) use ($classroomId) {
-                $q->where('classroom_id', $classroomId);
-            });
-        }
+        if ($user->hasRole('Guru')) {
+            $homeroomClassIds = \App\Models\Classroom::where('teacher_id', $user->id)->pluck('id');
+            $teachingClassIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('classroom_id');
+            $allowedClassIds = $homeroomClassIds->concat($teachingClassIds)->unique();
+            
+            // Limit to allowed classrooms if no specific classroom is chosen, 
+            // or if the chosen classroom is not in their allowed list
+            if (!$classroomId || !$allowedClassIds->contains($classroomId)) {
+                $query->whereHas('student', function($q) use ($allowedClassIds) {
+                    $q->whereIn('classroom_id', $allowedClassIds);
+                });
+            } else {
+                $query->whereHas('student', function($q) use ($classroomId) {
+                    $q->where('classroom_id', $classroomId);
+                });
+            }
 
-        if ($subjectId) {
-            $query->whereHas('schedule', function($q) use ($subjectId) {
-                $q->where('subject_id', $subjectId);
-            });
+            // Also limit subjects
+            $allowedSubjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id')->unique();
+            if ($subjectId && $allowedSubjectIds->contains($subjectId)) {
+                $query->whereHas('schedule', function($q) use ($subjectId) {
+                    $q->where('subject_id', $subjectId);
+                });
+            } else {
+                $query->whereHas('schedule', function($q) use ($allowedSubjectIds) {
+                    $q->whereIn('subject_id', $allowedSubjectIds);
+                });
+            }
+        } else {
+            if ($classroomId) {
+                $query->whereHas('student', function($q) use ($classroomId) {
+                    $q->where('classroom_id', $classroomId);
+                });
+            }
+
+            if ($subjectId) {
+                $query->whereHas('schedule', function($q) use ($subjectId) {
+                    $q->where('subject_id', $subjectId);
+                });
+            }
         }
 
         $attendances = $query->orderBy('date', 'asc')->get();

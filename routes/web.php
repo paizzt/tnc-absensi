@@ -67,9 +67,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('classrooms', ClassroomController::class)->except(['show', 'create', 'edit']);
         Route::resource('subjects', SubjectController::class)->except(['show', 'create', 'edit']);
         
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::post('/reports/export', [ReportController::class, 'export'])->name('reports.export');
-        
         Route::get('/students/template', [StudentController::class, 'downloadTemplate'])->name('students.template');
         Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
         Route::get('/students/bulk-print', [StudentController::class, 'bulkPrint'])->name('students.bulk_print')->middleware('role:Super Admin');
@@ -81,6 +78,12 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/scan', [GateAttendanceController::class, 'index'])->name('attendances.gate');
         Route::post('/scan/process', [GateAttendanceController::class, 'scan'])->name('attendances.scan_process');
+    });
+
+    // 3.5. LAPORAN & REKAPITULASI
+    Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK|Guru'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::post('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
 
     // 4. AREA GURU (WALI KELAS & GURU MAPEL)

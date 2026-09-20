@@ -135,7 +135,9 @@
                         <i class="bi bi-book"></i> <span class="nav-text">Master Mapel</span>
                     </a>
                 </li>
-                
+            @endhasanyrole
+
+            @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK|Guru')
                 <li class="nav-label">Laporan & Rekap</li>
                 <li>
                     <a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" title="Export Laporan">
