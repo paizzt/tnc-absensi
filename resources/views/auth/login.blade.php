@@ -97,10 +97,13 @@
                 <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="superadmin@absensi.com">
             </div>
             <div class="mb-4">
-                <label for="password" class="form-label text-neutral small fw-semibold">Kata Sandi</label>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="password" class="form-label text-neutral small fw-semibold mb-0">Kata Sandi</label>
+                    <a href="{{ route('password.request') }}" class="text-decoration-none small text-primary fw-medium">Lupa Kata Sandi?</a>
+                </div>
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">Aksi</button>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="bi bi-eye"></i></button>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 py-2">Masuk</button>
