@@ -3,51 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layanan Digital Terpadu</title>
+    <title>Arjuna Production Group</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Slate 50 */
-            color: #1e293b; /* Slate 800 */
+            background-color: #ffffff;
+            background-image: url('{{ asset('images/bg-landing.jpg') }}');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
-        /* Latar belakang dengan pola dot pattern */
-        .bg-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px); /* Lighter dots for white bg */
-            background-size: 24px 24px;
-            opacity: 0.5;
-            z-index: -1;
-        }
-
-        .hero-section {
-            padding: 4rem 1rem 2rem;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-weight: 800;
-            font-size: 2.5rem;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            color: #0f172a; /* Dark text */
-            text-transform: uppercase;
-        }
-
-        .hero-subtitle {
-            font-weight: 400;
-            font-size: 1.1rem;
-            color: #64748b; /* Medium slate */
-            margin-bottom: 3rem;
-            letter-spacing: 2px;
+        /* Hero Spacer to push content below the background text */
+        .hero-spacer {
+            height: 280px; /* Adjust if needed to push buttons below the image text */
         }
 
         /* Card Menu Styling (1 Warna) */
@@ -58,7 +36,7 @@
             justify-content: center;
             background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
             border-radius: 16px;
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1.5rem;
             text-decoration: none;
             color: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,20 +52,21 @@
         }
 
         .menu-icon {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
         .menu-title {
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .menu-desc {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             opacity: 0.8;
             font-weight: 300;
             text-align: center;
@@ -95,44 +74,81 @@
 
         .footer {
             margin-top: auto;
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             text-align: center;
             color: #64748b;
             font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #2563EB;
+            color: white;
+            text-decoration: none;
+            margin: 0 0.3rem;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.1);
+            background-color: #1d4ed8;
+            color: white;
         }
         
         @media (max-width: 768px) {
-            .hero-title { font-size: 2rem; }
-            .menu-card { padding: 2rem 1rem; }
+            .hero-spacer { height: 180px; }
+            .menu-card { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-pattern"></div>
 
-    <div class="container flex-grow-1 d-flex flex-column justify-content-center">
-        <div class="hero-section">
-            <h1 class="hero-title">Layanan Digital Terpadu</h1>
-            <p class="hero-subtitle">"Moderasi - Inovasi - Inspirasi"</p>
-        </div>
+    <div class="container flex-grow-1 d-flex flex-column">
+        
+        <div class="hero-spacer"></div>
 
-        <div class="row justify-content-center g-4 max-w-4xl mx-auto" style="max-width: 800px; width: 100%;">
+        <div class="row justify-content-center g-4 max-w-4xl mx-auto mb-5" style="max-width: 900px; width: 100%;">
             
+            <!-- Menu 1 -->
+            <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
+                <a href="https://arjunaproductionsgruphome1.odoo.com/" target="_blank" class="menu-card">
+                    <i class="bi bi-globe menu-icon"></i>
+                    <h3 class="menu-title">Portal 1</h3>
+                    <span class="menu-desc">Arjuna Productions Grup Home 1</span>
+                </a>
+            </div>
+
+            <!-- Menu 2 -->
+            <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
+                <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card">
+                    <i class="bi bi-briefcase menu-icon"></i>
+                    <h3 class="menu-title">Portal 2</h3>
+                    <span class="menu-desc">Arjuna Productions Grup</span>
+                </a>
+            </div>
+
             <!-- Menu Login -->
-            <div class="col-md-6 col-sm-10">
+            <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
                 <a href="{{ route('login') }}" class="menu-card">
                     <i class="bi bi-person-workspace menu-icon"></i>
-                    <h3 class="menu-title">Portal Login</h3>
-                    <span class="menu-desc">Akses Dashboard, Absensi Kelas & Pengaturan Sistem</span>
+                    <h3 class="menu-title">Login App</h3>
+                    <span class="menu-desc">Akses Dashboard & Sistem</span>
                 </a>
             </div>
 
             <!-- Menu Izin -->
-            <div class="col-md-6 col-sm-10">
+            <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
                 <a href="{{ route('portal.izin.index') }}" class="menu-card">
                     <i class="bi bi-envelope-paper menu-icon"></i>
-                    <h3 class="menu-title">Izin / Sakit</h3>
-                    <span class="menu-desc">Formulir Pengajuan Izin Siswa oleh Orang Tua Wali</span>
+                    <h3 class="menu-title">Izin Siswa</h3>
+                    <span class="menu-desc">Formulir Pengajuan Izin</span>
                 </a>
             </div>
 
@@ -140,7 +156,12 @@
     </div>
 
     <footer class="footer">
-        &copy; {{ date('Y') }} Layanan Digital Terpadu. All rights reserved.
+        <div class="social-icons mb-2">
+            <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
+            <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
+            <a href="#" target="_blank"><i class="bi bi-youtube"></i></a>
+        </div>
+        &copy; {{ date('Y') }} Arjuna Production Group. All rights reserved.
     </footer>
 
 </body>
