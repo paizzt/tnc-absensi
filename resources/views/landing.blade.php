@@ -120,7 +120,7 @@
             <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
                 <a href="https://arjunaproductionsgruphome1.odoo.com/" target="_blank" class="menu-card">
                     <i class="bi bi-globe menu-icon"></i>
-                    <h3 class="menu-title">Portal 1</h3>
+                    <h3 class="menu-title">Arjuna Group</h3>
                     <span class="menu-desc">Arjuna Productions Grup Home 1</span>
                 </a>
             </div>
@@ -129,7 +129,7 @@
             <div class="col-md-6 col-lg-3 col-sm-6 col-10 mx-auto mx-sm-0">
                 <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card">
                     <i class="bi bi-briefcase menu-icon"></i>
-                    <h3 class="menu-title">Portal 2</h3>
+                    <h3 class="menu-title">Ragi Ragi ID</h3>
                     <span class="menu-desc">Arjuna Productions Grup</span>
                 </a>
             </div>
