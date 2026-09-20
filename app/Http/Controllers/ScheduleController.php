@@ -84,7 +84,13 @@ class ScheduleController extends Controller
     public function create(Request $request)
     {
         $user = Auth::user();
-        $schoolId = $user->hasRole('Super Admin') ? ($request->query('school_id') ?? School::first()->id) : $user->school_id;
+        $schools = [];
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            $schoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+        } else {
+            $schoolId = $user->school_id;
+        }
 
         $classrooms = Classroom::where('school_id', $schoolId)->orderBy('name')->get();
         $subjects = Subject::where('school_id', $schoolId)->orderBy('name')->get();
@@ -109,7 +115,7 @@ class ScheduleController extends Controller
         }
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        return view('admin.schedules.create', compact('classrooms', 'subjects', 'teachers', 'schoolId', 'timeSlots', 'days'));
+        return view('admin.schedules.create', compact('classrooms', 'subjects', 'teachers', 'schoolId', 'timeSlots', 'days', 'schools'));
     }
 
     public function store(Request $request)
