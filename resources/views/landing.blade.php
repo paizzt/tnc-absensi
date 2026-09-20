@@ -182,7 +182,7 @@
                 <a href="https://arjunaproductionsgruphome1.odoo.com/" target="_blank" class="menu-card">
                     <i class="bi bi-globe menu-icon"></i>
                     <h3 class="menu-title">Arjuna Group</h3>
-                    <span class="menu-desc">Arjuna Productions Grup</span>
+                    <span class="menu-desc">website resmi</span>
                 </a>
             </div>
 
@@ -191,7 +191,7 @@
                 <a href="https://arjuna-productions-grup.odoo.com/" target="_blank" class="menu-card menu-card-maroon">
                     <i class="bi bi-printer menu-icon"></i>
                     <h3 class="menu-title">Ragi Ragi ID</h3>
-                    <span class="menu-desc">Arjuna Productions Grup</span>
+                    <span class="menu-desc">bordir-sablon-printing</span>
                 </a>
             </div>
 
