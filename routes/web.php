@@ -18,7 +18,7 @@ use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentExitController;
 
-Route::get('/', function () { return redirect()->route('login'); });
+Route::get('/', function () { return view('landing'); })->name('home');
 
 // ==========================================
 // AREA PUBLIK (PORTAL SISWA & ORANG TUA)
