@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /teacher/
+Disallow: /bk/
+Disallow: /dashboard
+
+Sitemap: https://arjproduction.net/sitemap.xml

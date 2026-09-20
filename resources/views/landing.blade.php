@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arjuna Production Group</title>
+    <meta name="description" content="Arjuna Production Group - Sistem Absensi Digital Terintegrasi dan Layanan Bordir Sablon Printing Profesional.">
     <meta name="google-site-verification" content="KN0Iue_9chxUOviNG26SFY_KV8IMQwD8I_odqnz32JY" />
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/logo-arjuna-one.png') }}" type="image/png">
