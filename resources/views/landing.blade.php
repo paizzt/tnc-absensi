@@ -198,7 +198,7 @@
                 <a href="{{ route('login') }}" class="menu-card">
                     <i class="bi bi-person-workspace menu-icon"></i>
                     <h3 class="menu-title">Login App</h3>
-                    <span class="menu-desc">Akses Dashboard & Sistem</span>
+                    <span class="menu-desc">Akses Sistem Absensi</span>
                 </a>
             </div>
 
