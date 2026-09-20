@@ -6,7 +6,7 @@
 <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold mb-0" style="color: #111827;">Manajemen Pengguna</h4>
-        <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm px-3">+ Tambah Pengguna</a>
+        <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm px-3">+</a>
     </div>
 
     @if(session('success'))

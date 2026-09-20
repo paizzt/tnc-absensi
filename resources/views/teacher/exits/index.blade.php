@@ -10,9 +10,7 @@
             <p class="text-neutral small mb-0">Kelola izin keluar area sekolah untuk siswa kelas <strong>{{ $classroom->name }}</strong>.</p>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <button class="btn btn-primary fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#createExitModal">
-                <i class="bi bi-plus-lg me-1"></i> Buat Surat Izin
-            </button>
+            <button class="btn btn-primary fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#createExitModal">Buat</button>
         </div>
     </div>
 
@@ -131,7 +129,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary fw-bold px-4"><i class="bi bi-send me-1"></i> Terbitkan Izin</button>
+                    <button type="submit" class="btn btn-primary fw-bold px-4">Terbitkan</button>
                 </div>
             </form>
         </div>

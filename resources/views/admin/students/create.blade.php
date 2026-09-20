@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end border-top pt-4">
-                    <button type="submit" class="btn btn-primary px-4 fw-medium" {{ $classrooms->isEmpty() ? 'disabled' : '' }}>Simpan & Generate QR</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-medium" {{ $classrooms->isEmpty()</button>
                 </div>
             </form>
         </div>

@@ -9,9 +9,7 @@
             <h4 class="fw-bold mb-1" style="color: #111827;">Pendaftaran Sekolah Baru</h4>
             <p class="text-neutral small mb-0">Masukkan data dasar sekolah. Pengaturan sistem (jam kerja & notifikasi) akan dibuat otomatis.</p>
         </div>
-        <a href="{{ route('schools.index') }}" class="btn btn-light btn-sm px-3 border">
-            Kembali
-        </a>
+        <a href="{{ route('schools.index') }}" class="btn btn-light btn-sm px-3 border">Kembali</a>
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 max-w-3xl">
@@ -72,7 +70,7 @@
 
                 <div class="d-flex justify-content-end">
                     <button type="reset" class="btn btn-light border px-4 me-2">Reset</button>
-                    <button type="submit" class="btn btn-primary px-4">Simpan Sekolah Baru</button>
+                    <button type="submit" class="btn btn-primary px-4">Simpan</button>
                 </div>
             </form>
         </div>

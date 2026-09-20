@@ -48,7 +48,7 @@
                 <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;">0%</div>
             </div>
             
-            <a href="{{ route('admin.students.index', ['school_id' => request('school_id')]) }}" class="btn btn-light border mt-3 d-none" id="btn-back">Kembali ke Daftar Siswa</a>
+            <a href="{{ route('admin.students.index', ['school_id' => request('school_id')]) }}" class="btn btn-light border mt-3 d-none" id="btn-back">Kembali</a>
         </div>
     </div>
 

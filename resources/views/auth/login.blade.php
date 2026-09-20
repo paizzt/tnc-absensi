@@ -57,7 +57,7 @@
             <div id="loginBannerCarousel" class="carousel slide carousel-fade shadow-sm" data-bs-ride="carousel" data-bs-interval="5000" style="border-radius: 12px; overflow: hidden;">
                 <div class="carousel-indicators">
                     @foreach($banners as $index => $banner)
-                        <button type="button" data-bs-target="#loginBannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}"></button>
+                        <button type="button" data-bs-target="#loginBannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}">Aksi</button>
                     @endforeach
                 </div>
                 <div class="carousel-inner">
@@ -100,9 +100,7 @@
                 <label for="password" class="form-label text-neutral small fw-semibold">Kata Sandi</label>
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                        <i class="bi bi-eye"></i>
-                    </button>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">Aksi</button>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 py-2">Masuk</button>

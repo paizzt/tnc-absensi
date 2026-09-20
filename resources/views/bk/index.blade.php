@@ -73,7 +73,7 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-end">
-                                <button class="btn btn-sm btn-primary px-3" data-bs-toggle="modal" data-bs-target="#spModal{{ $student->id }}">Kirim SP</button>
+                                <button class="btn btn-sm btn-primary px-3" data-bs-toggle="modal" data-bs-target="#spModal{{ $student->id }}">Kirim</button>
                                 
                                 <div class="modal fade text-start" id="spModal{{ $student->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -106,7 +106,7 @@
                                                 </div>
                                                 <div class="modal-footer border-top-0 pt-0">
                                                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-danger text-white">Kirim via WhatsApp</button>
+                                                    <button type="submit" class="btn btn-danger text-white">Kirim</button>
                                                 </div>
                                             </form>
                                         </div>

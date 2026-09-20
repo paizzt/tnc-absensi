@@ -87,9 +87,7 @@
             <h4 class="fw-bold mb-1" style="color: #111827;">Daftar Roster Matriks</h4>
             <p class="text-neutral small mb-0">Klik pada nama kelas untuk melihat dan mengelola daftar mapel secara visual.</p>
         </div>
-        <a href="{{ route('admin.schedules.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i> Susun Roster Baru
-        </a>
+        <a href="{{ route('admin.schedules.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">Susun</a>
     </div>
 
     @if(session('success'))
@@ -137,22 +135,16 @@
             @foreach($classrooms as $class)
                 <div class="accordion-item border-0 shadow-sm mb-3 rounded-4 overflow-hidden">
                     <h2 class="accordion-header" id="heading{{ $class->id }}">
-                        <button class="accordion-button collapsed fw-bold fs-6 border-bottom" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $class->id }}" aria-expanded="false" aria-controls="collapse{{ $class->id }}">
-                            <i class="bi bi-mortarboard"></i> Roster Kelas: {{ $class->level }} - {{ $class->name }}
-                        </button>
+                        <button class="accordion-button collapsed fw-bold fs-6 border-bottom" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $class->id }}" aria-expanded="false" aria-controls="collapse{{ $class->id }}">Roster Kelas: {{ $class->level }} - {{ $class->name }}</button>
                     </h2>
                     <div id="collapse{{ $class->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $class->id }}" data-bs-parent="#accordionSchedules">
                         <div class="accordion-body p-0">
                             
                             <div class="d-flex justify-content-end bg-light p-2 border-bottom">
-                                <a href="{{ route('admin.schedules.edit', $class->id) }}" class="btn btn-sm btn-warning text-dark fw-bold me-2 shadow-sm">
-                                    <i class="bi bi-pencil-square"></i> Edit Roster Ini
-                                </a>
+                                <a href="{{ route('admin.schedules.edit', $class->id) }}" class="btn btn-sm btn-warning text-dark fw-bold me-2 shadow-sm">Edit</a>
                                 <form action="{{ route('admin.schedules.destroy_class', $class->id) }}" method="POST" class="sweet-delete-form" data-title="Reset Semua Jadwal?" data-text="Seluruh roster di kelas ini akan dihapus secara permanen!">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger fw-bold shadow-sm">
-                                        <i class="bi bi-trash3-fill"></i> Reset (Hapus Semua)
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-danger fw-bold shadow-sm">Reset</button>
                                 </form>
                             </div>
 
@@ -194,9 +186,7 @@
                                                             
                                                             <form action="{{ route('admin.schedules.destroy', $sched->id) }}" method="POST" class="sweet-delete-form" data-title="Hapus Mapel Ini?" data-text="Mapel {{ $sched->subject->name }} akan dihapus dari jam ini.">
                                                                 @csrf @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger btn-delete-cell" title="Hapus Mapel Ini">
-                                                                    <i class="bi bi-x-circle"></i>
-                                                                </button>
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger btn-delete-cell" title="Hapus Mapel Ini">Hapus</button>
                                                             </form>
                                                         @else
                                                             <div class="text-center text-muted" style="font-size: 0.75rem; opacity: 0.4;">- Kosong -</div>

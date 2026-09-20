@@ -23,7 +23,7 @@
     <div class="container">
         <div class="form-container">
             <div class="d-flex align-items-center border-bottom pb-3 mb-4">
-                <a href="{{ route('portal.izin.index') }}" class="btn btn-sm btn-light border me-3"><i class="bi bi-arrow-left"></i></a>
+                <a href="{{ route('portal.izin.index') }}" class="btn btn-sm btn-light border me-3">Aksi</a>
                 <div>
                     <h5 class="fw-bold mb-0 text-dark">Formulir Kehadiran</h5>
                     <span class="text-muted small">Siswa: {{ $student->name }} ({{ $student->classroom->name }})</span>
@@ -53,8 +53,8 @@
                         <img id="photo-preview" class="d-none" />
                     </div>
                     
-                    <button type="button" id="snap-btn" class="btn btn-secondary w-100 mb-2"><i class="bi bi-camera"></i> Ambil Foto</button>
-                    <button type="button" id="retake-btn" class="btn btn-outline-secondary w-100 mb-2 d-none"><i class="bi bi-arrow-clockwise"></i> Ulangi Foto</button>
+                    <button type="button" id="snap-btn" class="btn btn-secondary w-100 mb-2">Ambil</button>
+                    <button type="button" id="retake-btn" class="btn btn-outline-secondary w-100 mb-2 d-none">Ulangi</button>
                     
                     <canvas id="canvas" class="d-none"></canvas>
                     <input type="hidden" name="selfie_image" id="selfie_image">
@@ -65,7 +65,7 @@
                     <input class="form-control form-control-sm" type="file" name="document" accept=".pdf,.jpg,.jpeg,.png">
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="submit-btn"><i class="bi bi-send-fill me-1"></i> Kirim Permohonan</button>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="submit-btn">Kirim</button>
             </form>
         </div>
     </div>

@@ -130,7 +130,7 @@
                     </div>
                     
                     <div class="col-md-2 text-end mt-3 mt-md-0">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-save"></i> Simpan Roster</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Simpan</button>
                     </div>
                 </div>
                 @if($classrooms->isEmpty())

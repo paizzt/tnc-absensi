@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary py-2 fw-bold" {{ !$selectedSchoolId ? 'disabled' : '' }}>Buat Laporan</button>
+                    <button type="submit" class="btn btn-primary py-2 fw-bold" {{ !$selectedSchoolId ? 'disabled' : '' }}>Buat</button>
                 </div>
             </form>
         </div>

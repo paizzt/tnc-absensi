@@ -126,7 +126,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                    <button type="submit" class="btn btn-primary px-5 fw-medium">Simpan Pengaturan</button>
+                    <button type="submit" class="btn btn-primary px-5 fw-medium">Simpan</button>
                 </div>
             </form>
         </div>

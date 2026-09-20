@@ -6,9 +6,7 @@
 <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold mb-0" style="color: #111827;">Master Mata Pelajaran</h4>
-        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#createModal">
-            + Tambah Mapel
-        </button>
+        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#createModal">+</button>
     </div>
 
     @if(session('success'))
@@ -100,7 +98,7 @@
                                         </div>
                                         <div class="modal-footer border-top-0 pt-0">
                                             <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -142,7 +140,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Mata Pelajaran</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

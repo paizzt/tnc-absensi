@@ -67,7 +67,7 @@
 
                 <div class="text-end border-top pt-3">
                     <a href="{{ route('users.index') }}" class="btn btn-light border px-4 me-2">Batal</a>
-                    <button type="submit" class="btn btn-primary fw-bold px-4"><i class="bi bi-save me-1"></i> Simpan Pengguna</button>
+                    <button type="submit" class="btn btn-primary fw-bold px-4">Simpan</button>
                 </div>
             </form>
         </div>

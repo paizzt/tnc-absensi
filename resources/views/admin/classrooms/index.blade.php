@@ -9,9 +9,7 @@
             <h4 class="fw-bold mb-1" style="color: #111827;">Master Kelas</h4>
             <p class="text-neutral small mb-0">Kelola data kelas dan tugaskan Wali Kelas.</p>
         </div>
-        <button class="btn btn-primary btn-sm px-3 fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#createModal">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Kelas
-        </button>
+        <button class="btn btn-primary btn-sm px-3 fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#createModal">Tambah</button>
     </div>
 
     @if(session('success'))
@@ -70,14 +68,10 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-end">
-                                <button class="btn btn-sm btn-outline-warning text-dark me-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $class->id }}" title="Edit Kelas">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
+                                <button class="btn btn-sm btn-outline-warning text-dark me-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $class->id }}" title="Edit Kelas">Edit</button>
                                 <form action="{{ route('admin.classrooms.destroy', $class->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data kelas ini?');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Kelas">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Kelas">Hapus</button>
                                 </form>
                             </td>
                         </tr>
@@ -114,7 +108,7 @@
                                         </div>
                                         <div class="modal-footer border-top-0 pt-0">
                                             <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4"><i class="bi bi-save me-1"></i> Simpan</button>
+                                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -168,7 +162,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary fw-bold px-4"><i class="bi bi-plus-circle me-1"></i> Tambah</button>
+                    <button type="submit" class="btn btn-primary fw-bold px-4">Tambah</button>
                 </div>
             </form>
         </div>

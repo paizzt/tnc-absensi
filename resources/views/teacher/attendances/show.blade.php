@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="card-footer bg-white border-top p-4 d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary px-5">Simpan Data Absensi</button>
+                <button type="submit" class="btn btn-primary px-5">Simpan</button>
             </div>
         </form>
     </div>

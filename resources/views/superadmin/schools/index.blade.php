@@ -10,9 +10,7 @@
             <p class="text-neutral small mb-0">Kelola profil dan informasi kontak institusi sekolah.</p>
         </div>
         @role('Super Admin')
-        <a href="{{ route('schools.create') }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Sekolah
-        </a>
+        <a href="{{ route('schools.create') }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">Tambah</a>
         @endrole
     </div>
 
@@ -62,17 +60,13 @@
                             </td>
                             <td class="px-4 py-3 text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ route('schools.edit', $school->id) }}" class="btn btn-sm btn-outline-warning text-dark" title="Edit Profil Sekolah">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
+                                    <a href="{{ route('schools.edit', $school->id) }}" class="btn btn-sm btn-outline-warning text-dark" title="Edit Profil Sekolah">Edit</a>
                                     
                                     @role('Super Admin')
                                     <form action="{{ route('schools.destroy', $school->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sekolah ini secara permanen?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Sekolah">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Sekolah">Hapus</button>
                                     </form>
                                     @endrole
                                 </div>

@@ -33,14 +33,10 @@
 
         <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-scan-tab" data-bs-toggle="pill" data-bs-target="#pills-scan" type="button" role="tab">
-                    <i class="bi bi-qr-code-scan me-1"></i> Scan Kartu
-                </button>
+                <button class="nav-link active" id="pills-scan-tab" data-bs-toggle="pill" data-bs-target="#pills-scan" type="button" role="tab">Scan</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-manual-tab" data-bs-toggle="pill" data-bs-target="#pills-manual" type="button" role="tab">
-                    <i class="bi bi-keyboard me-1"></i> Ketik NIS
-                </button>
+                <button class="nav-link" id="pills-manual-tab" data-bs-toggle="pill" data-bs-target="#pills-manual" type="button" role="tab">Ketik</button>
             </li>
         </ul>
 
@@ -50,12 +46,8 @@
                 <div class="text-center mb-3">
                     <p class="small text-muted mb-2">Arahkan kamera ke QR Code pada ID Card Siswa.</p>
                     <div id="reader"></div>
-                    <button id="start-scan-btn" class="btn btn-outline-primary w-100 fw-bold mt-3">
-                        <i class="bi bi-camera me-1"></i> Aktifkan Kamera Pemindai
-                    </button>
-                    <button id="stop-scan-btn" class="btn btn-outline-danger w-100 fw-bold mt-3 d-none">
-                        <i class="bi bi-stop-circle me-1"></i> Hentikan Kamera
-                    </button>
+                    <button id="start-scan-btn" class="btn btn-outline-primary w-100 fw-bold mt-3">Aktifkan</button>
+                    <button id="stop-scan-btn" class="btn btn-outline-danger w-100 fw-bold mt-3 d-none">Hentikan</button>
                 </div>
                 
                 <form action="{{ route('portal.izin.search') }}" method="POST" id="scan-form">
@@ -74,9 +66,7 @@
                             <input type="text" class="form-control border-start-0" name="identifier" required placeholder="Contoh: 101234">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
-                        Lanjutkan <i class="bi bi-arrow-right ms-1"></i>
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">Lanjutkan</button>
                 </form>
             </div>
             

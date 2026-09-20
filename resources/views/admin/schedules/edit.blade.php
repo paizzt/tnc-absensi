@@ -35,7 +35,7 @@
         @csrf @method('PUT')
         
         <div class="text-end mb-3">
-            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 shadow-sm"><i class="bi bi-save-fill me-1"></i> Update Matriks</button>
+            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 shadow-sm">Update</button>
         </div>
 
         <div class="roster-table-wrapper mb-5">

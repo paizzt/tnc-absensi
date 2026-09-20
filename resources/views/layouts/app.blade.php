@@ -205,18 +205,14 @@
     <div id="content-wrapper">
         <header id="topbar">
             <div class="d-flex align-items-center">
-                <button id="sidebarToggle" title="Buka/Tutup Menu">
-                    <i class="bi bi-list"></i>
-                </button>
+                <button id="sidebarToggle" title="Buka/Tutup Menu">Aksi</button>
                 <h5 class="mb-0 ms-3 fw-bold text-dark d-none d-md-block" style="opacity: 0.8;">@yield('title')</h5>
             </div>
             
             <div class="d-flex align-items-center gap-3">
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-sm btn-light border text-danger fw-medium px-3 rounded-pill shadow-sm">
-                        <i class="bi bi-box-arrow-right me-1"></i> <span class="d-none d-sm-inline">Keluar</span>
-                    </button>
+                    <button type="submit" class="btn btn-sm btn-light border text-danger fw-medium px-3 rounded-pill shadow-sm">Keluar</button>
                 </form>
             </div>
         </header>

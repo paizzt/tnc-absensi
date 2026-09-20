@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end border-top pt-4">
-                    <button type="submit" class="btn btn-primary px-4 fw-medium">Simpan Perubahan</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-medium">Simpan</button>
                 </div>
             </form>
         </div>

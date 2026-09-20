@@ -23,7 +23,7 @@
             
             <div class="mt-auto pt-3 border-top text-center">
                 <p class="text-muted small mb-2">Gunakan kamera belakang untuk HP, atau Webcam untuk Laptop.</p>
-                <button id="swapCamera" class="btn btn-sm btn-light border text-primary px-4"><i class="bi bi-arrow-repeat"></i> Tukar Kamera</button>
+                <button id="swapCamera" class="btn btn-sm btn-light border text-primary px-4">Tukar</button>
             </div>
         </div>
 

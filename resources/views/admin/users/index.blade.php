@@ -9,9 +9,7 @@
             <h4 class="fw-bold mb-1" style="color: #111827;">Data Pengguna</h4>
             <p class="text-neutral small mb-0">Kelola akun Admin, Petugas Piket, Wali Kelas, dan Guru.</p>
         </div>
-        <a href="{{ route('users.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">
-            <i class="bi bi-person-plus-fill me-1"></i> Tambah Pengguna
-        </a>
+        <a href="{{ route('users.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 fw-medium shadow-sm">Tambah</a>
     </div>
 
     @if(session('success'))
@@ -98,15 +96,11 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-end">
-                                <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-outline-warning text-dark me-1" title="Edit Pengguna">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
+                                <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-outline-warning text-dark me-1" title="Edit Pengguna">Edit</a>
                                 @if(Auth::id() !== $u->id)
                                 <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus akun pengguna ini secara permanen?');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Pengguna">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Pengguna">Hapus</button>
                                 </form>
                                 @endif
                             </td>

@@ -70,7 +70,7 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-end">
-                                <a href="{{ route('teacher.permissions.show', $req->id) }}" class="btn btn-sm btn-primary px-3">Tinjau Data</a>
+                                <a href="{{ route('teacher.permissions.show', $req->id) }}" class="btn btn-sm btn-primary px-3">Tinjau</a>
                             </td>
                         </tr>
                         @empty

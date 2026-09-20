@@ -31,9 +31,7 @@
                     <h5 class="fw-bold mb-1 text-dark">{{ $sched->classroom->name }}</h5>
                     <p class="text-neutral mb-4">{{ $sched->subject->name }}</p>
                     
-                    <a href="{{ route('teacher.attendances.show', $sched->id) }}" class="btn btn-primary w-100 fw-medium">
-                        Buka Absensi Kelas
-                    </a>
+                    <a href="{{ route('teacher.attendances.show', $sched->id) }}" class="btn btn-primary w-100 fw-medium">Buka</a>
                 </div>
             </div>
         </div>

@@ -9,9 +9,7 @@
             <h4 class="fw-bold mb-1" style="color: #111827;">Banner Iklan Slide</h4>
             <p class="text-neutral small mb-0">Kelola gambar iklan yang akan tampil di halaman Login.</p>
         </div>
-        <a href="{{ route('banners.create') }}" class="btn btn-primary btn-sm px-3 shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Banner
-        </a>
+        <a href="{{ route('banners.create') }}" class="btn btn-primary btn-sm px-3 shadow-sm">Tambah</a>
     </div>
 
     @if(session('success'))
@@ -56,15 +54,11 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('banners.edit', $banner->id) }}" class="btn btn-sm btn-light border text-primary" title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
+                                        <a href="{{ route('banners.edit', $banner->id) }}" class="btn btn-sm btn-light border text-primary" title="Edit">Edit</a>
                                         <form action="{{ route('banners.destroy', $banner->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus banner ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light border text-danger" title="Hapus">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-light border text-danger" title="Hapus">Hapus</button>
                                         </form>
                                     </div>
                                 </td>

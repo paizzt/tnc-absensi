@@ -11,16 +11,10 @@
         </div>
         <div>
             @role('Super Admin')
-            <a href="{{ route('admin.students.bulk_print', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-warning btn-sm px-3 me-2 fw-medium text-dark shadow-sm">
-                <i class="bi bi-file-earmark-zip-fill me-1"></i> Cetak Massal (ZIP)
-            </a>
+            <a href="{{ route('admin.students.bulk_print', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-warning btn-sm px-3 me-2 fw-medium text-dark shadow-sm">Cetak</a>
             @endrole
-            <button class="btn btn-success btn-sm px-3 me-2 fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#importModal">
-                <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Import CSV
-            </button>
-            <a href="{{ route('admin.students.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 shadow-sm">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Manual
-            </a>
+            <button class="btn btn-success btn-sm px-3 me-2 fw-medium shadow-sm" data-bs-toggle="modal" data-bs-target="#importModal">Import</button>
+            <a href="{{ route('admin.students.create', ['school_id' => $selectedSchoolId ?? '']) }}" class="btn btn-primary btn-sm px-3 shadow-sm">Tambah</a>
         </div>
     </div>
 
@@ -85,29 +79,21 @@
                             <td class="px-4 py-3 text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <!-- Tombol Lihat QR Sementara -->
-                                    <button class="btn btn-sm btn-light border text-primary" data-bs-toggle="modal" data-bs-target="#qrModal{{ $student->id }}" title="Lihat QR Code">
-                                        <i class="bi bi-qr-code"></i> Lihat
-                                    </button>
+                                    <button class="btn btn-sm btn-light border text-primary" data-bs-toggle="modal" data-bs-target="#qrModal{{ $student->id }}" title="Lihat QR Code">Lihat</button>
                                     
                                     @role('Super Admin')
                                     <!-- Tombol Cetak ID Card Satuan -->
-                                    <a href="{{ route('admin.students.print_card', $student->id) }}" target="_blank" class="btn btn-sm btn-outline-dark" title="Cetak ID Card Barcode">
-                                        <i class="bi bi-printer"></i>
-                                    </a>
+                                    <a href="{{ route('admin.students.print_card', $student->id) }}" target="_blank" class="btn btn-sm btn-outline-dark" title="Cetak ID Card Barcode">Cetak</a>
                                     @endrole
 
                                     <!-- Tombol Edit -->
-                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-sm btn-outline-primary" title="Edit Data Siswa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
+                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-sm btn-outline-primary" title="Edit Data Siswa">Edit</a>
                                     
                                     <!-- Tombol Hapus -->
                                     <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus siswa ini?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Siswa">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Siswa">Hapus</button>
                                     </form>
                                 </div>
                                 
@@ -172,9 +158,7 @@
                             <li>Simpan kembali dalam format <code>.csv</code> (Comma Delimited).</li>
                         </ol>
                         <div class="mt-3">
-                            <a href="{{ route('admin.students.template') }}" class="btn btn-sm btn-outline-success fw-medium">
-                                <i class="bi bi-download me-1"></i> Download Template
-                            </a>
+                            <a href="{{ route('admin.students.template') }}" class="btn btn-sm btn-outline-success fw-medium">Download</a>
                         </div>
                     </div>
 
@@ -185,7 +169,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success text-white px-4 fw-medium"><i class="bi bi-upload me-1"></i> Proses Import</button>
+                    <button type="submit" class="btn btn-success text-white px-4 fw-medium">Proses</button>
                 </div>
             </form>
         </div>
