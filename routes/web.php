@@ -20,12 +20,6 @@ use App\Http\Controllers\StudentExitController;
 
 Route::get('/', function () { return redirect()->route('login'); });
 
-// Route bantuan untuk membuat symlink di hosting
-Route::get('/linkstorage', function () {
-    \Illuminate\Support\Facades\Artisan::call('storage:link');
-    return 'Symlink storage berhasil dibuat!';
-});
-
 // ==========================================
 // AREA PUBLIK (PORTAL SISWA & ORANG TUA)
 // ==========================================
