@@ -63,7 +63,7 @@ class PermissionService
             if (!$requestedSchoolId) {
                 return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
             }
-            return $this->repo->getPaginatedBySchool($requestedSchoolId, 15);
+            return $this->repo->getPaginatedBySchool($requestedSchoolId, null, 15);
         }
 
         $schoolId = $user->school_id;
@@ -71,7 +71,15 @@ class PermissionService
             abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
         }
 
-        return $this->repo->getPaginatedBySchool($schoolId, 15);
+        $classroomId = null;
+        if ($user->hasRole('Wali Kelas') || $user->hasRole('Guru')) {
+            $class = $user->homeroomClass;
+            if ($class) {
+                $classroomId = $class->id;
+            }
+        }
+
+        return $this->repo->getPaginatedBySchool($schoolId, $classroomId, 15);
     }
 
     public function getRequestById(string $id)
@@ -99,6 +107,11 @@ class PermissionService
                     'status' => $req->type
                 ]);
             }
+
+            // Update status absensi kelas jika sudah ada
+            \App\Models\ClassAttendance::where('student_id', $req->student_id)
+                ->where('date', $req->date)
+                ->update(['status' => $req->type]);
 
             $msg = "*INFORMASI VALIDASI IZIN*\nYth. Orang Tua/Wali,\nPermohonan {$req->type} untuk Ananda *{$req->student->name}* pada tanggal " . date('d/m/Y', strtotime($req->date)) . " telah *DISETUJUI* oleh Wali Kelas.\n\n_Pesan otomatis oleh ABSENSI_";
             SendWhatsAppNotification::dispatch($req->student->parent_phone, $msg, $req->student->school_id);

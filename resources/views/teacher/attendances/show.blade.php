@@ -30,8 +30,8 @@
                         <tbody>
                             @foreach($students as $student)
                             @php
-                                // Ambil status jika sudah pernah diabsen hari ini, default 'Hadir'
-                                $currentStatus = isset($records[$student->id]) ? $records[$student->id]->status : 'Hadir';
+                                // Ambil status jika sudah pernah diabsen hari ini, jika belum cek izin, jika tidak ada izin default 'Hadir'
+                                $currentStatus = isset($records[$student->id]) ? $records[$student->id]->status : (isset($leaves[$student->id]) ? $leaves[$student->id]->type : 'Hadir');
                             @endphp
                             <tr>
                                 <td class="px-4 py-3 fw-medium text-dark">{{ $student->name }}</td>

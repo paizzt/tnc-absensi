@@ -58,8 +58,15 @@ class TeacherAttendanceController extends Controller
             ->where('date', Carbon::today()->toDateString())
             ->get()
             ->keyBy('student_id');
+
+        // Ambil izin yang disetujui untuk hari ini sebagai default jika belum diabsen
+        $leaves = \App\Models\PermissionRequest::where('date', Carbon::today()->toDateString())
+            ->where('status', 'Disetujui')
+            ->whereIn('student_id', $students->pluck('id'))
+            ->get()
+            ->keyBy('student_id');
         
-        return view('teacher.attendances.show', compact('schedule', 'students', 'records'));
+        return view('teacher.attendances.show', compact('schedule', 'students', 'records', 'leaves'));
     }
 
     public function store(Request $request, Schedule $schedule)
@@ -70,7 +77,7 @@ class TeacherAttendanceController extends Controller
         ]);
 
         $date = Carbon::today()->toDateString();
-        $schoolId = Auth::user()->school_id;
+        $schoolId = $schedule->school_id;
 
         foreach ($request->attendance as $studentId => $status) {
             ClassAttendance::updateOrCreate(

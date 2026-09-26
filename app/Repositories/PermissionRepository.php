@@ -12,12 +12,19 @@ class PermissionRepository implements PermissionRepositoryInterface
         return PermissionRequest::create($data);
     }
 
-    public function getPaginatedBySchool(string $schoolId, int $perPage = 10)
+    public function getPaginatedBySchool(string $schoolId, ?string $classroomId = null, int $perPage = 10)
     {
         // Mengambil data urut dari yang terbaru dan belum diproses (Menunggu)
-        return PermissionRequest::with(['student.classroom'])
-            ->where('school_id', $schoolId)
-            ->orderByRaw("FIELD(status, 'Menunggu', 'Disetujui', 'Ditolak')")
+        $query = PermissionRequest::with(['student.classroom'])
+            ->where('school_id', $schoolId);
+
+        if ($classroomId) {
+            $query->whereHas('student', function($q) use ($classroomId) {
+                $q->where('classroom_id', $classroomId);
+            });
+        }
+
+        return $query->orderByRaw("FIELD(status, 'Menunggu', 'Disetujui', 'Ditolak')")
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
