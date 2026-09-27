@@ -60,10 +60,37 @@
             .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 1035; backdrop-filter: blur(2px); }
             .sidebar-overlay.show { display: block; }
         }
+
+        /* Page Loader */
+        #pageLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+        #pageLoader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
 </head>
 <body>
     
+    <!-- Page Loader -->
+    <div id="pageLoader">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <nav id="sidebar">
@@ -225,7 +252,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Page Loader Logic
+        window.addEventListener('load', function() {
+            document.getElementById('pageLoader').classList.add('hidden');
+        });
+
         $(document).ready(function() {
+            // Show loader on link click
+            $('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"])').on('click', function(e) {
+                if (!e.ctrlKey && !e.metaKey && !$(this).hasClass('no-loader')) {
+                    $('#pageLoader').removeClass('hidden');
+                }
+            });
+
             const sidebar = $('#sidebar');
             const wrapper = $('#content-wrapper');
             const overlay = $('#sidebarOverlay');
