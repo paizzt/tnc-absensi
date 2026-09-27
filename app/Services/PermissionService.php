@@ -71,18 +71,23 @@ class PermissionService
             abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
         }
 
-        $classroomId = null;
-        if ($user->hasRole('Wali Kelas') || $user->hasRole('Guru')) {
-            $class = $user->homeroomClass;
-            if ($class) {
-                $classroomId = $class->id;
-            } else {
-                // Not a homeroom teacher, should not see permissions
-                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
-            }
+        // Cek apakah user ini adalah wali kelas
+        $class = $user->homeroomClass;
+        
+        if ($class) {
+            // Jika wali kelas, batasi hanya melihat izin dari kelasnya sendiri (apapun role-nya)
+            return $this->repo->getPaginatedBySchool($schoolId, $class->id, 15);
         }
 
-        return $this->repo->getPaginatedBySchool($schoolId, $classroomId, 15);
+        // Jika dia adalah Guru biasa (bukan wali kelas)
+        if ($user->hasRole('Guru')) {
+            // Guru biasa tidak boleh melihat izin
+            return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+        }
+
+        // Role lain (Admin Sekolah, Kepala Sekolah, Petugas Piket, Guru BK) yang BUKAN wali kelas
+        // dapat melihat semua izin di sekolah tersebut.
+        return $this->repo->getPaginatedBySchool($schoolId, null, 15);
     }
 
     public function getRequestById(string $id)
