@@ -18,10 +18,10 @@
             --primary: #2563EB; 
             --primary-hover: #1d4ed8;
             --sidebar-bg: #ffffff;
-            --sidebar-color: #6B7280;
+            --sidebar-color: #374151; /* Darker gray for better contrast like Image 1 */
             --sidebar-active-bg: var(--primary);
             --sidebar-active-color: #ffffff;
-            --sidebar-width: 240px; 
+            --sidebar-width: 230px; /* Slightly narrower width */
             --sidebar-collapsed-width: 80px; 
         }
         
@@ -29,15 +29,15 @@
 
         #sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: var(--sidebar-bg); border-right: 1px solid #e5e7eb; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1040; display: flex; flex-direction: column; overflow-x: hidden; box-shadow: 2px 0 10px rgba(0,0,0,0.02); }
         .sidebar-brand { height: 70px; display: flex; align-items: center; justify-content: center; padding: 10px 1.5rem; border-bottom: 1px solid #f3f4f6; transition: all 0.3s ease; }
-        .sidebar-nav { padding: 1rem 0; list-style: none; margin: 0; flex-grow: 1; overflow-y: auto; overflow-x: hidden; }
+        .sidebar-nav { padding: 0.5rem 0; list-style: none; margin: 0; flex-grow: 1; overflow-y: auto; overflow-x: hidden; } /* Reduced top/bottom padding */
         .sidebar-nav::-webkit-scrollbar { width: 4px; }
         .sidebar-nav::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
 
-        .nav-label { font-size: 0.7rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; padding: 1rem 1.5rem 0.5rem; white-space: nowrap; transition: opacity 0.3s; }
-        .sidebar-nav a { display: flex; align-items: center; padding: 0.65rem 1rem; margin: 0.25rem 1rem; color: var(--sidebar-color); text-decoration: none; font-size: 0.875rem; font-weight: 500; white-space: nowrap; transition: all 0.2s ease-in-out; border-radius: 8px; }
-        .sidebar-nav a i { font-size: 1.15rem; margin-right: 12px; min-width: 24px; text-align: center; transition: margin 0.3s ease; }
+        .nav-label { font-size: 0.7rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; padding: 0.75rem 1.5rem 0.5rem; white-space: nowrap; transition: opacity 0.3s; }
+        .sidebar-nav a { display: flex; align-items: center; padding: 0.5rem 1rem; margin: 0.15rem 1rem; color: var(--sidebar-color); text-decoration: none; font-size: 0.95rem; font-weight: 500; white-space: nowrap; transition: all 0.2s ease-in-out; border-radius: 8px; } /* Compact padding/margin */
+        .sidebar-nav a i { font-size: 1.1rem; margin-right: 10px; min-width: 20px; text-align: center; transition: margin 0.3s ease; } /* Smaller icon & gap */
         .sidebar-nav a:hover { color: var(--primary); background-color: #eff6ff; }
-        .sidebar-nav a.active { color: var(--sidebar-active-color); background-color: var(--sidebar-active-bg); font-weight: 600; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+        .sidebar-nav a.active { color: var(--sidebar-active-color); background-color: var(--sidebar-active-bg); font-weight: 500; box-shadow: none; } /* Removed shadow for cleaner look */
 
         #sidebar.collapsed { width: var(--sidebar-collapsed-width); }
         #sidebar.collapsed .sidebar-brand { padding: 10px 0; }
