@@ -70,7 +70,10 @@ class ScheduleController extends Controller
             }
         }
 
-        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $schoolDaysCount = $setting ? ($setting->school_days ?? 6) : 6;
+        $days = $schoolDaysCount == 5 
+            ? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] 
+            : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
         $schedules = Schedule::with(['classroom', 'subject', 'teacher'])
             ->where('school_id', $selectedSchoolId)->get()->groupBy('classroom_id');
@@ -114,7 +117,10 @@ class ScheduleController extends Controller
             }
         }
 
-        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $schoolDaysCount = $setting ? ($setting->school_days ?? 6) : 6;
+        $days = $schoolDaysCount == 5 
+            ? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] 
+            : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         return view('admin.schedules.create', compact('classrooms', 'subjects', 'teachers', 'schoolId', 'timeSlots', 'days', 'schools'));
     }
 
@@ -164,7 +170,10 @@ class ScheduleController extends Controller
                 $timeSlots[] = ['name' => 'Istirahat', 'time' => "$bStart-$bEnd", 'start' => $bStart, 'end' => $bEnd, 'is_break' => true];
             }
         }
-        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $schoolDaysCount = $setting ? ($setting->school_days ?? 6) : 6;
+        $days = $schoolDaysCount == 5 
+            ? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] 
+            : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
         return view('admin.schedules.edit', compact('classroom', 'subjects', 'teachers', 'timeSlots', 'days', 'existingSchedules', 'schoolId'));
     }

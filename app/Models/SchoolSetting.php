@@ -21,6 +21,7 @@ class SchoolSetting extends Model
         'lesson_duration',
         'break_duration',
         'break_after_lesson',
+        'school_days',
         'fonnte_token'
     ];
 

@@ -65,7 +65,15 @@
 
                 <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 mt-5"><i class="bi bi-calendar"></i> Konfigurasi Roster / Jadwal Pelajaran</h6>
                 <div class="row mb-4">
-                    <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <label class="form-label text-neutral small fw-semibold">Jumlah Hari Sekolah</label>
+                        <select class="form-select" name="school_days" required>
+                            <option value="5" {{ ($setting->school_days ?? 6) == 5 ? 'selected' : '' }}>5 Hari (Senin - Jumat)</option>
+                            <option value="6" {{ ($setting->school_days ?? 6) == 6 ? 'selected' : '' }}>6 Hari (Senin - Sabtu)</option>
+                        </select>
+                        <div class="form-text small">Jadwal 5 atau 6 hari.</div>
+                    </div>
+                    <div class="col-md-3 mb-3 mb-md-0">
                         <label class="form-label text-neutral small fw-semibold">Durasi 1 Jam Mapel</label>
                         <div class="input-group">
                             <input type="number" class="form-control" name="lesson_duration" value="{{ $setting->lesson_duration }}" min="15" max="120" required>
@@ -73,16 +81,16 @@
                         </div>
                         <div class="form-text small">Contoh: 45 Menit.</div>
                     </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <label class="form-label text-neutral small fw-semibold">Waktu Istirahat Setelah Jam Ke-</label>
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <label class="form-label text-neutral small fw-semibold">Istirahat Setelah Jam-</label>
                         <select class="form-select" name="break_after_lesson" required>
                             @for($i = 1; $i <= 8; $i++)
                                 <option value="{{ $i }}" {{ $setting->break_after_lesson == $i ? 'selected' : '' }}>Jam Ke-{{ $i }}</option>
                             @endfor
                         </select>
-                        <div class="form-text small">Contoh: Setelah jam ke-4.</div>
+                        <div class="form-text small">Contoh: Setelah jam 4.</div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label text-neutral small fw-semibold">Durasi Istirahat</label>
                         <div class="input-group">
                             <input type="number" class="form-control" name="break_duration" value="{{ $setting->break_duration }}" min="5" max="60" required>
