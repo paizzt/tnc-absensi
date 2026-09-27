@@ -24,17 +24,23 @@ class StudentController extends Controller
         $user = Auth::user();
         $schools = [];
         $selectedSchoolId = null;
+        $classrooms = [];
+        $selectedClassroomId = $request->query('classroom_id');
 
         if ($user->hasRole('Super Admin')) {
             $schools = School::orderBy('name')->get();
             $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
-            $students = $this->studentService->getStudentsByCurrentSchool($selectedSchoolId);
+            $students = $this->studentService->getStudentsByCurrentSchool($selectedSchoolId, $selectedClassroomId);
+            if ($selectedSchoolId) {
+                $classrooms = Classroom::where('school_id', $selectedSchoolId)->orderBy('name')->get();
+            }
         } else {
-            $students = $this->studentService->getStudentsByCurrentSchool();
             $selectedSchoolId = $user->school_id;
+            $students = $this->studentService->getStudentsByCurrentSchool(null, $selectedClassroomId);
+            $classrooms = Classroom::where('school_id', $selectedSchoolId)->orderBy('name')->get();
         }
 
-        return view('admin.students.index', compact('students', 'schools', 'selectedSchoolId'));
+        return view('admin.students.index', compact('students', 'schools', 'selectedSchoolId', 'classrooms', 'selectedClassroomId'));
     }
 
     public function create(Request $request)

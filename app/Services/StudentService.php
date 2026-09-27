@@ -18,7 +18,7 @@ class StudentService
         $this->studentRepo = $studentRepo;
     }
 
-    public function getStudentsByCurrentSchool($requestedSchoolId = null)
+    public function getStudentsByCurrentSchool($requestedSchoolId = null, $classroomId = null)
     {
         $user = Auth::user();
 
@@ -27,7 +27,7 @@ class StudentService
             if (!$requestedSchoolId) {
                 return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
             }
-            return $this->studentRepo->getPaginatedBySchool($requestedSchoolId, 15);
+            return $this->studentRepo->getPaginatedBySchool($requestedSchoolId, 15, $classroomId);
         }
 
         // Mode Admin Sekolah / Petugas Piket
@@ -36,7 +36,7 @@ class StudentService
             abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
         }
 
-        return $this->studentRepo->getPaginatedBySchool($schoolId, 15);
+        return $this->studentRepo->getPaginatedBySchool($schoolId, 15, $classroomId);
     }
 
     public function createStudent(array $data, $requestedSchoolId = null)

@@ -7,12 +7,16 @@ use App\Repositories\Contracts\StudentRepositoryInterface;
 
 class StudentRepository implements StudentRepositoryInterface
 {
-    public function getPaginatedBySchool(string $schoolId, int $perPage = 10)
+    public function getPaginatedBySchool(string $schoolId, int $perPage = 10, ?string $classroomId = null)
     {
-        // Eager load classroom agar lebih cepat saat me-render tabel
-        return Student::with('classroom')
-            ->where('school_id', $schoolId)
-            ->orderBy('name', 'asc')
+        $query = Student::with('classroom')
+            ->where('school_id', $schoolId);
+
+        if ($classroomId) {
+            $query->where('classroom_id', $classroomId);
+        }
+
+        return $query->orderBy('name', 'asc')
             ->paginate($perPage);
     }
 

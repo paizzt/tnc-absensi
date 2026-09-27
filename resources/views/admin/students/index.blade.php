@@ -32,26 +32,44 @@
         </div>
     @endif
 
-    <!-- DROPDOWN KHUSUS SUPER ADMIN -->
-    @role('Super Admin')
+    <!-- FILTER -->
     <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white">
         <div class="card-body p-3">
-            <form action="{{ route('admin.students.index') }}" method="GET" class="d-flex align-items-center">
-                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">
-                    <i class="bi bi-buildings me-1"></i> Filter Sekolah:
-                </label>
-                <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
-                    <option value="">-- Pilih Sekolah --</option>
-                    @foreach($schools as $school)
-                        <option value="{{ $school->id }}" {{ ($selectedSchoolId == $school->id) ? 'selected' : '' }}>
-                            {{ $school->npsn }} - {{ $school->name }}
-                        </option>
-                    @endforeach
-                </select>
+            <form action="{{ route('admin.students.index') }}" method="GET" class="d-flex align-items-center flex-wrap gap-3">
+                @role('Super Admin')
+                <div class="d-flex align-items-center">
+                    <label class="fw-semibold text-primary me-2 mb-0" style="white-space: nowrap;">
+                        <i class="bi bi-buildings me-1"></i> Sekolah:
+                    </label>
+                    <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="min-width: 250px;">
+                        <option value="">-- Pilih Sekolah --</option>
+                        @foreach($schools as $school)
+                            <option value="{{ $school->id }}" {{ ($selectedSchoolId == $school->id) ? 'selected' : '' }}>
+                                {{ $school->npsn }} - {{ $school->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endrole
+                
+                @if(isset($classrooms) && count($classrooms) > 0)
+                <div class="d-flex align-items-center">
+                    <label class="fw-semibold text-primary me-2 mb-0" style="white-space: nowrap;">
+                        <i class="bi bi-door-open me-1"></i> Kelas:
+                    </label>
+                    <select name="classroom_id" class="form-select border-primary" onchange="this.form.submit()" style="min-width: 200px;">
+                        <option value="">-- Semua Kelas --</option>
+                        @foreach($classrooms as $class)
+                            <option value="{{ $class->id }}" {{ ($selectedClassroomId ?? '') == $class->id ? 'selected' : '' }}>
+                                {{ $class->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
             </form>
         </div>
     </div>
-    @endrole
 
     <div class="card border-0 shadow-sm rounded-3 bg-white">
         <div class="card-body p-0">
