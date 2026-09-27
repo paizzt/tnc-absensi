@@ -144,7 +144,7 @@
             @hasanyrole('Super Admin|Guru')
                 <li>
                     <a href="{{ route('teacher.attendances.index') }}" class="{{ request()->routeIs('teacher.attendances.*') ? 'active' : '' }}" title="Absensi Kelas">
-                        <i class="bi bi-clipboard-check"></i> <span class="nav-text">Jadwal Mengajar Saya</span>
+                        <i class="bi bi-clipboard-check"></i> <span class="nav-text">Jadwal Mengajar</span>
                     </a>
                 </li>
                 
