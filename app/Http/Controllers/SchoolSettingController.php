@@ -53,6 +53,7 @@ class SchoolSettingController extends Controller
             'lesson_duration' => 'required|integer|min:15|max:120',
             'break_duration' => 'required|integer|min:5|max:60',
             'break_after_lesson' => 'required|integer|min:1|max:8',
+            'school_days' => 'required|integer|in:5,6',
         ]);
 
         $setting = SchoolSetting::where('school_id', $request->school_id)->first();
@@ -69,6 +70,7 @@ class SchoolSettingController extends Controller
                 'lesson_duration' => $request->lesson_duration,
                 'break_duration' => $request->break_duration,
                 'break_after_lesson' => $request->break_after_lesson,
+                'school_days' => $request->school_days,
                 'fonnte_token' => $request->fonnte_token,
             ]);
         }
