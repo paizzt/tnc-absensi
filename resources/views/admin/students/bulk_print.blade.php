@@ -10,7 +10,7 @@
             position: absolute; 
             top: -9999px; 
             left: -9999px; 
-            visibility: hidden; 
+            z-index: -999; 
         }
         
         /* Desain Kartu (Sama dengan satuan) */
