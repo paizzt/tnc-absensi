@@ -27,11 +27,11 @@ class AnalyticController extends Controller
         $onTimeData = [];
         $lateData = [];
 
-        foreach ($last7Days as $date) {
-            $onTime = GateAttendance::whereDate('scanned_at', $date)
+        foreach ($last7Days as $dateStr) {
+            $onTime = GateAttendance::where('date', $dateStr)
                 ->where('status', 'Hadir')
                 ->count();
-            $late = GateAttendance::whereDate('scanned_at', $date)
+            $late = GateAttendance::where('date', $dateStr)
                 ->where('status', 'Terlambat')
                 ->count();
 
@@ -40,8 +40,8 @@ class AnalyticController extends Controller
         }
 
         // Data 3: Status Kehadiran Hari Ini
-        $today = Carbon::today();
-        $todayAttendances = GateAttendance::whereDate('scanned_at', $today)
+        $today = Carbon::today()->format('Y-m-d');
+        $todayAttendances = GateAttendance::where('date', $today)
             ->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->pluck('count', 'status');
