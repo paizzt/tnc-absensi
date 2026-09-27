@@ -102,7 +102,30 @@ class ReportController extends Controller
             }
         }
 
-        $attendances = $query->orderBy('date', 'asc')->get();
+        // Fetch and sort by date and schedule start time to ensure correct order
+        $rawAttendances = $query->get()->sortBy(function($att) {
+            return $att->date . '_' . ($att->schedule ? $att->schedule->start_time : '00:00:00');
+        });
+
+        $groupedAttendances = [];
+        foreach ($rawAttendances as $att) {
+            $key = $att->student_id . '_' . $att->date;
+            if (!isset($groupedAttendances[$key])) {
+                $groupedAttendances[$key] = clone $att; // Clone to avoid modifying the original if cached
+                $groupedAttendances[$key]->status_initials = [];
+            }
+            $initial = substr(strtoupper($att->status), 0, 1);
+            $groupedAttendances[$key]->status_initials[] = $initial;
+        }
+
+        foreach ($groupedAttendances as $key => $att) {
+            $att->status = implode(' | ', $att->status_initials);
+        }
+
+        $attendances = collect(array_values($groupedAttendances))->sortBy(function($att) {
+            return $att->date . '_' . ($att->student ? $att->student->name : '');
+        });
+
         $school = School::find($schoolId);
 
         if ($request->format == 'csv') {
