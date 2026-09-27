@@ -108,18 +108,20 @@ class ReportController extends Controller
         });
 
         $groupedAttendances = [];
+        $statusMap = [];
+
         foreach ($rawAttendances as $att) {
             $key = $att->student_id . '_' . $att->date;
             if (!isset($groupedAttendances[$key])) {
                 $groupedAttendances[$key] = clone $att; // Clone to avoid modifying the original if cached
-                $groupedAttendances[$key]->status_initials = [];
+                $statusMap[$key] = [];
             }
             $initial = substr(strtoupper($att->status), 0, 1);
-            $groupedAttendances[$key]->status_initials[] = $initial;
+            $statusMap[$key][] = $initial;
         }
 
         foreach ($groupedAttendances as $key => $att) {
-            $att->status = implode(' | ', $att->status_initials);
+            $att->status = implode(' | ', $statusMap[$key]);
         }
 
         $attendances = collect(array_values($groupedAttendances))->sortBy(function($att) {
