@@ -84,7 +84,6 @@
             </li>
             
             @hasanyrole('Super Admin|Admin Sekolah|Kepala Sekolah|Guru BK')
-                <li class="nav-label">Manajemen Utama</li>
                 <li>
                     <a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'active' : '' }}" title="Profil Sekolah">
                         <i class="bi bi-buildings"></i> <span class="nav-text">Profil Sekolah</span>
@@ -98,7 +97,6 @@
             @endhasanyrole
 
             @role('Super Admin')
-                <li class="nav-label">Manajemen Superadmin</li>
                 <li>
                     <a href="{{ route('banners.index') }}" class="{{ request()->routeIs('banners.*') ? 'active' : '' }}" title="Manajemen Iklan">
                         <i class="bi bi-image"></i> <span class="nav-text">Manajemen Iklan</span>
@@ -107,7 +105,6 @@
             @endrole
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK')
-                <li class="nav-label">Operasional Gerbang</li>
                 <li>
                     <a href="{{ route('admin.attendances.gate') }}" class="{{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}" title="Scan Gerbang">
                         <i class="bi bi-qr-code-scan"></i> <span class="nav-text">Scan Gerbang (Live)</span>
@@ -119,7 +116,6 @@
                     </a>
                 </li>
                 
-                <li class="nav-label">Master Data Akademik</li>
                 <li>
                     <a href="{{ route('admin.schedules.index') }}" class="{{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" title="Jadwal Pelajaran">
                         <i class="bi bi-calendar-week"></i> <span class="nav-text">Jadwal Pelajaran</span>
@@ -138,7 +134,6 @@
             @endhasanyrole
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK|Guru')
-                <li class="nav-label">Laporan & Rekap</li>
                 <li>
                     <a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" title="Export Laporan">
                         <i class="bi bi-printer"></i> <span class="nav-text">Export Laporan</span>
@@ -147,7 +142,6 @@
             @endhasanyrole
 
             @hasanyrole('Super Admin|Guru')
-                <li class="nav-label">Portal Guru</li>
                 <li>
                     <a href="{{ route('teacher.attendances.index') }}" class="{{ request()->routeIs('teacher.attendances.*') ? 'active' : '' }}" title="Absensi Kelas">
                         <i class="bi bi-clipboard-check"></i> <span class="nav-text">Jadwal Mengajar Saya</span>
@@ -173,7 +167,6 @@
             @endhasanyrole
 
             @hasanyrole('Super Admin|Guru BK|Kepala Sekolah')
-                <li class="nav-label">Bimbingan Konseling</li>
                 <li>
                     <a href="{{ route('bk.dashboard') }}" class="{{ request()->routeIs('bk.*') ? 'active' : '' }}" title="Evaluasi & Surat SP">
                         <i class="bi bi-shield-exclamation"></i> <span class="nav-text">Evaluasi & Surat SP</span>
@@ -182,7 +175,6 @@
             @endhasanyrole
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Guru BK|Kepala Sekolah')
-                <li class="nav-label">Sistem & Konfigurasi</li>
                 <li>
                     <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" title="Pengaturan Sekolah">
                         <i class="bi bi-gear"></i> <span class="nav-text">Pengaturan Sekolah</span>
