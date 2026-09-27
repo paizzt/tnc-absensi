@@ -98,6 +98,10 @@
         </div>
         @endhasanyrole
 
+        @php
+            $isWaliKelas = \App\Models\Classroom::where('teacher_id', Auth::id())->exists();
+        @endphp
+
         @hasanyrole('Super Admin|Guru')
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('teacher.attendances.index') }}" class="text-decoration-none">
@@ -110,6 +114,9 @@
                 </div>
             </a>
         </div>
+        @endhasanyrole
+
+        @if(Auth::user()->hasRole('Super Admin') || $isWaliKelas)
         <div class="col-md-6 col-lg-3">
             <a href="{{ route('teacher.permissions.index') }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
@@ -121,7 +128,18 @@
                 </div>
             </a>
         </div>
-        @endhasanyrole
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ route('teacher.exits.index') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow transition">
+                    <div class="card-body p-4 text-center">
+                        <div class="fs-1 mb-2"><i class="bi bi-door-open"></i></div>
+                        <h6 class="fw-bold text-dark mb-1">Izin Keluar</h6>
+                        <p class="text-neutral small mb-0">Izin keluar sementara siswa.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @endif
 
         @hasanyrole('Super Admin|Guru BK|Kepala Sekolah')
         <div class="col-md-6 col-lg-3">

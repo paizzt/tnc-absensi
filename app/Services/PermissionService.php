@@ -76,6 +76,9 @@ class PermissionService
             $class = $user->homeroomClass;
             if ($class) {
                 $classroomId = $class->id;
+            } else {
+                // Not a homeroom teacher, should not see permissions
+                return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
             }
         }
 
