@@ -74,11 +74,31 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-        }
-        #pageLoader.hidden {
+            
+            /* Sembunyikan default, muncul setelah 300ms jika lambat */
             opacity: 0;
             visibility: hidden;
+            animation: fadeInLoader 0.3s ease-out 0.3s forwards;
+        }
+        
+        @keyframes fadeInLoader {
+            to {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        #pageLoader.hidden {
+            animation: none;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+        
+        #pageLoader.force-show {
+            animation: none;
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
@@ -253,15 +273,19 @@
     
     <script>
         // Page Loader Logic
+        let clickLoaderTimeout;
         window.addEventListener('load', function() {
+            clearTimeout(clickLoaderTimeout);
             document.getElementById('pageLoader').classList.add('hidden');
         });
 
         $(document).ready(function() {
-            // Show loader on link click
+            // Show loader on link click with a delay
             $('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"])').on('click', function(e) {
                 if (!e.ctrlKey && !e.metaKey && !$(this).hasClass('no-loader')) {
-                    $('#pageLoader').removeClass('hidden');
+                    clickLoaderTimeout = setTimeout(function() {
+                        $('#pageLoader').addClass('force-show').removeClass('hidden');
+                    }, 300); // 300ms delay
                 }
             });
 
