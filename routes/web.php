@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK|Guru'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::post('/reports/export', [ReportController::class, 'export'])->name('reports.export');
+        Route::get('/analytics', [\App\Http\Controllers\AnalyticController::class, 'index'])->name('analytics.index');
     });
 
     // 4. AREA GURU (WALI KELAS & GURU MAPEL)

@@ -135,6 +135,11 @@
 
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK|Guru')
                 <li>
+                    <a href="{{ route('admin.analytics.index') }}" class="{{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}" title="Analitik Data">
+                        <i class="bi bi-graph-up-arrow"></i> <span class="nav-text">Analitik Data</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" title="Export Laporan">
                         <i class="bi bi-printer"></i> <span class="nav-text">Export Laporan</span>
                     </a>
