@@ -107,7 +107,7 @@
             @hasanyrole('Super Admin|Admin Sekolah|Petugas Piket|Kepala Sekolah|Guru BK')
                 <li>
                     <a href="{{ route('admin.attendances.gate') }}" class="{{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}" title="Scan Gerbang">
-                        <i class="bi bi-qr-code-scan"></i> <span class="nav-text">Scan Gerbang (Live)</span>
+                        <i class="bi bi-qr-code-scan"></i> <span class="nav-text">Scan Gerbang</span>
                     </a>
                 </li>
                 <li>
