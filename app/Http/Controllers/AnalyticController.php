@@ -6,15 +6,37 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\GateAttendance;
 use App\Models\Classroom;
+use App\Models\School;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AnalyticController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = Auth::user();
+        $schools = [];
+        $selectedSchoolId = null;
+
+        if ($user->hasRole('Super Admin')) {
+            $schools = School::orderBy('name')->get();
+            $selectedSchoolId = $request->query('school_id') ?? ($schools->first()->id ?? null);
+        } else {
+            $selectedSchoolId = $user->school_id;
+            if (!$selectedSchoolId) abort(403, 'Akun Anda belum ditugaskan ke sekolah manapun.');
+        }
+
         // Data 1: Jumlah Siswa per Kelas
-        $studentsPerClass = Classroom::withCount('students')->get();
+        $studentsPerClassQuery = Classroom::withCount(['students' => function ($query) {
+            $query->whereNull('deleted_at'); // Asumsikan siswa tidak terhapus
+        }]);
+
+        if ($selectedSchoolId) {
+            $studentsPerClassQuery->where('school_id', $selectedSchoolId);
+        }
+
+        $studentsPerClass = $studentsPerClassQuery->get();
         $classLabels = $studentsPerClass->pluck('name');
         $studentCounts = $studentsPerClass->pluck('students_count');
 
@@ -28,23 +50,29 @@ class AnalyticController extends Controller
         $lateData = [];
 
         foreach ($last7Days as $dateStr) {
-            $onTime = GateAttendance::where('date', $dateStr)
-                ->where('status', 'Hadir')
-                ->count();
-            $late = GateAttendance::where('date', $dateStr)
-                ->where('status', 'Terlambat')
-                ->count();
+            $onTimeQuery = GateAttendance::where('date', $dateStr)->where('status', 'Hadir');
+            $lateQuery = GateAttendance::where('date', $dateStr)->where('status', 'Terlambat');
 
-            $onTimeData[] = $onTime;
-            $lateData[] = $late;
+            if ($selectedSchoolId) {
+                $onTimeQuery->where('school_id', $selectedSchoolId);
+                $lateQuery->where('school_id', $selectedSchoolId);
+            }
+
+            $onTimeData[] = $onTimeQuery->count();
+            $lateData[] = $lateQuery->count();
         }
 
         // Data 3: Status Kehadiran Hari Ini
         $today = Carbon::today()->format('Y-m-d');
-        $todayAttendances = GateAttendance::where('date', $today)
+        $todayAttendancesQuery = GateAttendance::where('date', $today)
             ->select('status', DB::raw('count(*) as count'))
-            ->groupBy('status')
-            ->pluck('count', 'status');
+            ->groupBy('status');
+
+        if ($selectedSchoolId) {
+            $todayAttendancesQuery->where('school_id', $selectedSchoolId);
+        }
+            
+        $todayAttendances = $todayAttendancesQuery->pluck('count', 'status');
             
         $statusLabels = $todayAttendances->keys();
         $statusCounts = $todayAttendances->values();
@@ -52,7 +80,8 @@ class AnalyticController extends Controller
         return view('admin.analytics.index', compact(
             'classLabels', 'studentCounts',
             'last7Days', 'onTimeData', 'lateData',
-            'statusLabels', 'statusCounts'
+            'statusLabels', 'statusCounts',
+            'schools', 'selectedSchoolId'
         ));
     }
 }

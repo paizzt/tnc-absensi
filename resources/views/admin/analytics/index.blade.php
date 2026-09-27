@@ -11,6 +11,26 @@
         </div>
     </div>
 
+    @role('Super Admin')
+    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white">
+        <div class="card-body p-3">
+            <form action="{{ route('admin.analytics.index') }}" method="GET" class="d-flex align-items-center">
+                <label class="fw-semibold text-primary me-3 mb-0" style="white-space: nowrap;">
+                    <i class="bi bi-buildings me-1"></i> Filter Sekolah:
+                </label>
+                <select name="school_id" class="form-select border-primary" onchange="this.form.submit()" style="max-width: 400px;">
+                    <option value="">-- Pilih Sekolah --</option>
+                    @foreach($schools as $school)
+                        <option value="{{ $school->id }}" {{ ($selectedSchoolId == $school->id) ? 'selected' : '' }}>
+                            {{ $school->npsn }} - {{ $school->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
+    @endrole
+
     <div class="row g-4 mb-4">
         <!-- Kehadiran 7 Hari Terakhir -->
         <div class="col-lg-8">
