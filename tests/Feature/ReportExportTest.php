@@ -14,6 +14,8 @@ use App\Models\SchoolSetting;
 use App\Models\GateAttendance;
 use App\Models\ClassAttendance;
 use Database\Seeders\RolePermissionSeeder;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WeeklyAttendanceReportMail;
 use Illuminate\Support\Str;
 
 class ReportExportTest extends TestCase
@@ -26,7 +28,7 @@ class ReportExportTest extends TestCase
         $this->seed(RolePermissionSeeder::class);
     }
 
-    public function test_report_index_displays_default_kepsek_and_exporter()
+    public function test_report_index_displays_default_kepsek_nip_and_exporter()
     {
         $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test']);
         
@@ -52,11 +54,14 @@ class ReportExportTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Drs. H. Mulyadi, M.Pd');
         $response->assertSee('Faiz Admin');
+        $response->assertSee('Pengaturan Tanda Tangan Laporan (Bisa Diedit)');
+        $response->assertSee('NIP Kepala Sekolah');
+        $response->assertSee('NIP Guru / Penandatangan');
     }
 
-    public function test_report_export_pdf_renders_image_layout_and_data()
+    public function test_report_export_pdf_renders_image_layout_nip_and_signatures()
     {
-        $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test']);
+        $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test', 'address' => 'Jl. Pendidikan, Makassar']);
         SchoolSetting::create([
             'school_id' => $school->id,
             'time_in' => '07:00:00',
@@ -80,6 +85,7 @@ class ReportExportTest extends TestCase
             'name' => 'Ahmad Santoso',
             'gender' => 'L',
             'parent_phone' => '08123456',
+            'parent_email' => 'wali.ahmad@gmail.com',
             'qr_code_string' => Str::random(10),
             'is_active' => true,
         ]);
@@ -151,24 +157,35 @@ class ReportExportTest extends TestCase
             'school_id' => $school->id,
             'start_date' => $today,
             'end_date' => $today,
-            'format' => 'pdf'
+            'format' => 'pdf',
+            'report_city' => 'Makassar',
+            'report_date' => $today,
+            'kepsek_name' => 'Drs. Sukardi, M.Pd',
+            'kepsek_nip' => '19750101 200003 1 001',
+            'signer_title' => 'Guru',
+            'exporter_name' => 'Faiz Petugas',
+            'exporter_nip' => '19880202 201201 1 004',
         ]);
 
         $response->assertStatus(200);
         $response->assertSee('status kehadiran permatkul (perjam)');
         $response->assertSee('absen check in');
         $response->assertSee('absen check out');
+        $response->assertSee('mengetahui');
         $response->assertSee('kepala sekolah');
-        $response->assertSee('di eksport oleh');
-        $response->assertSee('Kepsek Sukardi');
+        $response->assertSee('guru');
+        $response->assertSee('Drs. Sukardi, M.Pd');
+        $response->assertSee('NIP. 19750101 200003 1 001');
         $response->assertSee('Faiz Petugas');
+        $response->assertSee('NIP. 19880202 201201 1 004');
+        $response->assertSee('Makassar');
         $response->assertSee('12345');
         $response->assertSee('Ahmad Santoso');
         $response->assertSee('06:55');
         $response->assertSee('14:30');
     }
 
-    public function test_report_export_csv_contains_matching_format()
+    public function test_report_export_csv_contains_matching_format_and_nip()
     {
         $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test']);
         $admin = User::create([
@@ -187,17 +204,68 @@ class ReportExportTest extends TestCase
             'start_date' => $today,
             'end_date' => $today,
             'format' => 'csv',
+            'report_city' => 'Makassar',
             'kepsek_name' => 'Nama Kepsek Kustom',
+            'kepsek_nip' => '198001012001',
+            'signer_title' => 'Guru',
             'exporter_name' => 'Nama Exporter Kustom',
+            'exporter_nip' => '198501012002',
         ]);
 
         $response->assertStatus(200);
         $content = $response->streamedContent();
         $this->assertStringContainsString('absen check in', $content);
         $this->assertStringContainsString('absen check out', $content);
+        $this->assertStringContainsString('mengetahui,', $content);
         $this->assertStringContainsString('kepala sekolah', $content);
-        $this->assertStringContainsString('di eksport oleh', $content);
+        $this->assertStringContainsString('Guru', $content);
         $this->assertStringContainsString('Nama Kepsek Kustom', $content);
+        $this->assertStringContainsString('NIP. 198001012001', $content);
         $this->assertStringContainsString('Nama Exporter Kustom', $content);
+        $this->assertStringContainsString('NIP. 198501012002', $content);
+    }
+
+    public function test_weekly_email_report_can_be_sent_to_student_parent()
+    {
+        Mail::fake();
+
+        $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test']);
+        $classroom = Classroom::create([
+            'school_id' => $school->id,
+            'level' => 'X',
+            'name' => 'X-A',
+        ]);
+
+        $student = Student::create([
+            'school_id' => $school->id,
+            'classroom_id' => $classroom->id,
+            'nis' => '12345',
+            'name' => 'Ahmad Santoso',
+            'gender' => 'L',
+            'parent_phone' => '08123456',
+            'parent_email' => 'ortu.ahmad@gmail.com',
+            'qr_code_string' => Str::random(10),
+            'is_active' => true,
+        ]);
+
+        $admin = User::create([
+            'name' => 'Admin Sekolah',
+            'email' => 'admin@smatest.sch.id',
+            'password' => bcrypt('password123'),
+            'school_id' => $school->id,
+            'is_active' => true,
+        ]);
+        $admin->assignRole('Admin Sekolah');
+
+        $response = $this->actingAs($admin)->post(route('admin.reports.send_weekly_email'), [
+            'school_id' => $school->id
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        Mail::assertSent(WeeklyAttendanceReportMail::class, function ($mail) use ($student) {
+            return $mail->hasTo('ortu.ahmad@gmail.com') && $mail->student->id === $student->id;
+        });
     }
 }

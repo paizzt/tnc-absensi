@@ -130,14 +130,20 @@
 
     <table class="sign-table">
         <tr>
-            <td style="width: 35%; text-align: center;">
-                <p style="margin: 0 0 60px 0; font-size: 12px;">kepala sekolah</p>
+            <td style="width: 38%; text-align: center; vertical-align: top;">
+                <p style="margin: 0; font-size: 12px; color: #111;">mengetahui,</p>
+                <p style="margin: 2px 0 0 0; font-size: 12px; font-weight: 600;">kepala sekolah</p>
+                <div style="height: 60px;"></div>
                 <p style="margin: 0; font-size: 12px; font-weight: bold; text-decoration: underline;">{{ $kepsekName }}</p>
+                <p style="margin: 4px 0 0 0; font-size: 11px; color: #222;">NIP. {{ $kepsekNip ?: '....................................' }}</p>
             </td>
-            <td style="width: 30%;"></td>
-            <td style="width: 35%; text-align: center;">
-                <p style="margin: 0 0 60px 0; font-size: 12px;">di eksport oleh</p>
+            <td style="width: 24%;"></td>
+            <td style="width: 38%; text-align: center; vertical-align: top;">
+                <p style="margin: 0 0 2px 0; font-size: 12px; color: #111;">{{ $reportCity }}, {{ $formattedReportDate }}</p>
+                <p style="margin: 0; font-size: 12px; font-weight: 600;">{{ strtolower($signerTitle) }}</p>
+                <div style="height: 60px;"></div>
                 <p style="margin: 0; font-size: 12px; font-weight: bold; text-decoration: underline;">{{ $exporterName }}</p>
+                <p style="margin: 4px 0 0 0; font-size: 11px; color: #222;">NIP. {{ $exporterNip ?: '....................................' }}</p>
             </td>
         </tr>
     </table>

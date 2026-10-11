@@ -46,9 +46,33 @@ class ReportController extends Controller
             })
             ->first();
         $defaultKepsekName = $defaultKepsek ? $defaultKepsek->name : '';
+        $defaultKepsekNip = $defaultKepsek && isset($defaultKepsek->nip) ? $defaultKepsek->nip : '';
         $defaultExporterName = $user ? $user->name : '';
+        $defaultExporterNip = $user && isset($user->nip) ? $user->nip : '';
 
-        return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms', 'subjects', 'defaultKepsekName', 'defaultExporterName'));
+        // Ambil kota default dari alamat sekolah atau Makassar
+        $school = School::find($selectedSchoolId);
+        $defaultCity = 'Makassar';
+        if ($school && $school->address) {
+            $parts = explode(',', $school->address);
+            $lastPart = trim(end($parts));
+            if (!empty($lastPart)) {
+                $defaultCity = $lastPart;
+            }
+        }
+
+        // Hitung jumlah siswa dengan email terdaftar
+        $studentWithEmailCount = \App\Models\Student::where('school_id', $selectedSchoolId)
+            ->whereNotNull('parent_email')
+            ->where('parent_email', '!=', '')
+            ->count();
+
+        return view('admin.reports.index', compact(
+            'schools', 'selectedSchoolId', 'classrooms', 'subjects', 
+            'defaultKepsekName', 'defaultKepsekNip', 
+            'defaultExporterName', 'defaultExporterNip', 
+            'defaultCity', 'studentWithEmailCount'
+        ));
     }
 
     public function export(Request $request)
@@ -226,7 +250,13 @@ class ReportController extends Controller
 
         $school = School::find($schoolId);
 
-        // Ambil Nama Kepala Sekolah & Petugas yang mengekspor
+        // Penandatanganan: Kota & Tanggal Laporan
+        $reportCity = $request->input('report_city') ?: ($defaultCity ?? 'Makassar');
+        $reportDateInput = $request->input('report_date') ?: date('Y-m-d');
+        $reportDateCarbon = \Carbon\Carbon::parse($reportDateInput)->locale('id');
+        $formattedReportDate = $reportDateCarbon->translatedFormat('d F Y');
+
+        // Ambil Data Kepala Sekolah
         $kepsekUser = \App\Models\User::role('Kepala Sekolah')
             ->when($schoolId, function($q) use ($schoolId) {
                 $q->where('school_id', $schoolId);
@@ -235,18 +265,43 @@ class ReportController extends Controller
 
         $kepsekName = $request->input('kepsek_name') 
             ?: ($kepsekUser ? $kepsekUser->name : ($school->principal_name ?? '....................................'));
+        $kepsekNip = $request->input('kepsek_nip') 
+            ?: ($kepsekUser && isset($kepsekUser->nip) ? $kepsekUser->nip : '');
 
+        // Penandatangan Kanan (Guru / Wali Kelas / Petugas)
+        $signerTitle = $request->input('signer_title') ?: 'Guru';
         $exporterName = $request->input('exporter_name') 
             ?: ($user ? $user->name : '....................................');
+        $exporterNip = $request->input('exporter_nip') 
+            ?: ($user && isset($user->nip) ? $user->nip : '');
+
+        // Simpan NIP ke profil pengguna jika kolom sudah tersedia di database
+        if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'nip')) {
+            try {
+                if ($request->filled('kepsek_nip') && $kepsekUser && empty($kepsekUser->nip)) {
+                    $kepsekUser->update(['nip' => $request->input('kepsek_nip')]);
+                }
+                if ($request->filled('exporter_nip') && $user && empty($user->nip)) {
+                    $user->update(['nip' => $request->input('exporter_nip')]);
+                }
+            } catch (\Exception $e) {
+                // Abaikan jika database belum siap
+            }
+        }
 
         if ($request->format == 'csv') {
-            return $this->exportCsv($rows, $school, $kepsekName, $exporterName);
+            return $this->exportCsv($rows, $school, $kepsekName, $kepsekNip, $signerTitle, $exporterName, $exporterNip, $reportCity, $formattedReportDate);
         } else {
-            return view('admin.reports.print', compact('rows', 'request', 'school', 'kepsekName', 'exporterName'));
+            return view('admin.reports.print', compact(
+                'rows', 'request', 'school', 
+                'kepsekName', 'kepsekNip', 
+                'signerTitle', 'exporterName', 'exporterNip',
+                'reportCity', 'formattedReportDate'
+            ));
         }
     }
 
-    private function exportCsv($rows, $school, $kepsekName, $exporterName)
+    private function exportCsv($rows, $school, $kepsekName, $kepsekNip, $signerTitle, $exporterName, $exporterNip, $reportCity, $formattedReportDate)
     {
         $fileName = 'Rekap_Absensi_' . str_replace(' ', '_', $school->name ?? 'Sekolah') . '_' . date('Ymd_His') . '.csv';
         $headers = [
@@ -257,7 +312,7 @@ class ReportController extends Controller
             "Expires"             => "0"
         ];
 
-        $callback = function() use($rows, $school, $kepsekName, $exporterName) {
+        $callback = function() use($rows, $school, $kepsekName, $kepsekNip, $signerTitle, $exporterName, $exporterNip, $reportCity, $formattedReportDate) {
             $file = fopen('php://output', 'w');
             
             // UTF-8 BOM untuk kompatibilitas Microsoft Excel
@@ -289,14 +344,38 @@ class ReportController extends Controller
             // Tanda Tangan Bagian Bawah
             fputcsv($file, []);
             fputcsv($file, []);
-            fputcsv($file, ['kepala sekolah', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'di eksport oleh']);
+            fputcsv($file, ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', $reportCity . ', ' . $formattedReportDate]);
+            fputcsv($file, ['mengetahui,', '', '', '', '', '', '', '', '', '', '', '', '', '', '', $signerTitle]);
+            fputcsv($file, ['kepala sekolah', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
             fputcsv($file, []);
             fputcsv($file, []);
             fputcsv($file, [$kepsekName, '', '', '', '', '', '', '', '', '', '', '', '', '', '', $exporterName]);
+            fputcsv($file, ['NIP. ' . ($kepsekNip ?: '-'), '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'NIP. ' . ($exporterNip ?: '-')]);
 
             fclose($file);
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function sendWeeklyEmail(Request $request, \App\Services\WeeklyReportEmailService $service)
+    {
+        $schoolId = $request->input('school_id');
+        $classroomId = $request->input('classroom_id');
+
+        $user = Auth::user();
+        if (!$schoolId && !$user->hasRole('Super Admin')) {
+            $schoolId = $user->school_id;
+        }
+
+        $results = $service->sendAllWeeklyReports($schoolId, $classroomId);
+
+        if ($results['sent'] > 0) {
+            return back()->with('success', "Berhasil mengirim laporan kehadiran mingguan ke {$results['sent']} siswa/orang tua melalui email.");
+        } elseif ($results['total'] == 0) {
+            return back()->with('error', "Tidak ada siswa yang memiliki alamat email (parent_email) terdaftar pada kelas/sekolah yang dipilih.");
+        } else {
+            return back()->with('error', "Gagal mengirim email ke siswa. Pastikan konfigurasi SMTP/Gmail di .env sudah aktif.");
+        }
     }
 }
