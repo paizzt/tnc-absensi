@@ -370,12 +370,18 @@ class ReportController extends Controller
 
         $results = $service->sendAllWeeklyReports($schoolId, $classroomId);
 
+        $isLogDriver = config('mail.default') === 'log';
+        $logNote = $isLogDriver 
+            ? ' (Catatan: Driver email di server saat ini adalah "log". Email dicatat di log server dan belum terkirim ke Gmail asli. Silakan atur SMTP di file .env hosting Anda).' 
+            : '';
+
         if ($results['sent'] > 0) {
-            return back()->with('success', "Berhasil mengirim laporan kehadiran mingguan ke {$results['sent']} siswa/orang tua melalui email.");
+            return back()->with('success', "Berhasil memproses pengiriman laporan kehadiran mingguan ke {$results['sent']} siswa/orang tua.{$logNote}");
         } elseif ($results['total'] == 0) {
             return back()->with('error', "Tidak ada siswa yang memiliki alamat email (parent_email) terdaftar pada kelas/sekolah yang dipilih.");
         } else {
-            return back()->with('error', "Gagal mengirim email ke siswa. Pastikan konfigurasi SMTP/Gmail di .env sudah aktif.");
+            $errDetail = !empty($results['errors']) ? ' Detail: ' . implode('; ', $results['errors']) : ' Pastikan konfigurasi SMTP di file .env hosting Anda sudah benar.';
+            return back()->with('error', "Gagal mengirim email ke siswa.{$errDetail}");
         }
     }
 
@@ -404,12 +410,18 @@ class ReportController extends Controller
         $formattedEnd = $endDate->format('d/m/Y');
         $periodLabel = ($formattedStart === $formattedEnd) ? $formattedStart : "{$formattedStart} s.d. {$formattedEnd}";
 
+        $isLogDriver = config('mail.default') === 'log';
+        $logNote = $isLogDriver 
+            ? ' (Catatan: Driver email di server saat ini adalah "log". Email dicatat di log server dan belum terkirim ke Gmail asli. Silakan atur SMTP di file .env hosting Anda).' 
+            : '';
+
         if ($results['sent'] > 0) {
-            return back()->with('success', "Berhasil mengirim laporan kehadiran periode ({$periodLabel}) ke {$results['sent']} siswa/wali murid melalui email.");
+            return back()->with('success', "Berhasil memproses pengiriman laporan kehadiran periode ({$periodLabel}) ke {$results['sent']} siswa/wali murid.{$logNote}");
         } elseif ($results['total'] == 0) {
             return back()->with('error', "Tidak ada siswa yang memiliki alamat email (parent_email) terdaftar pada kelas/sekolah yang dipilih.");
         } else {
-            return back()->with('error', "Gagal mengirim email ke siswa. Pastikan konfigurasi SMTP/Gmail di .env sudah aktif.");
+            $errDetail = !empty($results['errors']) ? ' Detail: ' . implode('; ', $results['errors']) : ' Pastikan konfigurasi SMTP di file .env hosting Anda sudah benar.';
+            return back()->with('error', "Gagal mengirim email ke siswa.{$errDetail}");
         }
     }
 }

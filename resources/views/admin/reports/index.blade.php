@@ -41,7 +41,7 @@
 
     <div class="card border-0 shadow-sm rounded-4 max-w-3xl">
         <div class="card-body p-4 p-md-5">
-            <form action="{{ route('admin.reports.export') }}" method="POST" target="_blank">
+            <form id="mainReportForm" action="{{ route('admin.reports.export') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="school_id" value="{{ $selectedSchoolId }}">
 
@@ -153,12 +153,10 @@
                         </button>
                     </div>
                     <div class="col-md-6">
-                        <button type="submit" 
-                                formaction="{{ route('admin.reports.send_custom_email') }}" 
-                                formtarget="_self" 
+                        <button type="button" 
                                 class="btn btn-success py-2 w-100 fw-bold" 
                                 {{ !$selectedSchoolId || ($studentWithEmailCount ?? 0) === 0 ? 'disabled' : '' }}
-                                onclick="return confirm('Kirimkan rekap laporan kehadiran untuk periode tanggal dan kelas yang dipilih ke seluruh siswa ber-email?')">
+                                onclick="openEmailConfirmModal('custom')">
                             <i class="bi bi-envelope-check-fill me-1"></i> Kirim Laporan via Email (Periode Ini)
                         </button>
                     </div>
@@ -183,16 +181,92 @@
                 </span>
             </div>
 
-            <form action="{{ route('admin.reports.send_weekly_email') }}" method="POST" onsubmit="return confirm('Kirimkan rekap laporan mingguan via Gmail/email ke seluruh siswa yang memiliki email?')">
+            @if(config('mail.default') === 'log')
+                <div class="alert alert-warning border-0 bg-warning-subtle text-dark py-2 px-3 rounded-3 small mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+                    <strong>Status Mailer Hosting:</strong> Driver saat ini masih <code>log</code> (email dicatat di file log server, bukan ke inbox Gmail penerima). Untuk mengirim ke Gmail langsung, pastikan konfigurasi SMTP di file <code>.env</code> hosting sudah diisi.
+                </div>
+            @endif
+
+            <form id="weeklyEmailForm" action="{{ route('admin.reports.send_weekly_email') }}" method="POST">
                 @csrf
                 <input type="hidden" name="school_id" value="{{ $selectedSchoolId }}">
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-outline-primary btn-sm px-4 fw-bold" {{ ($studentWithEmailCount ?? 0) === 0 ? 'disabled' : '' }}>
-                        <i class="bi bi-send-fill me-1"></i> Kirim Laporan Mingguan Sekarang
+                    <button type="button" 
+                            onclick="openEmailConfirmModal('weekly')" 
+                            class="btn btn-outline-primary btn-sm px-4 fw-bold" 
+                            {{ ($studentWithEmailCount ?? 0) === 0 ? 'disabled' : '' }}>
+                        <i class="bi bi-send-fill me-1"></i> Kirim
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- MODAL KONFIRMASI KIRIM EMAIL YANG MODERN & ELEGAN -->
+<div class="modal fade" id="emailConfirmModal" tabindex="-1" aria-labelledby="emailConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3 mt-2">
+                    <span class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle" style="width: 68px; height: 68px;">
+                        <i class="bi bi-envelope-paper-heart fs-2"></i>
+                    </span>
+                </div>
+                <h5 class="fw-bold text-dark mb-2" id="emailConfirmModalTitle">Kirim Laporan via Email</h5>
+                <p class="text-secondary small px-2 mb-4" id="emailConfirmModalDesc">
+                    Apakah Anda yakin ingin mengirimkan rekap laporan kehadiran ke seluruh siswa & wali murid yang memiliki email terdaftar?
+                </p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light px-4 py-2 rounded-3 fw-semibold text-secondary" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-bold shadow-sm" id="btnExecuteSendEmail">
+                        <i class="bi bi-send-fill me-1"></i> Ya, Kirim Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let activeEmailType = 'weekly';
+    let emailModalInstance = null;
+
+    function openEmailConfirmModal(type) {
+        activeEmailType = type;
+        const titleEl = document.getElementById('emailConfirmModalTitle');
+        const descEl = document.getElementById('emailConfirmModalDesc');
+        
+        if (type === 'custom') {
+            titleEl.textContent = 'Kirim Laporan Periode Terpilih';
+            descEl.textContent = 'Rekap kehadiran sesuai rentang tanggal dan kelas yang dipilih pada form akan dikirimkan langsung ke email/Gmail siswa dan orang tua.';
+        } else {
+            titleEl.textContent = 'Kirim Laporan Mingguan';
+            descEl.textContent = 'Rekapitulasi kehadiran mingguan akan dikirimkan langsung ke seluruh email/Gmail siswa dan orang tua terdaftar.';
+        }
+
+        const modalEl = document.getElementById('emailConfirmModal');
+        if (!emailModalInstance) {
+            emailModalInstance = new bootstrap.Modal(modalEl);
+        }
+        emailModalInstance.show();
+    }
+
+    document.getElementById('btnExecuteSendEmail').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Mengirim...';
+
+        if (activeEmailType === 'custom') {
+            const form = document.getElementById('mainReportForm');
+            form.action = "{{ route('admin.reports.send_custom_email') }}";
+            form.target = "_self";
+            form.submit();
+        } else {
+            document.getElementById('weeklyEmailForm').submit();
+        }
+    });
+</script>
 @endsection
