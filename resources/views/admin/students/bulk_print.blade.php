@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Mengekstrak Kartu ZIP...</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f3f4f6; }

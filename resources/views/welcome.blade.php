@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

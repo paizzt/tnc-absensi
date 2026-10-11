@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Absensi - {{ $school->name ?? 'Sekolah' }}</title>
+    <!-- Favicon -->
+    @php
+        $schoolFavicon = (isset($school) && $school && $school->logo) 
+            ? asset('storage/' . $school->logo) 
+            : asset('images/logo-arjuna-one.png');
+    @endphp
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $schoolFavicon }}?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ $schoolFavicon }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ $schoolFavicon }}?v=3">
     <style>
         @page {
             size: landscape;

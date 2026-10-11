@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Cetak ID Card - {{ $student->name }}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-arjuna-one.png') }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
     <style>
         body { margin: 0; padding: 20px; display: flex; justify-content: center; background: #e5e7eb; font-family: Arial, sans-serif; }
         

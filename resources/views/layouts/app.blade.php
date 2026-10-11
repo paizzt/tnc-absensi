@@ -7,7 +7,15 @@
     <title>@yield('title') - App Absensi</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('images/logo-arjuna-one.png') }}" type="image/png">
+    @php
+        $siteFavicon = (Auth::check() && Auth::user()->school && Auth::user()->school->logo)
+            ? asset('storage/' . Auth::user()->school->logo)
+            : asset('images/logo-arjuna-one.png');
+    @endphp
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $siteFavicon }}?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ $siteFavicon }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ $siteFavicon }}?v=3">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
