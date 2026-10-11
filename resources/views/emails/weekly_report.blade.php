@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Kehadiran Mingguan</title>
+    <title>Laporan Kehadiran Siswa</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -177,7 +177,7 @@
             <!-- Header -->
             <div class="header">
                 <h1>{{ $student->school ? $student->school->name : 'SISTEM ABSENSI SEKOLAH' }}</h1>
-                <p>Laporan Rekapitulasi Kehadiran Mingguan Siswa</p>
+                <p>Rekapitulasi Kehadiran Siswa ({{ date('d/m/Y', strtotime($startDate)) }} s.d. {{ date('d/m/Y', strtotime($endDate)) }})</p>
             </div>
 
             <!-- Content -->
@@ -276,7 +276,7 @@
                 <!-- Catatan untuk Wali Murid -->
                 <div class="note-box">
                     <strong>Pemberitahuan untuk Orang Tua / Wali Murid:</strong><br>
-                    Laporan ini dibuat dan dikirimkan secara otomatis setiap minggu oleh sistem presensi digital sekolah guna membantu Bapak/Ibu memantau kedisiplinan dan absensi ananda selama proses kegiatan belajar mengajar. Jika terdapat ketidaksesuaian data, silakan menghubungi pihak sekolah atau wali kelas.
+                    Laporan ini dibuat dan dikirimkan secara otomatis oleh sistem presensi digital sekolah guna membantu Bapak/Ibu memantau kedisiplinan dan absensi ananda selama proses kegiatan belajar mengajar. Jika terdapat ketidaksesuaian data, silakan menghubungi pihak sekolah atau wali kelas.
                 </div>
             </div>
 

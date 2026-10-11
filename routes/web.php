@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::post('/reports/export', [ReportController::class, 'export'])->name('reports.export');
         Route::post('/reports/send-weekly-email', [ReportController::class, 'sendWeeklyEmail'])->name('reports.send_weekly_email');
+        Route::post('/reports/send-custom-email', [ReportController::class, 'sendCustomEmail'])->name('reports.send_custom_email');
         Route::get('/analytics', [\App\Http\Controllers\AnalyticController::class, 'index'])->name('analytics.index');
     });
 

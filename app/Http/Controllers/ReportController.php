@@ -378,4 +378,38 @@ class ReportController extends Controller
             return back()->with('error', "Gagal mengirim email ke siswa. Pastikan konfigurasi SMTP/Gmail di .env sudah aktif.");
         }
     }
+
+    public function sendCustomEmail(Request $request, \App\Services\WeeklyReportEmailService $service)
+    {
+        $request->validate([
+            'start_date'   => 'required|date',
+            'end_date'     => 'required|date|after_or_equal:start_date',
+            'school_id'    => 'nullable',
+            'classroom_id' => 'nullable',
+        ]);
+
+        $schoolId = $request->input('school_id');
+        $classroomId = $request->input('classroom_id') ?: null;
+        $startDate = \Carbon\Carbon::parse($request->input('start_date'))->startOfDay();
+        $endDate = \Carbon\Carbon::parse($request->input('end_date'))->endOfDay();
+
+        $user = Auth::user();
+        if (!$schoolId && !$user->hasRole('Super Admin')) {
+            $schoolId = $user->school_id;
+        }
+
+        $results = $service->sendAllWeeklyReports($schoolId, $classroomId, $startDate, $endDate);
+
+        $formattedStart = $startDate->format('d/m/Y');
+        $formattedEnd = $endDate->format('d/m/Y');
+        $periodLabel = ($formattedStart === $formattedEnd) ? $formattedStart : "{$formattedStart} s.d. {$formattedEnd}";
+
+        if ($results['sent'] > 0) {
+            return back()->with('success', "Berhasil mengirim laporan kehadiran periode ({$periodLabel}) ke {$results['sent']} siswa/wali murid melalui email.");
+        } elseif ($results['total'] == 0) {
+            return back()->with('error', "Tidak ada siswa yang memiliki alamat email (parent_email) terdaftar pada kelas/sekolah yang dipilih.");
+        } else {
+            return back()->with('error', "Gagal mengirim email ke siswa. Pastikan konfigurasi SMTP/Gmail di .env sudah aktif.");
+        }
+    }
 }

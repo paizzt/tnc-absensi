@@ -146,8 +146,25 @@
                     </div>
                 </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary py-2 fw-bold" {{ !$selectedSchoolId ? 'disabled' : '' }}><i class="bi bi-download me-1"></i> Buat Laporan</button>
+                <div class="row g-2 pt-2">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary py-2 w-100 fw-bold" {{ !$selectedSchoolId ? 'disabled' : '' }}>
+                            <i class="bi bi-download me-1"></i> Buat Laporan (PDF / CSV)
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" 
+                                formaction="{{ route('admin.reports.send_custom_email') }}" 
+                                formtarget="_self" 
+                                class="btn btn-success py-2 w-100 fw-bold" 
+                                {{ !$selectedSchoolId || ($studentWithEmailCount ?? 0) === 0 ? 'disabled' : '' }}
+                                onclick="return confirm('Kirimkan rekap laporan kehadiran untuk periode tanggal dan kelas yang dipilih ke seluruh siswa ber-email?')">
+                            <i class="bi bi-envelope-check-fill me-1"></i> Kirim Laporan via Email (Periode Ini)
+                        </button>
+                    </div>
+                </div>
+                <div class="form-text small mt-2">
+                    <i class="bi bi-info-circle text-primary me-1"></i> Klik <strong>Buat Laporan</strong> untuk mencetak/mengunduh file, atau <strong>Kirim Laporan via Email</strong> untuk mengirim rekap absensi rentang tanggal yang dipilih langsung ke email/Gmail siswa.
                 </div>
             </form>
         </div>

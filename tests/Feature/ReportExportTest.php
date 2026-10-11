@@ -268,4 +268,57 @@ class ReportExportTest extends TestCase
             return $mail->hasTo('ortu.ahmad@gmail.com') && $mail->student->id === $student->id;
         });
     }
+
+    public function test_custom_period_email_report_can_be_sent_to_student_parent()
+    {
+        Mail::fake();
+
+        $school = School::create(['npsn' => '12345678', 'name' => 'SMA Test']);
+        $classroom = Classroom::create([
+            'school_id' => $school->id,
+            'level' => 'X',
+            'name' => 'X-A',
+        ]);
+
+        $student = Student::create([
+            'school_id' => $school->id,
+            'classroom_id' => $classroom->id,
+            'nis' => '12345',
+            'name' => 'Ahmad Santoso',
+            'gender' => 'L',
+            'parent_phone' => '08123456',
+            'parent_email' => 'ortu.ahmad@gmail.com',
+            'qr_code_string' => Str::random(10),
+            'is_active' => true,
+        ]);
+
+        $admin = User::create([
+            'name' => 'Admin Sekolah',
+            'email' => 'admin@smatest.sch.id',
+            'password' => bcrypt('password123'),
+            'school_id' => $school->id,
+            'is_active' => true,
+        ]);
+        $admin->assignRole('Admin Sekolah');
+
+        $startDate = '2026-10-01';
+        $endDate = '2026-10-10';
+
+        $response = $this->actingAs($admin)->post(route('admin.reports.send_custom_email'), [
+            'school_id' => $school->id,
+            'classroom_id' => $classroom->id,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        Mail::assertSent(WeeklyAttendanceReportMail::class, function ($mail) use ($student, $startDate, $endDate) {
+            return $mail->hasTo('ortu.ahmad@gmail.com')
+                && $mail->student->id === $student->id
+                && $mail->startDate === $startDate
+                && $mail->endDate === $endDate;
+        });
+    }
 }

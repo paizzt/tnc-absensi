@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Student;
+use Carbon\Carbon;
 
 class WeeklyAttendanceReportMail extends Mailable
 {
@@ -37,8 +38,28 @@ class WeeklyAttendanceReportMail extends Mailable
     public function envelope(): Envelope
     {
         $schoolName = $this->student->school ? $this->student->school->name : 'Sekolah';
+        $startCarbon = Carbon::parse($this->startDate);
+        $endCarbon = Carbon::parse($this->endDate);
+
+        $startFormatted = $startCarbon->format('d/m/Y');
+        $endFormatted = $endCarbon->format('d/m/Y');
+        $periodText = ($startFormatted === $endFormatted)
+            ? $startFormatted
+            : ($startFormatted . ' s.d. ' . $endFormatted);
+
+        $diffDays = $startCarbon->diffInDays($endCarbon) + 1;
+        if ($diffDays == 1) {
+            $periodType = 'Laporan Kehadiran Harian';
+        } elseif ($diffDays >= 6 && $diffDays <= 7) {
+            $periodType = 'Laporan Kehadiran Mingguan';
+        } elseif ($diffDays >= 28 && $diffDays <= 31) {
+            $periodType = 'Laporan Kehadiran Bulanan';
+        } else {
+            $periodType = 'Laporan Kehadiran Siswa';
+        }
+
         return new Envelope(
-            subject: 'Laporan Kehadiran Mingguan: ' . $this->student->name . ' (' . date('d/m/Y', strtotime($this->startDate)) . ' - ' . date('d/m/Y', strtotime($this->endDate)) . ') - ' . $schoolName,
+            subject: "{$periodType}: {$this->student->name} ({$periodText}) - {$schoolName}",
         );
     }
 
