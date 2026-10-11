@@ -65,6 +65,19 @@
                     </div>
                 </div>
 
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label text-dark fw-semibold small">Nama Kepala Sekolah (Tanda Tangan)</label>
+                        <input type="text" class="form-control" name="kepsek_name" value="{{ $defaultKepsekName }}" placeholder="Nama Kepala Sekolah">
+                        <div class="form-text small">Otomatis terisi dari data Kepala Sekolah. Dapat disesuaikan jika perlu.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-dark fw-semibold small">Dieksport Oleh (Tanda Tangan)</label>
+                        <input type="text" class="form-control" name="exporter_name" value="{{ $defaultExporterName }}" placeholder="Nama Petugas">
+                        <div class="form-text small">Otomatis terisi dari data akun Anda saat ini.</div>
+                    </div>
+                </div>
+
                 <div class="mb-5">
                     <label class="form-label text-dark fw-semibold small">Format Cetak <span class="text-danger">*</span></label>
                     <div class="d-flex gap-3">

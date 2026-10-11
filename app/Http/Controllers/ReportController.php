@@ -39,7 +39,16 @@ class ReportController extends Controller
             $subjects = Subject::where('school_id', $selectedSchoolId)->orderBy('name')->get();
         }
 
-        return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms', 'subjects'));
+        // Ambil data Kepala Sekolah untuk sekolah ini secara default
+        $defaultKepsek = \App\Models\User::role('Kepala Sekolah')
+            ->when($selectedSchoolId, function($q) use ($selectedSchoolId) {
+                $q->where('school_id', $selectedSchoolId);
+            })
+            ->first();
+        $defaultKepsekName = $defaultKepsek ? $defaultKepsek->name : '';
+        $defaultExporterName = $user ? $user->name : '';
+
+        return view('admin.reports.index', compact('schools', 'selectedSchoolId', 'classrooms', 'subjects', 'defaultKepsekName', 'defaultExporterName'));
     }
 
     public function export(Request $request)
@@ -50,117 +59,241 @@ class ReportController extends Controller
             'format' => 'required|in:pdf,csv'
         ]);
 
+        $user = Auth::user();
         $schoolId = $request->input('school_id');
+        if (!$schoolId && !$user->hasRole('Super Admin')) {
+            $schoolId = $user->school_id;
+        }
+        if (!$schoolId) {
+            $firstSchool = School::first();
+            $schoolId = $firstSchool ? $firstSchool->id : null;
+        }
+
         $classroomId = $request->input('classroom_id');
         $subjectId = $request->input('subject_id');
-        
-        $user = Auth::user();
 
-        $query = ClassAttendance::with(['student.classroom', 'schedule.subject'])
-            ->where('school_id', $schoolId)
-            ->whereBetween('date', [$request->start_date, $request->end_date]);
+        $studentQuery = \App\Models\Student::with('classroom')->where('school_id', $schoolId);
 
         if ($user->hasRole('Guru')) {
             $homeroomClassIds = \App\Models\Classroom::where('teacher_id', $user->id)->pluck('id');
             $teachingClassIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('classroom_id');
             $allowedClassIds = $homeroomClassIds->concat($teachingClassIds)->unique();
-            
-            // Limit to allowed classrooms if no specific classroom is chosen, 
-            // or if the chosen classroom is not in their allowed list
-            if (!$classroomId || !$allowedClassIds->contains($classroomId)) {
-                $query->whereHas('student', function($q) use ($allowedClassIds) {
-                    $q->whereIn('classroom_id', $allowedClassIds);
-                });
-            } else {
-                $query->whereHas('student', function($q) use ($classroomId) {
-                    $q->where('classroom_id', $classroomId);
-                });
-            }
 
-            // Also limit subjects
+            if ($classroomId && $allowedClassIds->contains($classroomId)) {
+                $studentQuery->where('classroom_id', $classroomId);
+            } else {
+                $studentQuery->whereIn('classroom_id', $allowedClassIds);
+            }
+        } else {
+            if ($classroomId) {
+                $studentQuery->where('classroom_id', $classroomId);
+            }
+        }
+
+        $students = $studentQuery->orderBy('classroom_id')->orderBy('name')->get()->keyBy('id');
+        $studentIds = $students->keys()->toArray();
+
+        // 1. Ambil Gate Attendance (Absen Masuk & Pulang)
+        $gateRecords = GateAttendance::where('school_id', $schoolId)
+            ->whereIn('student_id', $studentIds)
+            ->whereBetween('date', [$request->start_date, $request->end_date])
+            ->get()
+            ->groupBy(function($item) {
+                return $item->student_id . '_' . $item->date;
+            });
+
+        // 2. Ambil Class Attendance (Absen Permapel / Perjam)
+        $classAttendanceQuery = ClassAttendance::with(['schedule.subject'])
+            ->where('school_id', $schoolId)
+            ->whereIn('student_id', $studentIds)
+            ->whereBetween('date', [$request->start_date, $request->end_date]);
+
+        if ($user->hasRole('Guru')) {
             $allowedSubjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id')->unique();
             if ($subjectId && $allowedSubjectIds->contains($subjectId)) {
-                $query->whereHas('schedule', function($q) use ($subjectId) {
+                $classAttendanceQuery->whereHas('schedule', function($q) use ($subjectId) {
                     $q->where('subject_id', $subjectId);
                 });
             } else {
-                $query->whereHas('schedule', function($q) use ($allowedSubjectIds) {
+                $classAttendanceQuery->whereHas('schedule', function($q) use ($allowedSubjectIds) {
                     $q->whereIn('subject_id', $allowedSubjectIds);
                 });
             }
         } else {
-            if ($classroomId) {
-                $query->whereHas('student', function($q) use ($classroomId) {
-                    $q->where('classroom_id', $classroomId);
-                });
-            }
-
             if ($subjectId) {
-                $query->whereHas('schedule', function($q) use ($subjectId) {
+                $classAttendanceQuery->whereHas('schedule', function($q) use ($subjectId) {
                     $q->where('subject_id', $subjectId);
                 });
             }
         }
 
-        // Fetch and sort by date and schedule start time to ensure correct order
-        $rawAttendances = $query->get()->sortBy(function($att) {
-            return $att->date . '_' . ($att->schedule ? $att->schedule->start_time : '00:00:00');
+        $classRecords = $classAttendanceQuery->get()->groupBy(function($item) {
+            return $item->student_id . '_' . $item->date;
         });
 
-        $groupedAttendances = [];
-        $statusMap = [];
+        // 3. Susun 9 Slot Jam Pelajaran berdasarkan SchoolSetting
+        $setting = \App\Models\SchoolSetting::where('school_id', $schoolId)->first();
+        $timeIn = $setting ? $setting->time_in : '07:00:00';
+        $lessonDuration = $setting->lesson_duration ?? 45;
+        $breakDuration = $setting->break_duration ?? 30;
+        $breakAfter = $setting->break_after_lesson ?? 4;
 
-        foreach ($rawAttendances as $att) {
-            $key = $att->student_id . '_' . $att->date;
-            if (!isset($groupedAttendances[$key])) {
-                $groupedAttendances[$key] = clone $att; // Clone to avoid modifying the original if cached
-                $statusMap[$key] = [];
+        $timeSlots = [];
+        $currentTime = \Carbon\Carbon::parse($timeIn);
+        for ($i = 1; $i <= 9; $i++) {
+            $start = $currentTime->format('H:i');
+            $currentTime->addMinutes($lessonDuration);
+            $end = $currentTime->format('H:i');
+            $timeSlots[$i] = [
+                'start' => $start,
+                'end'   => $end,
+            ];
+            if ($i == $breakAfter) {
+                $currentTime->addMinutes($breakDuration);
             }
-            $initial = substr(strtoupper($att->status), 0, 1);
-            $statusMap[$key][] = $initial;
         }
 
-        foreach ($groupedAttendances as $key => $att) {
-            $att->status = implode(' | ', $statusMap[$key]);
+        // 4. Gabungkan data absensi
+        $allKeys = $gateRecords->keys()->concat($classRecords->keys())->unique();
+
+        $rows = [];
+        foreach ($allKeys as $key) {
+            [$sId, $date] = explode('_', $key, 2);
+            $student = $students->get($sId);
+            if (!$student) continue;
+
+            $gateAtt = $gateRecords->get($key)?->first();
+            $classAtts = $classRecords->get($key) ?? collect();
+
+            // Status 9 jam pelajaran (1 s.d. 9)
+            $periods = array_fill(1, 9, '-');
+            $unassigned = [];
+
+            foreach ($classAtts as $att) {
+                $initial = substr(strtoupper($att->status), 0, 1);
+                $assigned = false;
+
+                if ($att->schedule && $att->schedule->start_time) {
+                    $schedStart = substr($att->schedule->start_time, 0, 5);
+                    for ($p = 1; $p <= 9; $p++) {
+                        if ($timeSlots[$p]['start'] === $schedStart) {
+                            $periods[$p] = $initial;
+                            $assigned = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$assigned) {
+                    $unassigned[] = [
+                        'initial' => $initial,
+                        'start_time' => $att->schedule ? $att->schedule->start_time : '00:00:00'
+                    ];
+                }
+            }
+
+            // Jika ada yang belum terpetakan ke slot jam exact, isi secara urut kronologis
+            if (!empty($unassigned)) {
+                usort($unassigned, fn($a, $b) => strcmp($a['start_time'], $b['start_time']));
+                $idx = 0;
+                for ($p = 1; $p <= 9 && $idx < count($unassigned); $p++) {
+                    if ($periods[$p] === '-') {
+                        $periods[$p] = $unassigned[$idx]['initial'];
+                        $idx++;
+                    }
+                }
+            }
+
+            $scanIn = $gateAtt && $gateAtt->scan_in ? substr($gateAtt->scan_in, 0, 5) : '-';
+            $scanOut = $gateAtt && $gateAtt->scan_out ? substr($gateAtt->scan_out, 0, 5) : '-';
+
+            $rows[] = [
+                'student_id'     => $student->id,
+                'nis'            => $student->nis ?? '-',
+                'name'           => $student->name ?? '-',
+                'classroom'      => $student->classroom ? $student->classroom->name : '-',
+                'scan_in'        => $scanIn,
+                'periods'        => $periods,
+                'scan_out'       => $scanOut,
+                'date'           => date('d/m/Y', strtotime($date)),
+                'raw_date'       => $date,
+            ];
         }
 
-        $attendances = collect(array_values($groupedAttendances))->sortBy(function($att) {
-            return $att->date . '_' . ($att->student ? $att->student->name : '');
-        });
+        $rows = collect($rows)->sortBy(function($r) {
+            return $r['raw_date'] . '_' . $r['classroom'] . '_' . $r['name'];
+        })->values();
 
         $school = School::find($schoolId);
 
+        // Ambil Nama Kepala Sekolah & Petugas yang mengekspor
+        $kepsekUser = \App\Models\User::role('Kepala Sekolah')
+            ->when($schoolId, function($q) use ($schoolId) {
+                $q->where('school_id', $schoolId);
+            })
+            ->first();
+
+        $kepsekName = $request->input('kepsek_name') 
+            ?: ($kepsekUser ? $kepsekUser->name : ($school->principal_name ?? '....................................'));
+
+        $exporterName = $request->input('exporter_name') 
+            ?: ($user ? $user->name : '....................................');
+
         if ($request->format == 'csv') {
-            return $this->exportCsv($attendances, $school);
+            return $this->exportCsv($rows, $school, $kepsekName, $exporterName);
         } else {
-            return view('admin.reports.print', compact('attendances', 'request', 'school'));
+            return view('admin.reports.print', compact('rows', 'request', 'school', 'kepsekName', 'exporterName'));
         }
     }
 
-    private function exportCsv($attendances, $school)
+    private function exportCsv($rows, $school, $kepsekName, $exporterName)
     {
-        $fileName = 'Rekap_Absensi_' . str_replace(' ', '_', $school->name) . '_' . date('Ymd') . '.csv';
+        $fileName = 'Rekap_Absensi_' . str_replace(' ', '_', $school->name ?? 'Sekolah') . '_' . date('Ymd_His') . '.csv';
         $headers = [
-            "Content-type"        => "text/csv",
+            "Content-type"        => "text/csv; charset=UTF-8",
             "Content-Disposition" => "attachment; filename=$fileName",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
 
-        $callback = function() use($attendances) {
+        $callback = function() use($rows, $school, $kepsekName, $exporterName) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['NIS', 'Nama Siswa', 'Kelas', 'Status', 'Tanggal']);
+            
+            // UTF-8 BOM untuk kompatibilitas Microsoft Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
-            foreach ($attendances as $row) {
+            fputcsv($file, ['no', 'NIS', 'Nama', 'kelas', 'absen check in', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'absen check out', 'tanggal']);
+
+            foreach ($rows as $index => $row) {
                 fputcsv($file, [
-                    $row->student->nis ?? '-',
-                    $row->student->name ?? '-',
-                    $row->student->classroom->name ?? '-',
-                    $row->status,
-                    $row->date
+                    $index + 1,
+                    $row['nis'],
+                    $row['name'],
+                    $row['classroom'],
+                    $row['scan_in'],
+                    $row['periods'][1] ?? '-',
+                    $row['periods'][2] ?? '-',
+                    $row['periods'][3] ?? '-',
+                    $row['periods'][4] ?? '-',
+                    $row['periods'][5] ?? '-',
+                    $row['periods'][6] ?? '-',
+                    $row['periods'][7] ?? '-',
+                    $row['periods'][8] ?? '-',
+                    $row['periods'][9] ?? '-',
+                    $row['scan_out'],
+                    $row['date']
                 ]);
             }
+
+            // Tanda Tangan Bagian Bawah
+            fputcsv($file, []);
+            fputcsv($file, []);
+            fputcsv($file, ['kepala sekolah', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'di eksport oleh']);
+            fputcsv($file, []);
+            fputcsv($file, []);
+            fputcsv($file, [$kepsekName, '', '', '', '', '', '', '', '', '', '', '', '', '', '', $exporterName]);
+
             fclose($file);
         };
 
