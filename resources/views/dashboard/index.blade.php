@@ -4,10 +4,17 @@
 
 @section('content')
 <div class="container-fluid p-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0" style="color: #111827;">Beranda Sistem</h4>
-        <div class="text-neutral small">
-            {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <h4 class="fw-bold mb-0" style="color: #111827;">Beranda Sistem</h4>
+            <div class="text-neutral small">
+                {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+            </div>
+        </div>
+        <div class="d-flex align-items-center">
+            <span class="badge bg-white text-primary border px-3 py-2 rounded-pill fw-semibold shadow-sm">
+                <i class="bi bi-clock-history me-1"></i> Waktu Indonesia Tengah (WITA)
+            </span>
         </div>
     </div>
 

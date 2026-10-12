@@ -264,6 +264,10 @@
             </div>
             
             <div class="d-flex align-items-center gap-3">
+                <div class="d-none d-sm-flex align-items-center text-secondary small fw-medium bg-light px-3 py-1 rounded-pill border shadow-sm">
+                    <i class="bi bi-clock-fill text-primary me-2"></i>
+                    <span id="topbarWitaClock">{{ \Carbon\Carbon::now()->format('H:i:s') }} WITA</span>
+                </div>
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-sm btn-light border text-danger fw-medium px-3 rounded-pill shadow-sm">Keluar</button>
@@ -334,6 +338,25 @@
                 trigger: 'hover',
                 fallbackPlacements: ['right', 'bottom']
             }));
+
+            // Live WITA Clock Updater
+            function updateWitaClock() {
+                const el = document.getElementById('topbarWitaClock');
+                if (!el) return;
+                try {
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('id-ID', {
+                        timeZone: 'Asia/Makassar',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+                    el.textContent = timeStr.replace(/\./g, ':') + ' WITA';
+                } catch(e) {}
+            }
+            updateWitaClock();
+            setInterval(updateWitaClock, 1000);
         });
     </script>
     

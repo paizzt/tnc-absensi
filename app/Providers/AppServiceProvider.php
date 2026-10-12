@@ -40,5 +40,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CounselingRepositoryInterface::class, CounselingRepository::class);
     }
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        date_default_timezone_set(config('app.timezone', 'Asia/Makassar'));
+        \Carbon\Carbon::setLocale('id');
+    }
 }

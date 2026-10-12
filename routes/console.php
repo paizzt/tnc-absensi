@@ -10,8 +10,9 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Jadwal Pengiriman Laporan Absensi Mingguan ke Email Siswa
-// Dijalankan otomatis tiap hari Sabtu pukul 18:00 WIB/WITA (akhir pekan sekolah)
+// Dijalankan otomatis tiap hari Sabtu pukul 18:00 WITA (akhir pekan sekolah)
 Schedule::command('attendance:send-weekly-reports')
     ->weeklyOn(6, '18:00')
+    ->timezone('Asia/Makassar')
     ->appendOutputTo(storage_path('logs/weekly-attendance-reports.log'));
 
